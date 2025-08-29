@@ -2,7 +2,7 @@
 
 Plan de Implementación: 
 
-DHS: Implementar chord con un anillo de tamaño "n" en principio con búsqueda secuencial. Luego ir agregando fingertable. alta/baja de nodos y replicación. Implementado con gRPC, protobuf en Golang.
+DHT: Implementar chord con un anillo de tamaño "n" en principio con búsqueda secuencial. Luego ir agregando fingertable. alta/baja de nodos y replicación. Implementado con gRPC, protobuf en Golang.
 
 -----------------------------------------------------------------------------
 
@@ -32,3 +32,12 @@ https://www.google.com/search?q=arquitectura+para+distributed+hash+table&oq=arqu
 GRPC:
 
 https://earthly.dev/blog/golang-grpc-example/
+
+VENV:
+
+python3 -m venv myenv
+
+source myenv/bin/activate
+
+pip install Jinja2
+

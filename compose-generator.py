@@ -1,22 +1,18 @@
 import sys
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader # pyright: ignore[reportMissingImports]
 import configparser
-
 
 def main():
     config = configparser.ConfigParser()
     config.read("config.ini")
     default_config = config["DEFAULT"]
-
     env = Environment(loader=FileSystemLoader("templates"))
     template = env.get_template("docker-compose-dev.yaml.jinja")
     output = template.render(
         number_of_pairs=int(default_config["NUMBER_OF_PAIRS"]),
     )
-
     with open("docker-compose-dev.yaml", "w") as f:
         f.write(output)
-
 
 if __name__ == '__main__':
     if len(sys.argv) != 1:

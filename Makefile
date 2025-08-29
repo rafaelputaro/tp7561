@@ -7,12 +7,12 @@ deps:
 	cd src && go mod vendor
 .PHONY: deps
 
-docker-compose-dev.yaml: compose-generator.py config.ini
+docker-compose-dev.yaml: 
 	python3 compose-generator.py
 .PHONY: docker-compose-dev.yaml
 
 docker-image: deps
-	docker build -f ./src/server/workers/filter/Dockerfile -t "peer:latest" .
+	docker build -f ./src/peer/workers/filter/Dockerfile -t "peer:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-compose-dev.yaml docker-image
