@@ -12,19 +12,19 @@ docker-compose-dev.yaml:
 .PHONY: docker-compose-dev.yaml
 
 docker-image: deps
-	docker build -f ./src/peer/workers/filter/Dockerfile -t "peer:latest" .
+	docker build -f ./src/peer/Dockerfile -t "peer:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-compose-dev.yaml docker-image
-	docker compose -f docker-compose-dev.yaml down --remove-orphans || true
-	docker compose -f docker-compose-dev.yaml up -d --build --force-recreate
+	docker-compose -f docker-compose-dev.yaml down --remove-orphans || true
+	docker-compose -f docker-compose-dev.yaml up -d --build --force-recreate
 .PHONY: docker-compose-up
 
 docker-compose-logs:
-	docker compose -f docker-compose-dev.yaml logs -f
+	docker-compose -f docker-compose-dev.yaml logs -f
 .PHONY: docker-compose-logs
 
 docker-compose-down:
-	docker compose -f docker-compose-dev.yaml stop -t 1
-	docker compose -f docker-compose-dev.yaml down
+	docker-compose -f docker-compose-dev.yaml stop -t 1
+	docker-compose -f docker-compose-dev.yaml down
 .PHONY: docker-compose-down

@@ -3,32 +3,18 @@ services:
   peer-1:
     container_name: peer-1
     image: peer:latest
+    ports:
+      - "50051:50051"  # Puerto gRPC
     environment:
       - NODE_NAME=peer-1
     networks:
       - tp_net
 
-    depends_on:
 
-      - peer-2
 
-  peer-2:
-    container_name: peer-2
-    image: peer:latest
-    environment:
-      - NODE_NAME=peer-2
-    networks:
-      - tp_net
-
-    depends_on:
-
-      - peer-3
-
-  peer-3:
-    container_name: peer-3
-    image: peer:latest
-    environment:
-      - NODE_NAME=peer-3
-    networks:
-      - tp_net
-
+networks:
+  tp_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.125.0/24

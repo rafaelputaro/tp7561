@@ -3,6 +3,8 @@ services:
   peer-{{ i }}:
     container_name: peer-{{ i }}
     image: peer:latest
+    ports:
+      - "50051:50051"  # Puerto gRPC
     environment:
       - NODE_NAME=peer-{{ i }}
     networks:
@@ -14,3 +16,10 @@ services:
 {%- endfor -%}
 {% endif %}
 {% endfor %}
+
+networks:
+  tp_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.125.0/24

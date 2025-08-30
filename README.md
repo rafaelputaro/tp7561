@@ -33,6 +33,8 @@ GRPC:
 
 https://earthly.dev/blog/golang-grpc-example/
 
+https://github.com/7574-sistemas-distribuidos/grpc-example/blob/master/simple-rpc/client/client.go
+
 VENV:
 
 python3 -m venv myenv
@@ -40,4 +42,9 @@ python3 -m venv myenv
 source myenv/bin/activate
 
 pip install Jinja2
+
+Anillo:
+
+
+
 
