@@ -7,6 +7,8 @@ services:
       - "50051:50051"  # Puerto gRPC
     environment:
       - NODE_NAME=peer-{{ i }}
+      - NODE_HOST=peer-{{ i }}
+      - NODE_PORT=50051
     networks:
       - tp_net
 {% if i < number_of_pairs %}

@@ -47,4 +47,18 @@ Anillo:
 
 
 
+Kademlia:
+
+https://es.wikipedia.org/wiki/Kademlia
+
+https://es.wikipedia.org/wiki/Kad
+
+https://youtu.be/j5cLOODKccI
+
+https://www.wikiwand.com/es/articles/Red_Kad
+
+Vídeo piola:
+
+https://youtu.be/_kCHOpINA5g
+
 

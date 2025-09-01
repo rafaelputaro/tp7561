@@ -1,7 +1,5 @@
 package ring
 
-import "strconv"
-
 const BOOTSTRAP_NODE_ID = 1
 
 const INVALID_ID = -1
@@ -15,10 +13,6 @@ type Node struct {
 	NextUrl          string
 	BootstrapNodeID  int64
 	BootstrapNodeUrl int64
-}
-
-func getURL(ID int64) string {
-	return "peer-" + strconv.FormatInt(ID, 10)
 }
 
 func (node *Node) Join() bool {

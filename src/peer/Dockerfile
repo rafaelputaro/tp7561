@@ -25,7 +25,8 @@ COPY src/peer ./peer
 # * `CGO_ENABLED` must be disabled to run go binary in Alpine
 # * `GOOS=linux` tells the compiler to generate a binary for Linux
 # * `-o bin/filter` tells go where to store the binary
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o bin ./peer
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=mod -o bin ./peer
+#RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o bin ./peer
 EXPOSE 50051
 # Final image --------------------------------------------------------------------------------------
 # busybox is a minimalist image based on Alpine Linux

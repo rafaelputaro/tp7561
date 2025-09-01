@@ -11,7 +11,7 @@ docker-compose-dev.yaml:
 	python3 compose-generator.py
 .PHONY: docker-compose-dev.yaml
 
-docker-image: deps
+docker-image: #deps
 	docker build -f ./src/peer/Dockerfile -t "peer:latest" .
 .PHONY: docker-image
 
