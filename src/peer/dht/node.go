@@ -1,0 +1,44 @@
+package dht
+
+import (
+	"bytes"
+	"tp/peer/helpers"
+)
+
+const BOOTSTRAP_NODE_NAME = "peer-1"
+const BOOTSTRAP_NODE_PORT = "50051"
+const BOOTSTRAP_NODE_HOST = "peer-1"
+
+var BootstrapNodeUrl = helpers.GenerateURL(BOOTSTRAP_NODE_HOST, BOOTSTRAP_NODE_PORT)
+var BootstrapNodeID = helpers.GetKey(BOOTSTRAP_NODE_NAME)
+
+type Node struct {
+	ID  []byte
+	Url string
+	// bucket table
+	KeyValueTable TKeyValueTable
+	// cache
+}
+
+// Retorna una nueva instancia de nodo
+func NewNode(config helpers.PeerConfig) *Node {
+	node := &Node{
+		ID:            helpers.GetKey(config.Name),
+		Url:           config.Url,
+		KeyValueTable: *NewKeyValueTable(),
+	}
+	return node
+}
+
+// Retorna verdadero si la instancia el bootstrap node
+func (node *Node) IsBootstrapNode() bool {
+	return bytes.Equal(node.ID, BootstrapNodeID)
+}
+
+//Ping
+
+//FindNode
+
+//FindValue
+
+//Store

@@ -6,8 +6,9 @@ import (
 	"github.com/op/go-logging"
 )
 
-var Log = logging.MustGetLogger("node")
+var Log = logging.MustGetLogger("peer")
 
+// Inicializa el Log
 func InitLogger() {
 	format := logging.MustStringFormatter(
 		`%{level:.5s} | %{shortfunc} | %{message}`,

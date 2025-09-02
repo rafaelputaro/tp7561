@@ -6,9 +6,10 @@ services:
     ports:
       - "50051:50051"  # Puerto gRPC
     environment:
-      - NODE_NAME=peer-{{ i }}
-      - NODE_HOST=peer-{{ i }}
-      - NODE_PORT=50051
+      - PEER_NAME=peer-{{ i }}
+      - PEER_HOST=peer-{{ i }}
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET={{ entries_per_k_bucket }}
     networks:
       - tp_net
 {% if i < number_of_pairs %}

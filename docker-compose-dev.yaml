@@ -9,6 +9,7 @@ services:
       - NODE_NAME=peer-1
       - NODE_HOST=peer-1
       - NODE_PORT=50051
+      - NODE_ENTRIES_PER_K_BUCKET=20
     networks:
       - tp_net
 
