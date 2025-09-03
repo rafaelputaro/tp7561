@@ -4,6 +4,8 @@ import (
 	"crypto/sha1"
 )
 
+const EMPTY_KEY = ""
+
 // Obtiene una key SHA1 desde un string
 func GetKey(data string) []byte {
 	h := sha1.New()
@@ -37,13 +39,25 @@ func BoolArrayToBinary(arr []bool) string {
 }
 
 // Retorna un array con los prefijos con su representación binaria como strings
-func GeneratePrefixes(key []byte) []string {
+func GeneratePrefixesOtherTrees(key []byte) []string {
 	toReturn := []string{}
 	arrayBool := ConvertToBoolArray(key)
-	for k := 0; k < len(arrayBool); k++ {
+	for k := range arrayBool {
 		prefix := make([]bool, k+1)
 		copy(prefix[:], arrayBool[0:k+1])
 		prefix[k] = !prefix[k]
+		toReturn = append(toReturn, string(BoolArrayToBinary(prefix)))
+	}
+	return toReturn
+}
+
+// Retorna un array con los prefijos con su representación binaria como strings
+func GeneratePrefixes(key []byte) []string {
+	toReturn := []string{}
+	arrayBool := ConvertToBoolArray(key)
+	for k := range arrayBool {
+		prefix := make([]bool, k+1)
+		copy(prefix[:], arrayBool[0:k+1])
 		toReturn = append(toReturn, string(BoolArrayToBinary(prefix)))
 	}
 	return toReturn

@@ -1,47 +1,56 @@
 package bucket_table
 
-// Es una entrada de la cola la cual esta dada por un id y una url
-type QueueEntry struct {
+// Es un contacto el cual esta dada por un id y una url
+type Contact struct {
 	ID  []byte
 	Url string
 }
 
-// Representa una cola de entrada tipo FIFO
-type EntriesQueue struct {
-	entries []QueueEntry
+// Representa una cola de contactos tipo FIFO
+type ContactQueue struct {
+	entries []Contact
+}
+
+// Retorna una instancia de entrada de cola lista para ser utilizada
+func NewQueueContacts(id []byte, url string) *Contact {
+	entry := Contact{
+		ID:  id,
+		Url: url,
+	}
+	return &entry
 }
 
 // Retorna una instancia de cola de entradas lista para ser utilizada
-func NewQueue() *EntriesQueue {
-	queue := EntriesQueue{
-		entries: []QueueEntry{},
+func NewQueue() *ContactQueue {
+	queue := ContactQueue{
+		entries: []Contact{},
 	}
 	return &queue
 }
 
 // Encola una entrada
-func (queue *EntriesQueue) Enqueue(entry QueueEntry) {
+func (queue *ContactQueue) Enqueue(entry Contact) {
 	queue.entries = append(queue.entries, entry)
 }
 
 // Obtiene el top de la cola
-func (queue *EntriesQueue) Top() QueueEntry {
+func (queue *ContactQueue) Top() Contact {
 	return queue.entries[0]
 }
 
 // Desencola el elemento top de la cola
-func (queue *EntriesQueue) Dequeue() QueueEntry {
+func (queue *ContactQueue) Dequeue() Contact {
 	temp := queue.entries[0]
 	queue.entries = queue.entries[1:]
 	return temp
 }
 
 // Retorna verdadero si la cola esta vacía
-func (queue *EntriesQueue) Empty() bool {
+func (queue *ContactQueue) Empty() bool {
 	return len(queue.entries) == 0
 }
 
 // Retorna todas las entradas de la cola
-func (queue *EntriesQueue) GetEntries() []QueueEntry {
+func (queue *ContactQueue) GetContacs() []Contact {
 	return queue.entries
 }
