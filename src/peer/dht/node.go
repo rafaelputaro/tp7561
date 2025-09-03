@@ -15,17 +15,17 @@ var BootstrapNodeID = helpers.GetKey(BOOTSTRAP_NODE_NAME)
 type Node struct {
 	ID  []byte
 	Url string
-	// bucket table
-	KeyValueTable TKeyValueTable
+	// bucket table BucketTab BucketTable
+	KeyValueTab KeyValueTable
 	// cache
 }
 
 // Retorna una nueva instancia de nodo
 func NewNode(config helpers.PeerConfig) *Node {
 	node := &Node{
-		ID:            helpers.GetKey(config.Name),
-		Url:           config.Url,
-		KeyValueTable: *NewKeyValueTable(),
+		ID:          helpers.GetKey(config.Name),
+		Url:         config.Url,
+		KeyValueTab: *NewKeyValueTable(),
 	}
 	return node
 }

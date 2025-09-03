@@ -10,30 +10,30 @@ const MSG_ERROR_ON_UPDATE_VALUE = "error on update value from key value table"
 const EMPTY_VALUE = ""
 
 // Es una table que contiene pares clave valor
-type TKeyValueTable struct {
+type KeyValueTable struct {
 	Entries map[string]string
 }
 
 // Retorna una nueva instancia de tabla clave valor
-func NewKeyValueTable() *TKeyValueTable {
-	table := TKeyValueTable{
+func NewKeyValueTable() *KeyValueTable {
+	table := KeyValueTable{
 		Entries: map[string]string{},
 	}
 	return &table
 }
 
 // Agrega una nueva clave a la tabla
-func (table *TKeyValueTable) Add(key []byte, value string) {
+func (table *KeyValueTable) Add(key []byte, value string) {
 	table.Entries[helpers.KeyToString(key)] = value
 }
 
 // Remueve una clave de la tabla
-func (table *TKeyValueTable) Remove(key []byte) {
+func (table *KeyValueTable) Remove(key []byte) {
 	delete(table.Entries, helpers.KeyToString(key))
 }
 
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
-func (table *TKeyValueTable) GetValue(key []byte) (string, error) {
+func (table *KeyValueTable) GetValue(key []byte) (string, error) {
 	if value, ok := table.Entries[helpers.KeyToString(key)]; ok {
 		return value, nil
 	}
@@ -42,7 +42,7 @@ func (table *TKeyValueTable) GetValue(key []byte) (string, error) {
 }
 
 // Actualiza el valor para una clave. En caso de no disponer la clave retorna error
-func (table *TKeyValueTable) UpdateValue(key []byte, newValue string) error {
+func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
 	if _, ok := table.Entries[helpers.KeyToString(key)]; ok {
 		table.Entries[helpers.KeyToString(key)] = newValue
 		return nil
@@ -52,7 +52,7 @@ func (table *TKeyValueTable) UpdateValue(key []byte, newValue string) error {
 }
 
 // Retorna verdadero si la table contiene cierta clave
-func (table *TKeyValueTable) HasKey(key []byte) bool {
+func (table *KeyValueTable) HasKey(key []byte) bool {
 	_, err := table.GetValue(key)
 	return err != nil
 }

@@ -14,3 +14,37 @@ func GetKey(data string) []byte {
 func KeyToString(key []byte) string {
 	return string(key)
 }
+
+func ConvertToBoolArray(data []byte) []bool {
+	res := make([]bool, len(data)*8)
+	for i := range res {
+		res[i] = data[i/8]&(0x80>>byte(i&0x7)) != 0
+	}
+	return res
+}
+
+// Función para convertir un array de bool en una cadena binaria
+func BoolArrayToBinary(arr []bool) string {
+	var result string
+	for _, b := range arr {
+		if b {
+			result += "1"
+		} else {
+			result += "0"
+		}
+	}
+	return result
+}
+
+// Retorna un array con los prefijos con su representación binaria como strings
+func GeneratePrefixes(key []byte) []string {
+	toReturn := []string{}
+	arrayBool := ConvertToBoolArray(key)
+	for k := 0; k < len(arrayBool); k++ {
+		prefix := make([]bool, k+1)
+		copy(prefix[:], arrayBool[0:k+1])
+		prefix[k] = !prefix[k]
+		toReturn = append(toReturn, string(BoolArrayToBinary(prefix)))
+	}
+	return toReturn
+}
