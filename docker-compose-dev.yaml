@@ -6,10 +6,10 @@ services:
     ports:
       - "50051:50051"  # Puerto gRPC
     environment:
-      - NODE_NAME=peer-1
-      - NODE_HOST=peer-1
-      - NODE_PORT=50051
-      - NODE_ENTRIES_PER_K_BUCKET=20
+      - PEER_NAME=peer-1
+      - PEER_HOST=peer-1
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
     networks:
       - tp_net
 

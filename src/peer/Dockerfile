@@ -13,13 +13,13 @@ LABEL intermediateStageToBeDeleted=true
 
 WORKDIR /build/
 # Source code
-#RUN mkdir protobuf
+RUN mkdir protobuf
 RUN mkdir vendor
 RUN mkdir peer
 COPY src/go.mod .
 COPY src/go.sum .
 COPY src/peer ./peer
-#COPY src/protobuf ./protobuf
+COPY src/peer/helpers/rpc_ops/protobuf ./protobuf
 COPY src/vendor ./vendor
 # Build the binary
 # * `CGO_ENABLED` must be disabled to run go binary in Alpine

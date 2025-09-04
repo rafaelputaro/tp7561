@@ -11,7 +11,8 @@ docker-compose-dev.yaml:
 	python3 compose-generator.py
 .PHONY: docker-compose-dev.yaml
 
-docker-image: #deps
+docker-image: deps
+	protoc -I=./src/peer/helpers/rpc_ops/protobuf --go_out=./src/peer/helpers/rpc_ops/protobuf --go-grpc_out=./src/peer/helpers/rpc_ops/protobuf ./src/peer/helpers/rpc_ops/protobuf/*.proto
 	docker build -f ./src/peer/Dockerfile -t "peer:latest" .
 .PHONY: docker-image
 

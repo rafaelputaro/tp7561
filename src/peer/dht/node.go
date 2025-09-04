@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
 )
 
 const BOOTSTRAP_NODE_NAME = "peer-1"
@@ -18,15 +19,17 @@ type Node struct {
 	Url         string
 	BucketTab   bucket_table.BucketTable
 	KeyValueTab KeyValueTable
+	ping        rpc_ops.PingOp
 	// cache
 }
 
 // Retorna una nueva instancia de nodo
-func NewNode(config helpers.PeerConfig) *Node {
+func NewNode(config helpers.PeerConfig, ping rpc_ops.PingOp) *Node {
 	node := &Node{
 		ID:          helpers.GetKey(config.Name),
 		Url:         config.Url,
 		KeyValueTab: *NewKeyValueTable(),
+		ping:        ping,
 	}
 	return node
 }
