@@ -2,6 +2,7 @@ package dht
 
 import (
 	"bytes"
+	"tp/peer/dht/bucket_table"
 	"tp/peer/helpers"
 )
 
@@ -13,9 +14,9 @@ var BootstrapNodeUrl = helpers.GenerateURL(BOOTSTRAP_NODE_HOST, BOOTSTRAP_NODE_P
 var BootstrapNodeID = helpers.GetKey(BOOTSTRAP_NODE_NAME)
 
 type Node struct {
-	ID  []byte
-	Url string
-	// bucket table BucketTab BucketTable
+	ID          []byte
+	Url         string
+	BucketTab   bucket_table.BucketTable
 	KeyValueTab KeyValueTable
 	// cache
 }
