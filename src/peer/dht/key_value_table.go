@@ -6,6 +6,7 @@ import (
 )
 
 const MSG_ERROR_ON_GET_VALUE = "error on get value from key value table"
+const MSG_ERROR_ON_ADD_VALUE = "error on add key value"
 const MSG_ERROR_ON_UPDATE_VALUE = "error on update value from key value table"
 const EMPTY_VALUE = ""
 
@@ -22,9 +23,16 @@ func NewKeyValueTable() *KeyValueTable {
 	return &table
 }
 
-// Agrega una nueva clave a la tabla
-func (table *KeyValueTable) Add(key []byte, value string) {
-	table.Entries[helpers.KeyToString(key)] = value
+// Agrega una nueva clave a la tabla. En caso de que la clave ya se encontraba
+// en la tabla retorna error
+func (table *KeyValueTable) Add(key []byte, value string) error {
+	keyS := helpers.KeyToString(key)
+	_, exists := table.Entries[keyS]
+	if exists {
+		return errors.New(MSG_ERROR_ON_ADD_VALUE)
+	}
+	table.Entries[keyS] = value
+	return nil
 }
 
 // Remueve una clave de la tabla

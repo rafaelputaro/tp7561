@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"crypto/sha1"
+	"encoding/hex"
 )
 
 const EMPTY_KEY = ""
@@ -15,6 +16,11 @@ func GetKey(data string) []byte {
 
 func KeyToString(key []byte) string {
 	return string(key)
+}
+
+func KeyToHexString(key []byte) string {
+	hexString := hex.EncodeToString(key)
+	return hexString
 }
 
 func ConvertToBoolArray(data []byte) []bool {

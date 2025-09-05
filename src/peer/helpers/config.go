@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -13,6 +14,7 @@ const EMPTY_URL = ""
 type PeerConfig struct {
 	Name              string
 	Url               string
+	Id                []byte
 	EntriesPerKBucket int
 }
 
@@ -22,6 +24,7 @@ func NewNodeConfig(name string, url string, entriesPerKBucket int) *PeerConfig {
 		Name:              name,
 		Url:               url,
 		EntriesPerKBucket: entriesPerKBucket,
+		Id:                GetKey(name),
 	}
 	return config
 }
@@ -48,9 +51,10 @@ func LoadConfig() *PeerConfig {
 
 // Hace un log por debug de la configuración
 func (config *PeerConfig) LogConfig() {
-	Log.Debugf("Name: %v | Url: %v | EntriesPerKBucket: %v",
+	Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v",
 		config.Name,
 		config.Url,
+		fmt.Sprintf("%v", config.Id),
 		config.EntriesPerKBucket,
 	)
 }

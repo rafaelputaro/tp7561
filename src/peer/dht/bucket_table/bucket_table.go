@@ -2,32 +2,38 @@ package bucket_table
 
 import (
 	"errors"
+	"fmt"
 	"slices"
+	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 )
 
 const MSG_ERROR_PREFIX_NOT_FOUND = "error prefix not found"
 const MSG_ERROR_ON_ENQUEUE_CONTACT = "error on enqueue contact"
+const MSG_CONTACT_ADDED = "The contact has been added | url: %v"
+const MSG_CONTACT_REPLACE_HEAD = "Contact (url: %v) has been added to replace tailhead (url: %v)"
+const MSG_CONTACT_DISCARD = "Contact has been ruled out | url: %v"
 
-// Retorna verdadero si la url no se encuentra respondiendo a request's.
-type IsUnresponsiveUrl func(url string) bool
+type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
 
 // Es una tabla que contiene los contactos por prefijo
 type BucketTable struct {
-	Entries     map[string]ContactQueue
-	Prefixes    []string
-	IsUnrespUrl IsUnresponsiveUrl
+	Config   helpers.PeerConfig
+	Entries  map[string]contacts_queue.ContactQueue
+	Prefixes []string
+	Ping     PingOp
 }
 
 // Retorna una tabla de contactos lista para ser utilizada
-func NewBucketTable(id []byte, maxContactsPrefix int, isUnrespUrl IsUnresponsiveUrl) *BucketTable {
+func NewBucketTable(config helpers.PeerConfig, ping PingOp) *BucketTable {
 	table := BucketTable{
-		Entries:     map[string]ContactQueue{},
-		Prefixes:    []string{},
-		IsUnrespUrl: isUnrespUrl,
+		Config:   config,
+		Entries:  map[string]contacts_queue.ContactQueue{},
+		Prefixes: []string{},
+		Ping:     ping,
 	}
-	table.initPrefixes(id)
-	table.initEntries(maxContactsPrefix)
+	table.initPrefixes(table.Config.Id)
+	table.initEntries(table.Config.EntriesPerKBucket)
 	return &table
 }
 
@@ -39,48 +45,53 @@ func (table *BucketTable) initPrefixes(id []byte) {
 // Inicializa las colas correspondientes a cada uno de los prefijos
 func (table *BucketTable) initEntries(capacity int) {
 	for prefix := range table.Prefixes {
-		table.Entries[table.Prefixes[prefix]] = *NewQueue(capacity)
+		table.Entries[table.Prefixes[prefix]] = *contacts_queue.NewQueue(capacity)
 	}
 }
 
-// Si la tabla no se encuentra llena
-func (table *BucketTable) AddContact(id []byte, url string) error {
-	prefix, err := table.getPrefix(id)
+// Si la tabla no se encuentra llena agrega el contacto
+func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
+	prefix, err := table.getPrefix(newContact.ID)
 	if err == nil {
-		newContact := NewContact(id, url)
 		queue := table.Entries[prefix]
-		err := queue.Enqueue(*newContact)
+		err := queue.Enqueue(newContact)
 		if err != nil {
 			headContact, _ := queue.TakeHead()
 			if table.isUnresponsiveContact(headContact) {
-				queue.Enqueue(*newContact)
+				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.Url, headContact.Url))
+				queue.Enqueue(newContact)
 			} else {
+				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.Url))
 				queue.Enqueue(headContact)
 			}
+		} else {
+			helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.Url))
 		}
 		table.Entries[prefix] = queue
 		return nil
 	}
+	helpers.Log.Errorf(MSG_ERROR_ON_ENQUEUE_CONTACT)
 	return errors.New(MSG_ERROR_ON_ENQUEUE_CONTACT)
 }
 
 // Retorna verdadero si el contacto no se encuentra resposivo
-func (table *BucketTable) isUnresponsiveContact(contact Contact) bool {
-	return table.IsUnrespUrl(contact.Url)
+func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) bool {
+	err := table.Ping(table.Config, contact)
+	return err != nil
 }
 
 // Obtiene todos los contactos cercanos a un id dado
-func (table *BucketTable) GetContactsForId(id []byte) []Contact {
+func (table *BucketTable) GetContactsForId(id []byte) []contacts_queue.Contact {
 	prefix, error := table.getPrefix(id)
 	if error != nil {
-		return []Contact{}
+		return []contacts_queue.Contact{}
 	}
 	toReturn := table.GetContactsForPrefix(prefix)
 	return toReturn
 }
 
 // Obtiene los contactos para un prefijo dado
-func (table *BucketTable) GetContactsForPrefix(prefix string) []Contact {
+func (table *BucketTable) GetContactsForPrefix(prefix string) []contacts_queue.Contact {
 	entries := table.Entries[prefix]
 	return entries.GetContacs()
 }

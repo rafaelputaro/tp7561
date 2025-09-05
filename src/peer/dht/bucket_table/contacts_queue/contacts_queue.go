@@ -1,34 +1,14 @@
-package bucket_table
+package contacts_queue
 
 import "errors"
 
 const MSG_ERROR_EMPTY_QUEUE = "error queue empty"
 const MSG_ERROR_FULL_QUEUE = "error queue is full"
 
-// Es un contacto el cual esta dada por un id y una url
-type Contact struct {
-	ID  []byte
-	Url string
-}
-
 // Representa una cola de contactos tipo FIFO
 type ContactQueue struct {
 	Entries  []Contact
 	Capacity int
-}
-
-// Retorna un contacto asumido como nulo, vacío o inválido
-func CreateInvalidContact() *Contact {
-	return NewContact([]byte{}, "")
-}
-
-// Retorna una instancia de contacto para ser utilizada
-func NewContact(id []byte, url string) *Contact {
-	entry := Contact{
-		ID:  id,
-		Url: url,
-	}
-	return &entry
 }
 
 // Retorna una instancia de cola de entradas lista para ser utilizada
