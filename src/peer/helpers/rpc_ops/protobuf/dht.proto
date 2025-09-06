@@ -1,9 +1,0 @@
-syntax = "proto2";
-
-option go_package = "./protopb";
-
-import "google/protobuf/empty.proto";
-
-service DhtService{
-    
-}

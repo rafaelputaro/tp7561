@@ -12,19 +12,21 @@ const EMPTY_URL = ""
 
 // Representa la configuración del par
 type PeerConfig struct {
+	Id                []byte
 	Name              string
 	Url               string
-	Id                []byte
+	Port              string
 	EntriesPerKBucket int
 }
 
 // Retorna una nueva instancia de la configuración
-func NewNodeConfig(name string, url string, entriesPerKBucket int) *PeerConfig {
+func NewNodeConfig(name string, url string, port string, entriesPerKBucket int) *PeerConfig {
 	config := &PeerConfig{
+		Id:                GetKey(name),
 		Name:              name,
 		Url:               url,
+		Port:              port,
 		EntriesPerKBucket: entriesPerKBucket,
-		Id:                GetKey(name),
 	}
 	return config
 }
@@ -44,7 +46,7 @@ func LoadConfig() *PeerConfig {
 		entries_per_k_bucket = DEFAULT_ENTRIES_PER_K_BUCKET
 		Log.Debugf(MSG_ERROR_ON_LOAD_ENTRIES_PER_K_BUCKET)
 	}
-	var config = NewNodeConfig(name, GenerateURL(host, port), entries_per_k_bucket)
+	var config = NewNodeConfig(name, GenerateURL(host, port), port, entries_per_k_bucket)
 	config.LogConfig()
 	return config
 }

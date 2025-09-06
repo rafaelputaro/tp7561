@@ -3,11 +3,34 @@ services:
   peer-1:
     container_name: peer-1
     image: peer:latest
+#    expose:
+#      - "50051"
     ports:
-      - "50051:50051"  # Puerto gRPC
+#      - "50051:50051"  # Puerto gRPC
+      - "50051:50051"
     environment:
       - PEER_NAME=peer-1
       - PEER_HOST=peer-1
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-2
+
+  peer-2:
+    container_name: peer-2
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50052:50051"
+    environment:
+      - PEER_NAME=peer-2
+      - PEER_HOST=peer-2
       - PEER_PORT=50051
       - ENTRIES_PER_K_BUCKET=20
     networks:

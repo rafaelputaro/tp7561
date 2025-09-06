@@ -3,8 +3,11 @@ services:
   peer-{{ i }}:
     container_name: peer-{{ i }}
     image: peer:latest
+#    expose:
+#      - "50051"
     ports:
-      - "50051:50051"  # Puerto gRPC
+#      - "50051:50051"  # Puerto gRPC
+      - "{{ 50050 + i }}:50051"
     environment:
       - PEER_NAME=peer-{{ i }}
       - PEER_HOST=peer-{{ i }}

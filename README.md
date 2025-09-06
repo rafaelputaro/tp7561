@@ -43,6 +43,13 @@ source myenv/bin/activate
 
 pip install Jinja2
 
+
+export PATH=$PATH:$(go env GOPATH)/bin
+export PATH=$PATH:$HOME/go/bin
+export PATH=$PATH:/usr/local/go/bin
+
+
+
 Anillo:
 
 
@@ -62,3 +69,28 @@ Vídeo piola:
 https://youtu.be/_kCHOpINA5g
 
 
+
+
+grpcurl -plaintext -d  \
+  '{}' \
+  127.0.0.1:50051 protopb.Operations/Ping
+{
+ 
+}
+
+grpc_cli ls localhost:50051 -l
+
+$ grpcurl -plaintext -d  \
+  '{ "description": "christmas eve bike class" }' \
+  localhost:50051 api.v1.Activity_Log/Insert
+{
+  "id": 1
+}
+
+
+grpcurl -plaintext -d '{}' \
+   -proto ./src/peer/helpers/rpc_ops/protobuf/peer.proto \
+    localhost:50051 protopb/Options/Ping
+{
+  
+}

@@ -41,7 +41,7 @@ func NewNode(config helpers.PeerConfig, sndPing bucket_table.PingOp, sndStore St
 
 // Retorna verdadero si la instancia es el bootstrap node
 func (node *Node) IsBootstrapNode() bool {
-	return bytes.Equal(node.Config.Id, BootstrapNodeID)
+	return bytes.Equal(node.Config.Id, BootstrapNodeID) //node.Config.Url == BootstrapNodeUrl
 }
 
 // Simula un ping el cuál consiste en intentar agregar el contacto a la tabla de contactos
