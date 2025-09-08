@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 	"tp/peer/helpers"
-	"tp/peer/helpers/rpc_ops/protobuf/protopb"
+	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
