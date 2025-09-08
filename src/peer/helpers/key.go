@@ -23,6 +23,11 @@ func KeyToHexString(key []byte) string {
 	return hexString
 }
 
+func ConvertToBinaryString(key []byte) string {
+	boolArray := ConvertToBoolArray(key)
+	return BoolArrayToBinaryString(boolArray)
+}
+
 func ConvertToBoolArray(data []byte) []bool {
 	res := make([]bool, len(data)*8)
 	for i := range res {
@@ -31,8 +36,17 @@ func ConvertToBoolArray(data []byte) []bool {
 	return res
 }
 
+func KeyToLogFormatString(key []byte) string {
+	switch LoginFormatForKeys {
+	case string(HEXA):
+		return KeyToHexString(key)
+	default:
+		return ConvertToBinaryString(key)
+	}
+}
+
 // Función para convertir un array de bool en una cadena binaria
-func BoolArrayToBinary(arr []bool) string {
+func BoolArrayToBinaryString(arr []bool) string {
 	var result string
 	for _, b := range arr {
 		if b {
@@ -52,7 +66,7 @@ func GeneratePrefixesOtherTrees(key []byte) []string {
 		prefix := make([]bool, k+1)
 		copy(prefix[:], arrayBool[0:k+1])
 		prefix[k] = !prefix[k]
-		toReturn = append(toReturn, string(BoolArrayToBinary(prefix)))
+		toReturn = append(toReturn, string(BoolArrayToBinaryString(prefix)))
 	}
 	return toReturn
 }
@@ -64,7 +78,7 @@ func GeneratePrefixes(key []byte) []string {
 	for k := range arrayBool {
 		prefix := make([]bool, k+1)
 		copy(prefix[:], arrayBool[0:k+1])
-		toReturn = append(toReturn, string(BoolArrayToBinary(prefix)))
+		toReturn = append(toReturn, string(BoolArrayToBinaryString(prefix)))
 	}
 	return toReturn
 }

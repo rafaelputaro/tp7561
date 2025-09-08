@@ -56,7 +56,7 @@ func (config *PeerConfig) LogConfig() {
 	Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v",
 		config.Name,
 		config.Url,
-		fmt.Sprintf("%v", config.Id),
+		fmt.Sprintf("%v", KeyToLogFormatString(config.Id)),
 		config.EntriesPerKBucket,
 	)
 }

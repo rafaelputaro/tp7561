@@ -1,5 +1,10 @@
 package contacts_queue
 
+import (
+	"fmt"
+	"tp/peer/helpers"
+)
+
 // Es un contacto el cual esta dada por un id y una url
 type Contact struct {
 	ID  []byte
@@ -18,4 +23,8 @@ func NewContact(id []byte, url string) *Contact {
 		Url: url,
 	}
 	return &entry
+}
+
+func (contact *Contact) ToString() string {
+	return fmt.Sprintf("(Id: %v - Url: %v)", helpers.KeyToLogFormatString(contact.ID), contact.Url)
 }

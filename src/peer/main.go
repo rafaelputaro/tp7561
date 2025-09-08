@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 	"tp/peer/helpers"
 	"tp/peer/protobuf/protopb"
 
@@ -36,12 +37,11 @@ func main() {
 
 	helpers.Log.Infof("[SERVER] Starting gRPC Server")
 
+	// Sleep porque aún no he agregado retry
+	time.Sleep(10 * time.Second)
+
 	peer.PingToBootstrap()
-	/*
-		if !peer.NodeDHT.IsBootstrapNode() {
-			peer.PingToBootstrap()
-		}
-	*/
+
 	if err := server.Serve(lis); err != nil {
 		helpers.Log.Fatalf("failed to serve: %v", err)
 	}

@@ -27,13 +27,15 @@ func NewPeer(config helpers.PeerConfig) *Peer {
 	return &peer
 }
 
+// @Todo modificar ping para que envíe los datos del contacto mediante rpc
 func (peer *Peer) Ping(ctx context.Context, in *emptypb.Empty) (*emptypb.Empty, error) {
-	helpers.Log.Debugf("Ping")
+	//peer.NodeDHT.Ping()
+	helpers.Log.Debugf("Pong desde: %v", helpers.KeyToLogFormatString(peer.Config.Id))
 	return nil, nil
 }
 
 func (peer *Peer) PingToBootstrap() {
-	peer.NodeDHT.Ping(*contacts_queue.NewContact(dht.BootstrapNodeID, dht.BootstrapNodeUrl))
+	peer.NodeDHT.PingToBootstrap()
 }
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
@@ -57,8 +59,9 @@ func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []b
 	return nil
 }
 
+// @TODO agrega retry, mejorar todo el método, etc
 func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
-	// Set up a connection to the gRPC server
+	// Set up a connection to the gRPC server @TODO ARREGLAR ESTO PARA QUE NO ESTE DEPRECADO
 	conn, err := grpc.Dial(contact.Url, grpc.WithInsecure())
 	if err != nil {
 		helpers.Log.Fatalf("did not connect: %v", err)

@@ -58,20 +58,30 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 		if err != nil {
 			headContact, _ := queue.TakeHead()
 			if table.isUnresponsiveContact(headContact) {
-				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.Url, headContact.Url))
+				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.ToString(), headContact.ToString()))
 				queue.Enqueue(newContact)
 			} else {
-				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.Url))
+				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.ToString()))
 				queue.Enqueue(headContact)
 			}
 		} else {
-			helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.Url))
+			helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.ToString()))
 		}
 		table.Entries[prefix] = queue
 		return nil
 	}
 	helpers.Log.Errorf(MSG_ERROR_ON_ENQUEUE_CONTACT)
 	return errors.New(MSG_ERROR_ON_ENQUEUE_CONTACT)
+}
+
+// Hace efectivamente el ping al boostrap node y en caso de obtener respuesta lo intenta
+// agregar a la tabla de contactos
+func (table *BucketTable) TryToAddBoostrapNodeContact() error {
+	contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
+	if !table.isUnresponsiveContact(*contactBoostrapNode) {
+		return table.AddContact(*contactBoostrapNode)
+	}
+	return nil
 }
 
 // Retorna verdadero si el contacto no se encuentra resposivo

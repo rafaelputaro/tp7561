@@ -13,6 +13,7 @@ services:
       - PEER_HOST=peer-1
       - PEER_PORT=50051
       - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
     networks:
       - tp_net
 
@@ -33,6 +34,70 @@ services:
       - PEER_HOST=peer-2
       - PEER_PORT=50051
       - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-3
+
+  peer-3:
+    container_name: peer-3
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50053:50051"
+    environment:
+      - PEER_NAME=peer-3
+      - PEER_HOST=peer-3
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-4
+
+  peer-4:
+    container_name: peer-4
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50054:50051"
+    environment:
+      - PEER_NAME=peer-4
+      - PEER_HOST=peer-4
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-5
+
+  peer-5:
+    container_name: peer-5
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50055:50051"
+    environment:
+      - PEER_NAME=peer-5
+      - PEER_HOST=peer-5
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
     networks:
       - tp_net
 

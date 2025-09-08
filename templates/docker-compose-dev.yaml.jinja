@@ -13,6 +13,7 @@ services:
       - PEER_HOST=peer-{{ i }}
       - PEER_PORT=50051
       - ENTRIES_PER_K_BUCKET={{ entries_per_k_bucket }}
+      - LOGIN_FORMAT_FOR_KEYS={{ login_format_for_keys }}
     networks:
       - tp_net
 {% if i < number_of_pairs %}

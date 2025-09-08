@@ -11,6 +11,7 @@ def main():
     output = template.render(
         number_of_pairs=int(default_config["NUMBER_OF_PAIRS"]),
         entries_per_k_bucket=int(default_config["ENTRIES_PER_K_BUCKET"]),
+        login_format_for_keys=default_config["LOGIN_FORMAT_FOR_KEYS"]
     )
     with open("docker-compose-dev.yaml", "w") as f:
         f.write(output)

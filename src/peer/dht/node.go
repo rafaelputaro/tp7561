@@ -9,14 +9,8 @@ import (
 	"tp/peer/helpers"
 )
 
-const BOOTSTRAP_NODE_NAME = "peer-1"
-const BOOTSTRAP_NODE_PORT = "50051"
-const BOOTSTRAP_NODE_HOST = "peer-1"
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
 const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
-
-var BootstrapNodeUrl = helpers.GenerateURL(BOOTSTRAP_NODE_HOST, BOOTSTRAP_NODE_PORT)
-var BootstrapNodeID = helpers.GetKey(BOOTSTRAP_NODE_NAME)
 
 type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error
 
@@ -41,18 +35,27 @@ func NewNode(config helpers.PeerConfig, sndPing bucket_table.PingOp, sndStore St
 
 // Retorna verdadero si la instancia es el bootstrap node
 func (node *Node) IsBootstrapNode() bool {
-	return bytes.Equal(node.Config.Id, BootstrapNodeID) //node.Config.Url == BootstrapNodeUrl
+	return bytes.Equal(node.Config.Id, helpers.BootstrapNodeID)
 }
 
 // Simula un ping el cuál consiste en intentar agregar el contacto a la tabla de contactos
-func (node *Node) Ping(contactSource contacts_queue.Contact) {
+func (node *Node) Ping(contactSource contacts_queue.Contact) bool {
 	// Prevenir bucle
 	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource))
-		return
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
+		return false
 	}
 	// Trata de agregar el contacto
 	node.BucketTab.AddContact(contactSource)
+	return true
+}
+
+// Realiza efectivamente un ping boostrap node y en caso de recibir respuesta lo intenta agregar a la tabla
+// de contactos. En caso de que ser el nodo bootstrap retorna falso
+func (node *Node) PingToBootstrap() {
+	if !node.IsBootstrapNode() {
+		node.BucketTab.TryToAddBoostrapNodeContact()
+	}
 }
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
@@ -60,7 +63,7 @@ func (node *Node) Ping(contactSource contacts_queue.Contact) {
 func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
 	// Prevenir bucle
 	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource))
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
 		return []contacts_queue.Contact{}
 	}
 	// Agregar contacto a la bucket_table
@@ -75,7 +78,7 @@ func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte
 func (node *Node) FindValue(contactSource contacts_queue.Contact, targetKey []byte) (string, []contacts_queue.Contact, error) {
 	// Prevenir bucle
 	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource))
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
 		return EMPTY_VALUE, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
@@ -95,7 +98,7 @@ func (node *Node) FindValue(contactSource contacts_queue.Contact, targetKey []by
 func (node *Node) Store(contactSource contacts_queue.Contact, key []byte, value string) error {
 	// Prevenir bucle
 	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource))
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
 		return errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
