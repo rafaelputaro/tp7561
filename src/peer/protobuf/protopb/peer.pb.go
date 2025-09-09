@@ -11,6 +11,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -21,22 +22,91 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type PingOperands struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
+	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PingOperands) Reset() {
+	*x = PingOperands{}
+	mi := &file_peer_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PingOperands) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PingOperands) ProtoMessage() {}
+
+func (x *PingOperands) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PingOperands.ProtoReflect.Descriptor instead.
+func (*PingOperands) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *PingOperands) GetSourceId() []byte {
+	if x != nil {
+		return x.SourceId
+	}
+	return nil
+}
+
+func (x *PingOperands) GetSourceUrl() string {
+	if x != nil && x.SourceUrl != nil {
+		return *x.SourceUrl
+	}
+	return ""
+}
+
 var File_peer_proto protoreflect.FileDescriptor
 
 const file_peer_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"peer.proto\x1a\x1bgoogle/protobuf/empty.proto2D\n" +
+	"peer.proto\x1a\x1bgoogle/protobuf/empty.proto\"H\n" +
+	"\fPingOperands\x12\x1a\n" +
+	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
+	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl2;\n" +
 	"\n" +
-	"Operations\x126\n" +
-	"\x04Ping\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.EmptyB\vZ\t./protopb"
+	"Operations\x12-\n" +
+	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.EmptyB\vZ\t./protopb"
 
+var (
+	file_peer_proto_rawDescOnce sync.Once
+	file_peer_proto_rawDescData []byte
+)
+
+func file_peer_proto_rawDescGZIP() []byte {
+	file_peer_proto_rawDescOnce.Do(func() {
+		file_peer_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_peer_proto_rawDesc), len(file_peer_proto_rawDesc)))
+	})
+	return file_peer_proto_rawDescData
+}
+
+var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_peer_proto_goTypes = []any{
-	(*emptypb.Empty)(nil), // 0: google.protobuf.Empty
+	(*PingOperands)(nil),  // 0: PingOperands
+	(*emptypb.Empty)(nil), // 1: google.protobuf.Empty
 }
 var file_peer_proto_depIdxs = []int32{
-	0, // 0: Operations.Ping:input_type -> google.protobuf.Empty
-	0, // 1: Operations.Ping:output_type -> google.protobuf.Empty
+	0, // 0: Operations.Ping:input_type -> PingOperands
+	1, // 1: Operations.Ping:output_type -> google.protobuf.Empty
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -55,12 +125,13 @@ func file_peer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_peer_proto_rawDesc), len(file_peer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_peer_proto_goTypes,
 		DependencyIndexes: file_peer_proto_depIdxs,
+		MessageInfos:      file_peer_proto_msgTypes,
 	}.Build()
 	File_peer_proto = out.File
 	file_peer_proto_goTypes = nil

@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OperationsClient interface {
-	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Ping(ctx context.Context, in *PingOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type operationsClient struct {
@@ -38,7 +38,7 @@ func NewOperationsClient(cc grpc.ClientConnInterface) OperationsClient {
 	return &operationsClient{cc}
 }
 
-func (c *operationsClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *operationsClient) Ping(ctx context.Context, in *PingOperands, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Operations_Ping_FullMethodName, in, out, cOpts...)
@@ -52,7 +52,7 @@ func (c *operationsClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...
 // All implementations must embed UnimplementedOperationsServer
 // for forward compatibility.
 type OperationsServer interface {
-	Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	Ping(context.Context, *PingOperands) (*emptypb.Empty, error)
 	mustEmbedUnimplementedOperationsServer()
 }
 
@@ -63,7 +63,7 @@ type OperationsServer interface {
 // pointer dereference when methods are called.
 type UnimplementedOperationsServer struct{}
 
-func (UnimplementedOperationsServer) Ping(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (UnimplementedOperationsServer) Ping(context.Context, *PingOperands) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedOperationsServer) mustEmbedUnimplementedOperationsServer() {}
@@ -88,7 +88,7 @@ func RegisterOperationsServer(s grpc.ServiceRegistrar, srv OperationsServer) {
 }
 
 func _Operations_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(PingOperands)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func _Operations_Ping_Handler(srv interface{}, ctx context.Context, dec func(int
 		FullMethod: Operations_Ping_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperationsServer).Ping(ctx, req.(*emptypb.Empty))
+		return srv.(OperationsServer).Ping(ctx, req.(*PingOperands))
 	}
 	return interceptor(ctx, in, info, handler)
 }

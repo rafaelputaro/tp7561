@@ -7,6 +7,7 @@ import (
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
+	"tp/peer/protobuf/protoUtils"
 	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/grpc"
@@ -27,15 +28,17 @@ func NewPeer(config helpers.PeerConfig) *Peer {
 	return &peer
 }
 
-// @Todo modificar ping para que envíe los datos del contacto mediante rpc
-func (peer *Peer) Ping(ctx context.Context, in *emptypb.Empty) (*emptypb.Empty, error) {
-	//peer.NodeDHT.Ping()
-	helpers.Log.Debugf("Pong desde: %v", helpers.KeyToLogFormatString(peer.Config.Id))
+// Hace el procesamiento de la recepción de un ping desde el contacto parámetro e intenta agregarlo
+// a la tabla de contactos.
+func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands) (*emptypb.Empty, error) {
+	peer.NodeDHT.RcvPing(*contacts_queue.NewContact(sourceContact.GetSourceId(), sourceContact.GetSourceUrl()))
 	return nil, nil
 }
 
-func (peer *Peer) PingToBootstrap() {
-	peer.NodeDHT.PingToBootstrap()
+// Envía efectivamente un mensaje de ping al bootstrap node y si se encuentra disponible intenta agregarlo
+// a la tabla de contactos.
+func (peer *Peer) SndPingToBootstrap() {
+	peer.NodeDHT.SndPingToBootstrap()
 }
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
@@ -59,7 +62,7 @@ func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []b
 	return nil
 }
 
-// @TODO agrega retry, mejorar todo el método, etc
+// @TODO agregar retry, mejorar todo el método, etc
 func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	// Set up a connection to the gRPC server @TODO ARREGLAR ESTO PARA QUE NO ESTE DEPRECADO
 	conn, err := grpc.Dial(contact.Url, grpc.WithInsecure())
@@ -75,8 +78,8 @@ func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	// Defined with a 5 seconds timeout but not used in the example
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-
-	_, err = c.Ping(ctx, &emptypb.Empty{})
+	_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
+	//_, err = c.Ping(ctx, &emptypb.Empty{})
 	if err != nil {
 		log.Fatalf("could not call MyMethod: %v", err)
 	}

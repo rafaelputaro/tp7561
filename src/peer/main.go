@@ -40,7 +40,7 @@ func main() {
 	// Sleep porque aún no he agregado retry
 	time.Sleep(10 * time.Second)
 
-	peer.PingToBootstrap()
+	peer.SndPingToBootstrap()
 
 	if err := server.Serve(lis); err != nil {
 		helpers.Log.Fatalf("failed to serve: %v", err)

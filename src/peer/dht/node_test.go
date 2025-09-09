@@ -23,9 +23,9 @@ func TestNode(t *testing.T) {
 	node := NewNode(config, PingOpWithoutError, StoreOpWithoutError)
 	// Agregar contacto durante ping
 	idContact := []byte{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	node.Ping(*contacts_queue.NewContact(idContact, "contact:5001"))
+	node.RcvPing(*contacts_queue.NewContact(idContact, "contact:5001"))
 	// Rechazar un ping a si mismo
-	node.Ping(*contacts_queue.NewContact(config.Id, config.Url))
+	node.RcvPing(*contacts_queue.NewContact(config.Id, config.Url))
 	//key := helpers.GetKey("")
 	/*	key := []byte{}
 		key = append(key, 4)

@@ -14,6 +14,7 @@ const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
 
 type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error
 
+// Representa un nodo de una Distributed Hash Table
 type Node struct {
 	Config      helpers.PeerConfig
 	BucketTab   bucket_table.BucketTable
@@ -38,21 +39,22 @@ func (node *Node) IsBootstrapNode() bool {
 	return bytes.Equal(node.Config.Id, helpers.BootstrapNodeID)
 }
 
-// Simula un ping el cuál consiste en intentar agregar el contacto a la tabla de contactos
-func (node *Node) Ping(contactSource contacts_queue.Contact) bool {
+// Representa la recepción de un ping el cuál consiste en intentar agregar el contacto a la tabla de
+// contactos
+func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 	// Prevenir bucle
-	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
+	if node.DiscardContact(sourceContact) {
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return false
 	}
 	// Trata de agregar el contacto
-	node.BucketTab.AddContact(contactSource)
+	node.BucketTab.AddContact(sourceContact)
 	return true
 }
 
 // Realiza efectivamente un ping boostrap node y en caso de recibir respuesta lo intenta agregar a la tabla
 // de contactos. En caso de que ser el nodo bootstrap retorna falso
-func (node *Node) PingToBootstrap() {
+func (node *Node) SndPingToBootstrap() {
 	if !node.IsBootstrapNode() {
 		node.BucketTab.TryToAddBoostrapNodeContact()
 	}
@@ -60,14 +62,14 @@ func (node *Node) PingToBootstrap() {
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
-func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
+func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
 	// Prevenir bucle
-	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
+	if node.DiscardContact(sourceContact) {
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return []contacts_queue.Contact{}
 	}
 	// Agregar contacto a la bucket_table
-	node.BucketTab.AddContact(contactSource)
+	node.BucketTab.AddContact(sourceContact)
 	// Buscar los contactos
 	return node.BucketTab.GetContactsForId(targetId)
 }
@@ -75,14 +77,14 @@ func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte
 // Si la target key se encuentra en el nodo retorna el valor de la misma, caso contrario retorna
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
-func (node *Node) FindValue(contactSource contacts_queue.Contact, targetKey []byte) (string, []contacts_queue.Contact, error) {
+func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey []byte) (string, []contacts_queue.Contact, error) {
 	// Prevenir bucle
-	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
+	if node.DiscardContact(sourceContact) {
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return EMPTY_VALUE, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
-	node.BucketTab.AddContact(contactSource)
+	node.BucketTab.AddContact(sourceContact)
 	// Búsqueda de valor
 	valueToReturn, err := node.KeyValueTab.GetValue(targetKey)
 	if err == nil {
@@ -95,14 +97,14 @@ func (node *Node) FindValue(contactSource contacts_queue.Contact, targetKey []by
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
-func (node *Node) Store(contactSource contacts_queue.Contact, key []byte, value string) error {
+func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, value string) error {
 	// Prevenir bucle
-	if node.DiscardContact(contactSource) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, contactSource.ToString()))
+	if node.DiscardContact(sourceContact) {
+		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
-	node.BucketTab.AddContact(contactSource)
+	node.BucketTab.AddContact(sourceContact)
 	// Almacenar localmente
 	err := node.KeyValueTab.Add(key, value)
 	if err != nil {

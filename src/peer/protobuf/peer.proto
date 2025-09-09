@@ -5,6 +5,11 @@ option go_package = "./protopb";
 import "google/protobuf/empty.proto";
 
 service Operations {
-    rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc Ping (PingOperands) returns (google.protobuf.Empty);
+    //rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
+message PingOperands {
+    required bytes sourceId = 1;
+    required string sourceUrl = 2;
+}
