@@ -74,6 +74,126 @@ func (x *PingOperands) GetSourceUrl() string {
 	return ""
 }
 
+type ShareContactsReciprocallyOperands struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
+	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
+	ContactsIds   [][]byte               `protobuf:"bytes,3,rep,name=contactsIds" json:"contactsIds,omitempty"`
+	ContactsUrls  []string               `protobuf:"bytes,4,rep,name=contactsUrls" json:"contactsUrls,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ShareContactsReciprocallyOperands) Reset() {
+	*x = ShareContactsReciprocallyOperands{}
+	mi := &file_peer_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ShareContactsReciprocallyOperands) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShareContactsReciprocallyOperands) ProtoMessage() {}
+
+func (x *ShareContactsReciprocallyOperands) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShareContactsReciprocallyOperands.ProtoReflect.Descriptor instead.
+func (*ShareContactsReciprocallyOperands) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ShareContactsReciprocallyOperands) GetSourceId() []byte {
+	if x != nil {
+		return x.SourceId
+	}
+	return nil
+}
+
+func (x *ShareContactsReciprocallyOperands) GetSourceUrl() string {
+	if x != nil && x.SourceUrl != nil {
+		return *x.SourceUrl
+	}
+	return ""
+}
+
+func (x *ShareContactsReciprocallyOperands) GetContactsIds() [][]byte {
+	if x != nil {
+		return x.ContactsIds
+	}
+	return nil
+}
+
+func (x *ShareContactsReciprocallyOperands) GetContactsUrls() []string {
+	if x != nil {
+		return x.ContactsUrls
+	}
+	return nil
+}
+
+type ShareContactsReciprocallyResults struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ContactsIds   [][]byte               `protobuf:"bytes,1,rep,name=contactsIds" json:"contactsIds,omitempty"`
+	ContactsUrls  []string               `protobuf:"bytes,2,rep,name=contactsUrls" json:"contactsUrls,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ShareContactsReciprocallyResults) Reset() {
+	*x = ShareContactsReciprocallyResults{}
+	mi := &file_peer_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ShareContactsReciprocallyResults) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ShareContactsReciprocallyResults) ProtoMessage() {}
+
+func (x *ShareContactsReciprocallyResults) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ShareContactsReciprocallyResults.ProtoReflect.Descriptor instead.
+func (*ShareContactsReciprocallyResults) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ShareContactsReciprocallyResults) GetContactsIds() [][]byte {
+	if x != nil {
+		return x.ContactsIds
+	}
+	return nil
+}
+
+func (x *ShareContactsReciprocallyResults) GetContactsUrls() []string {
+	if x != nil {
+		return x.ContactsUrls
+	}
+	return nil
+}
+
 var File_peer_proto protoreflect.FileDescriptor
 
 const file_peer_proto_rawDesc = "" +
@@ -82,7 +202,15 @@ const file_peer_proto_rawDesc = "" +
 	"peer.proto\x1a\x1bgoogle/protobuf/empty.proto\"H\n" +
 	"\fPingOperands\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
-	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl2;\n" +
+	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\"\xa3\x01\n" +
+	"!ShareContactsReciprocallyOperands\x12\x1a\n" +
+	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
+	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\x12 \n" +
+	"\vcontactsIds\x18\x03 \x03(\fR\vcontactsIds\x12\"\n" +
+	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"h\n" +
+	" ShareContactsReciprocallyResults\x12 \n" +
+	"\vcontactsIds\x18\x01 \x03(\fR\vcontactsIds\x12\"\n" +
+	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls2;\n" +
 	"\n" +
 	"Operations\x12-\n" +
 	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.EmptyB\vZ\t./protopb"
@@ -99,14 +227,16 @@ func file_peer_proto_rawDescGZIP() []byte {
 	return file_peer_proto_rawDescData
 }
 
-var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_peer_proto_goTypes = []any{
-	(*PingOperands)(nil),  // 0: PingOperands
-	(*emptypb.Empty)(nil), // 1: google.protobuf.Empty
+	(*PingOperands)(nil),                      // 0: PingOperands
+	(*ShareContactsReciprocallyOperands)(nil), // 1: ShareContactsReciprocallyOperands
+	(*ShareContactsReciprocallyResults)(nil),  // 2: ShareContactsReciprocallyResults
+	(*emptypb.Empty)(nil),                     // 3: google.protobuf.Empty
 }
 var file_peer_proto_depIdxs = []int32{
 	0, // 0: Operations.Ping:input_type -> PingOperands
-	1, // 1: Operations.Ping:output_type -> google.protobuf.Empty
+	3, // 1: Operations.Ping:output_type -> google.protobuf.Empty
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -125,7 +255,7 @@ func file_peer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_peer_proto_rawDesc), len(file_peer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

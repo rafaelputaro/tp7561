@@ -90,6 +90,18 @@ func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) 
 	return err != nil
 }
 
+/*
+// Selecciona de la tabla de contactos propias una serie de contactos recomendados para que
+// el nodo con el id parámetro pueda armar su tabla de contactos
+func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queue.Contact {
+	prefixes := helpers.GeneratePrefixesOtherTrees(id)
+	toReturn := []contacts_queue.Contact{}
+	for i := range prefixes {
+		contactsPref := table.GetContactsForId(prefixes[i])
+	}
+}
+*/
+
 // Obtiene todos los contactos cercanos a un id dado
 func (table *BucketTable) GetContactsForId(id []byte) []contacts_queue.Contact {
 	prefix, error := table.getPrefix(id)

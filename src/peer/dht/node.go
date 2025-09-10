@@ -122,3 +122,7 @@ func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, val
 func (node *Node) DiscardContact(contact contacts_queue.Contact) bool {
 	return node.Config.Url == contact.Url
 }
+
+func (node *Node) GetContactsForId(id []byte) []contacts_queue.Contact {
+	return node.BucketTab.GetContactsForId(id)
+}

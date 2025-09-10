@@ -35,6 +35,11 @@ func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands)
 	return nil, nil
 }
 
+/*
+func (peer *Peer) ShareContactsReciprocally(ctx context.Context, contacts *protopb.ShareContactsReciprocallyOperands) (*protopb.ShareContactsReciprocallyResults) {
+	selfContacts :=
+}*/
+
 // Envía efectivamente un mensaje de ping al bootstrap node y si se encuentra disponible intenta agregarlo
 // a la tabla de contactos.
 func (peer *Peer) SndPingToBootstrap() {

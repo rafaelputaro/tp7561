@@ -1,15 +1,18 @@
 package helpers
 
 import (
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
+	"strings"
 )
 
 const EMPTY_KEY = ""
+const LENGTH_KEY_IN_BITS = 256
+const MSG_ERROR_ON_PARSE = "error on parse"
 
-// Obtiene una key SHA1 desde un string
+// Obtiene una key SHA256 desde un string
 func GetKey(data string) []byte {
-	h := sha1.New()
+	h := sha256.New()
 	h.Write([]byte(data))
 	return h.Sum(nil)
 }
@@ -34,6 +37,45 @@ func ConvertToBoolArray(data []byte) []bool {
 		res[i] = data[i/8]&(0x80>>byte(i&0x7)) != 0
 	}
 	return res
+}
+
+// Retorna una clave construída en base a un prefijo la cuál consiste en agregar ceros hasta
+// completar los bits menos significativos
+func PrefixToKey(prefix string) []byte {
+	// completar la cadena
+	keyStr := prefix + strings.Repeat(`0`, LENGTH_KEY_IN_BITS-len(prefix))
+	toReturn := []byte{}
+	for i := 0; i < LENGTH_KEY_IN_BITS; i += 8 {
+		println("Len %v | Index %v", len(keyStr), i)
+		/*
+			intValue, err := strconv.ParseInt(keyStr[i:i+8], 2, 8)
+			if err != nil {
+				Log.Fatalf(MSG_ERROR_ON_PARSE)
+			}
+			toReturn = append(toReturn, byte(intValue))*/
+	}
+	return toReturn
+}
+
+// Transforma todos los prefijos de una lista en claves
+func PrefixesToCompleteToKeys(prefixes []string) [][]byte {
+	toReturn := [][]byte{}
+	for _, prefix := range prefixes {
+		toReturn = append(toReturn, PrefixToKey(prefix))
+	}
+	return toReturn
+}
+
+// Genera una lista que contiene una clave de cada uno de los árboles a los cuales
+// no pertence la clave
+func GenerateKeysFromOtherTrees(key []byte) [][]byte {
+	prefixesStr := GeneratePrefixesOtherTrees(key)
+	/*	println("Values %v", prefixesStr)
+		for _, str := range prefixesStr {
+			fmt.Printf("Elemento: %v\n", len(str)) // %s imprime la string, \n añade una nueva línea
+		}
+	*/
+	return PrefixesToCompleteToKeys(prefixesStr)
 }
 
 func KeyToLogFormatString(key []byte) string {

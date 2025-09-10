@@ -5,11 +5,26 @@ option go_package = "./protopb";
 import "google/protobuf/empty.proto";
 
 service Operations {
+
     rpc Ping (PingOperands) returns (google.protobuf.Empty);
-    //rpc Ping (google.protobuf.Empty) returns (google.protobuf.Empty);
+    
+    // Permite compartir contactos entre dos pares recíprocamente
+    //rpc ShareContactsReciprocally (ShareContactsReciprocallyOperands) returns (ShareContactsReciprocallyResults);
 }
 
 message PingOperands {
     required bytes sourceId = 1;
     required string sourceUrl = 2;
+}
+
+message ShareContactsReciprocallyOperands {
+    required bytes sourceId = 1;
+    required string sourceUrl = 2;
+    repeated bytes contactsIds = 3;
+    repeated string contactsUrls = 4;
+}
+
+message ShareContactsReciprocallyResults {
+    repeated bytes contactsIds = 1;
+    repeated string contactsUrls = 2;
 }

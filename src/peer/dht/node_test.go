@@ -8,6 +8,11 @@ import (
 	"tp/peer/helpers"
 )
 
+func TestKeys(t *testing.T) {
+	id := []byte{128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	helpers.GenerateKeysFromOtherTrees(id)
+}
+
 func TestNode(t *testing.T) {
 	name := "peer-1"
 	url := helpers.GenerateURL(name, "5001")
