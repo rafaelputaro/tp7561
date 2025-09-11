@@ -11,8 +11,10 @@ import (
 func TestKeys(t *testing.T) {
 	id := []byte{128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	helpers.GenerateKeysFromOtherTrees(id)
+
 }
 
+/*
 func TestNode(t *testing.T) {
 	name := "peer-1"
 	url := helpers.GenerateURL(name, "5001")
@@ -36,30 +38,30 @@ func TestNode(t *testing.T) {
 		key = append(key, 4)
 		prefixes := helpers.GeneratePrefixesOtherTrees(key)
 		fmt.Println(prefixes)*/
-	//arrayBool := helpers.ConvertToBoolArray(key)
-	//print("%v", fmt.Sprintf("%v", arrayBool))
-	//print("%v", len(arrayBool))
-	/*	callback := func(url string) bool {
-			return false
-		}
+//arrayBool := helpers.ConvertToBoolArray(key)
+//print("%v", fmt.Sprintf("%v", arrayBool))
+//print("%v", len(arrayBool))
+/*	callback := func(url string) bool {
+		return false
+	}
 
-		table := NewBucketTable(key, 10, callback)
-		contact := []byte{}
-		contact = append(contact, 5)
-		table.AddContact(contact, "contact5::5051")
-		contacts := table.GetContactsForId(contact)
-		println("contact: %v", contacts[0].Url)
-	*/
+	table := NewBucketTable(key, 10, callback)
+	contact := []byte{}
+	contact = append(contact, 5)
+	table.AddContact(contact, "contact5::5051")
+	contacts := table.GetContactsForId(contact)
+	println("contact: %v", contacts[0].Url)
+*/
 
-	/*
-		contactF := table.DequeueContact("00000101")
-		if contactF == nil {
-			println("No hay contactos")
-		} else {
-			println("%v", contactF.ID)
-		}*/
+/*
+	contactF := table.DequeueContact("00000101")
+	if contactF == nil {
+		println("No hay contactos")
+	} else {
+		println("%v", contactF.ID)
+	}*/
 
-}
+//}*/
 
 func PingOpWithError(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	return errors.New("Error")

@@ -210,10 +210,11 @@ const file_peer_proto_rawDesc = "" +
 	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"h\n" +
 	" ShareContactsReciprocallyResults\x12 \n" +
 	"\vcontactsIds\x18\x01 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls2;\n" +
+	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls2\x9f\x01\n" +
 	"\n" +
 	"Operations\x12-\n" +
-	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.EmptyB\vZ\t./protopb"
+	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x12b\n" +
+	"\x19ShareContactsReciprocally\x12\".ShareContactsReciprocallyOperands\x1a!.ShareContactsReciprocallyResultsB\vZ\t./protopb"
 
 var (
 	file_peer_proto_rawDescOnce sync.Once
@@ -236,9 +237,11 @@ var file_peer_proto_goTypes = []any{
 }
 var file_peer_proto_depIdxs = []int32{
 	0, // 0: Operations.Ping:input_type -> PingOperands
-	3, // 1: Operations.Ping:output_type -> google.protobuf.Empty
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	1, // 1: Operations.ShareContactsReciprocally:input_type -> ShareContactsReciprocallyOperands
+	3, // 2: Operations.Ping:output_type -> google.protobuf.Empty
+	2, // 3: Operations.ShareContactsReciprocally:output_type -> ShareContactsReciprocallyResults
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

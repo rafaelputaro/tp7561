@@ -39,7 +39,7 @@ func NewBucketTable(config helpers.PeerConfig, ping PingOp) *BucketTable {
 
 // Inicializa la lista de prefijos para un id dado
 func (table *BucketTable) initPrefixes(id []byte) {
-	table.Prefixes = helpers.GeneratePrefixesOtherTrees(id)
+	table.Prefixes = helpers.GeneratePrefixesOtherTreesAsStrings(id)
 }
 
 // Inicializa las colas correspondientes a cada uno de los prefijos
@@ -74,8 +74,20 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 	return errors.New(MSG_ERROR_ON_ENQUEUE_CONTACT)
 }
 
+// Intenta agregar los contactos según la capacidad actual de la tabla
+func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) error {
+	for _, contact := range newContacts {
+		err := table.AddContact(contact)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Hace efectivamente el ping al boostrap node y en caso de obtener respuesta lo intenta
 // agregar a la tabla de contactos
+/*
 func (table *BucketTable) TryToAddBoostrapNodeContact() error {
 	contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
 	if !table.isUnresponsiveContact(*contactBoostrapNode) {
@@ -83,6 +95,7 @@ func (table *BucketTable) TryToAddBoostrapNodeContact() error {
 	}
 	return nil
 }
+*/
 
 // Retorna verdadero si el contacto no se encuentra resposivo
 func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) bool {
@@ -90,17 +103,17 @@ func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) 
 	return err != nil
 }
 
-/*
 // Selecciona de la tabla de contactos propias una serie de contactos recomendados para que
 // el nodo con el id parámetro pueda armar su tabla de contactos
 func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queue.Contact {
-	prefixes := helpers.GeneratePrefixesOtherTrees(id)
+	prefixes := helpers.GenerateKeysFromOtherTrees(id)
 	toReturn := []contacts_queue.Contact{}
 	for i := range prefixes {
 		contactsPref := table.GetContactsForId(prefixes[i])
+		toReturn = append(toReturn, contactsPref...)
 	}
+	return toReturn
 }
-*/
 
 // Obtiene todos los contactos cercanos a un id dado
 func (table *BucketTable) GetContactsForId(id []byte) []contacts_queue.Contact {

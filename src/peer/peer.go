@@ -23,7 +23,7 @@ type Peer struct {
 func NewPeer(config helpers.PeerConfig) *Peer {
 	peer := Peer{
 		Config:  config,
-		NodeDHT: *dht.NewNode(config, sndPing, sndStore),
+		NodeDHT: *dht.NewNode(config, sndPing, sndStore, sndShareContactsRecip),
 	}
 	return &peer
 }
@@ -35,15 +35,19 @@ func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands)
 	return nil, nil
 }
 
-/*
-func (peer *Peer) ShareContactsReciprocally(ctx context.Context, contacts *protopb.ShareContactsReciprocallyOperands) (*protopb.ShareContactsReciprocallyResults) {
-	selfContacts :=
-}*/
+func (peer *Peer) ShareContactsReciprocally(ctx context.Context, sourceOperands *protopb.ShareContactsReciprocallyOperands) (*protopb.ShareContactsReciprocallyResults, error) {
+	// parsear parámetros
+	sourceContact, sourceContactList := protoUtils.ParseShareContactsReciprocallyOperands(sourceOperands)
+	// agregar recomendados por la fuente y obtener recomendados
+	selfContacts := peer.NodeDHT.RcvShareContactsReciprocally(sourceContact, sourceContactList)
+	// agregar contactos que compartió la fuente
+	return protoUtils.CreateShareContactsReciprocallyResults(selfContacts), nil
+}
 
-// Envía efectivamente un mensaje de ping al bootstrap node y si se encuentra disponible intenta agregarlo
-// a la tabla de contactos.
-func (peer *Peer) SndPingToBootstrap() {
-	peer.NodeDHT.SndPingToBootstrap()
+// Envía los contactos propios al bootstrap node esperando que el mismo retorne los contactos recomendados
+// para la clave del presente nodo
+func (peer *Peer) SndShareContactsToBootstrap() {
+	peer.NodeDHT.SndShareContactsToBootstrap()
 }
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
@@ -81,7 +85,7 @@ func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 
 	// Golang context pattern used to handle timeouts against the server.
 	// Defined with a 5 seconds timeout but not used in the example
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
 	//_, err = c.Ping(ctx, &emptypb.Empty{})
@@ -90,4 +94,30 @@ func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	}
 
 	return nil
+}
+
+func sndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) []contacts_queue.Contact {
+	// armo los argumentos
+	shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts)
+
+	// Set up a connection to the gRPC server @TODO ARREGLAR ESTO PARA QUE NO ESTE DEPRECADO
+	conn, err := grpc.Dial(destContact.Url, grpc.WithInsecure())
+	if err != nil {
+		helpers.Log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	// Create gRPC stub
+	c := protopb.NewOperationsClient(conn)
+
+	// Golang context pattern used to handle timeouts against the server.
+	// Defined with a 5 seconds timeout but not used in the example
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	response, err := c.ShareContactsReciprocally(ctx, shContacOp)
+	c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
+	if err != nil {
+		log.Fatalf("could not call MyMethod: %v", err)
+	}
+	return protoUtils.ParseShareContactsReciprocallyResults(response)
 }

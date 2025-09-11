@@ -24,6 +24,12 @@ func CreateShareContactsReciprocallyOperands(contact contacts_queue.Contact, con
 	}
 }
 
+func ParseShareContactsReciprocallyOperands(operands *protopb.ShareContactsReciprocallyOperands) (contacts_queue.Contact, []contacts_queue.Contact) {
+	contactSource := contacts_queue.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
+	contacts := contactsFromArrays(operands.GetContactsIds(), operands.GetContactsUrls())
+	return *contactSource, contacts
+}
+
 func CreateShareContactsReciprocallyResults(contacts []contacts_queue.Contact) *protopb.ShareContactsReciprocallyResults {
 	contacstIds, contactsUrls := contactsToArrays(contacts)
 	return &protopb.ShareContactsReciprocallyResults{
@@ -48,4 +54,12 @@ func contactsToArrays(contacts []contacts_queue.Contact) ([][]byte, []string) {
 		contactsUrls = append(contactsUrls, contacts[i].Url)
 	}
 	return contacstIds, contactsUrls
+}
+
+func contactsFromArrays(ids [][]byte, urls []string) []contacts_queue.Contact {
+	contacts := []contacts_queue.Contact{}
+	for i := range ids {
+		contacts = append(contacts, *contacts_queue.NewContact(ids[i], urls[i]))
+	}
+	return contacts
 }

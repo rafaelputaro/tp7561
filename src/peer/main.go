@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"net"
 	"os"
 	"os/signal"
@@ -38,9 +39,10 @@ func main() {
 	helpers.Log.Infof("[SERVER] Starting gRPC Server")
 
 	// Sleep porque aún no he agregado retry
-	time.Sleep(10 * time.Second)
+	r := rand.Intn(10)
+	time.Sleep(time.Duration(r+10) * time.Second)
 
-	peer.SndPingToBootstrap()
+	peer.SndShareContactsToBootstrap()
 
 	if err := server.Serve(lis); err != nil {
 		helpers.Log.Fatalf("failed to serve: %v", err)

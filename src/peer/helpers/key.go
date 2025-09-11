@@ -3,11 +3,11 @@ package helpers
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"strings"
 )
 
 const EMPTY_KEY = ""
 const LENGTH_KEY_IN_BITS = 256
+const LENGTH_IN_BYTES = LENGTH_KEY_IN_BITS / 8
 const MSG_ERROR_ON_PARSE = "error on parse"
 
 // Obtiene una key SHA256 desde un string
@@ -39,43 +39,32 @@ func ConvertToBoolArray(data []byte) []bool {
 	return res
 }
 
-// Retorna una clave construída en base a un prefijo la cuál consiste en agregar ceros hasta
-// completar los bits menos significativos
-func PrefixToKey(prefix string) []byte {
-	// completar la cadena
-	keyStr := prefix + strings.Repeat(`0`, LENGTH_KEY_IN_BITS-len(prefix))
-	toReturn := []byte{}
-	for i := 0; i < LENGTH_KEY_IN_BITS; i += 8 {
-		println("Len %v | Index %v", len(keyStr), i)
-		/*
-			intValue, err := strconv.ParseInt(keyStr[i:i+8], 2, 8)
-			if err != nil {
-				Log.Fatalf(MSG_ERROR_ON_PARSE)
-			}
-			toReturn = append(toReturn, byte(intValue))*/
-	}
-	return toReturn
-}
-
-// Transforma todos los prefijos de una lista en claves
-func PrefixesToCompleteToKeys(prefixes []string) [][]byte {
-	toReturn := [][]byte{}
-	for _, prefix := range prefixes {
-		toReturn = append(toReturn, PrefixToKey(prefix))
-	}
-	return toReturn
-}
-
 // Genera una lista que contiene una clave de cada uno de los árboles a los cuales
 // no pertence la clave
 func GenerateKeysFromOtherTrees(key []byte) [][]byte {
-	prefixesStr := GeneratePrefixesOtherTrees(key)
-	/*	println("Values %v", prefixesStr)
-		for _, str := range prefixesStr {
-			fmt.Printf("Elemento: %v\n", len(str)) // %s imprime la string, \n añade una nueva línea
+	toReturn := [][]byte{}
+	// para cada byte
+	for nByte, aByte := range key {
+		// cambiar cada uno de los bits
+		for i := range 8 {
+			var operand byte = 128 >> i
+			byteResultXor := aByte ^ operand
+			newKey := []byte{}
+			// completar bytes bajos
+			for range nByte {
+				newKey = append(newKey, 0)
+			}
+			// agregar byte calculado
+			newKey = append(newKey, byteResultXor)
+			// completar bytes altos
+			for range LENGTH_IN_BYTES - nByte - 1 {
+				newKey = append(newKey, 0)
+			}
+			// agregar nueva clave
+			toReturn = append(toReturn, newKey)
 		}
-	*/
-	return PrefixesToCompleteToKeys(prefixesStr)
+	}
+	return toReturn
 }
 
 func KeyToLogFormatString(key []byte) string {
@@ -101,7 +90,7 @@ func BoolArrayToBinaryString(arr []bool) string {
 }
 
 // Retorna un array con los prefijos con su representación binaria como strings
-func GeneratePrefixesOtherTrees(key []byte) []string {
+func GeneratePrefixesOtherTreesAsStrings(key []byte) []string {
 	toReturn := []string{}
 	arrayBool := ConvertToBoolArray(key)
 	for k := range arrayBool {

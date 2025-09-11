@@ -101,6 +101,216 @@ services:
     networks:
       - tp_net
 
+    depends_on:
+
+      - peer-6
+
+  peer-6:
+    container_name: peer-6
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50056:50051"
+    environment:
+      - PEER_NAME=peer-6
+      - PEER_HOST=peer-6
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-7
+
+  peer-7:
+    container_name: peer-7
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50057:50051"
+    environment:
+      - PEER_NAME=peer-7
+      - PEER_HOST=peer-7
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-8
+
+  peer-8:
+    container_name: peer-8
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50058:50051"
+    environment:
+      - PEER_NAME=peer-8
+      - PEER_HOST=peer-8
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-9
+
+  peer-9:
+    container_name: peer-9
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50059:50051"
+    environment:
+      - PEER_NAME=peer-9
+      - PEER_HOST=peer-9
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-10
+
+  peer-10:
+    container_name: peer-10
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50060:50051"
+    environment:
+      - PEER_NAME=peer-10
+      - PEER_HOST=peer-10
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-11
+
+  peer-11:
+    container_name: peer-11
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50061:50051"
+    environment:
+      - PEER_NAME=peer-11
+      - PEER_HOST=peer-11
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-12
+
+  peer-12:
+    container_name: peer-12
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50062:50051"
+    environment:
+      - PEER_NAME=peer-12
+      - PEER_HOST=peer-12
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-13
+
+  peer-13:
+    container_name: peer-13
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50063:50051"
+    environment:
+      - PEER_NAME=peer-13
+      - PEER_HOST=peer-13
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-14
+
+  peer-14:
+    container_name: peer-14
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50064:50051"
+    environment:
+      - PEER_NAME=peer-14
+      - PEER_HOST=peer-14
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-15
+
+  peer-15:
+    container_name: peer-15
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+#      - "50051:50051"  # Puerto gRPC
+      - "50065:50051"
+    environment:
+      - PEER_NAME=peer-15
+      - PEER_HOST=peer-15
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+    networks:
+      - tp_net
+
 
 
 networks:

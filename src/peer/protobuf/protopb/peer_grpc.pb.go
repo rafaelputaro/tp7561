@@ -20,7 +20,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Operations_Ping_FullMethodName = "/Operations/Ping"
+	Operations_Ping_FullMethodName                      = "/Operations/Ping"
+	Operations_ShareContactsReciprocally_FullMethodName = "/Operations/ShareContactsReciprocally"
 )
 
 // OperationsClient is the client API for Operations service.
@@ -28,6 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OperationsClient interface {
 	Ping(ctx context.Context, in *PingOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Permite compartir contactos entre dos pares recíprocamente
+	ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error)
 }
 
 type operationsClient struct {
@@ -48,11 +51,23 @@ func (c *operationsClient) Ping(ctx context.Context, in *PingOperands, opts ...g
 	return out, nil
 }
 
+func (c *operationsClient) ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ShareContactsReciprocallyResults)
+	err := c.cc.Invoke(ctx, Operations_ShareContactsReciprocally_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperationsServer is the server API for Operations service.
 // All implementations must embed UnimplementedOperationsServer
 // for forward compatibility.
 type OperationsServer interface {
 	Ping(context.Context, *PingOperands) (*emptypb.Empty, error)
+	// Permite compartir contactos entre dos pares recíprocamente
+	ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error)
 	mustEmbedUnimplementedOperationsServer()
 }
 
@@ -65,6 +80,9 @@ type UnimplementedOperationsServer struct{}
 
 func (UnimplementedOperationsServer) Ping(context.Context, *PingOperands) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
+func (UnimplementedOperationsServer) ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShareContactsReciprocally not implemented")
 }
 func (UnimplementedOperationsServer) mustEmbedUnimplementedOperationsServer() {}
 func (UnimplementedOperationsServer) testEmbeddedByValue()                    {}
@@ -105,6 +123,24 @@ func _Operations_Ping_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Operations_ShareContactsReciprocally_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShareContactsReciprocallyOperands)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperationsServer).ShareContactsReciprocally(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Operations_ShareContactsReciprocally_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperationsServer).ShareContactsReciprocally(ctx, req.(*ShareContactsReciprocallyOperands))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Operations_ServiceDesc is the grpc.ServiceDesc for Operations service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -115,6 +151,10 @@ var Operations_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Ping",
 			Handler:    _Operations_Ping_Handler,
+		},
+		{
+			MethodName: "ShareContactsReciprocally",
+			Handler:    _Operations_ShareContactsReciprocally_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

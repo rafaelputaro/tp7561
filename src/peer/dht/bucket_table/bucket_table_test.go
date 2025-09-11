@@ -10,7 +10,7 @@ func TestBucketTable(t *testing.T) {
 	//key := helpers.GetKey("")
 	key := []byte{}
 	key = append(key, 4)
-	prefixes := helpers.GeneratePrefixesOtherTrees(key)
+	prefixes := helpers.GeneratePrefixesOtherTreesAsStrings(key)
 	fmt.Println(prefixes)
 	//arrayBool := helpers.ConvertToBoolArray(key)
 	//print("%v", fmt.Sprintf("%v", arrayBool))

@@ -14,22 +14,30 @@ const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
 
 type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error
 
+type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) []contacts_queue.Contact
+
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
-	Config      helpers.PeerConfig
-	BucketTab   bucket_table.BucketTable
-	KeyValueTab KeyValueTable
-	SndStore    StoreOp
+	Config                helpers.PeerConfig
+	BucketTab             bucket_table.BucketTable
+	KeyValueTab           KeyValueTable
+	SndStore              StoreOp
+	SndShareContactsRecip SndShareContactsRecipOp
 	// cache
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
-func NewNode(config helpers.PeerConfig, sndPing bucket_table.PingOp, sndStore StoreOp) *Node {
+func NewNode(
+	config helpers.PeerConfig,
+	sndPing bucket_table.PingOp,
+	sndStore StoreOp,
+	sndShareContactsRecip SndShareContactsRecipOp) *Node {
 	node := &Node{
-		Config:      config,
-		BucketTab:   *bucket_table.NewBucketTable(config, sndPing),
-		KeyValueTab: *NewKeyValueTable(),
-		SndStore:    sndStore,
+		Config:                config,
+		BucketTab:             *bucket_table.NewBucketTable(config, sndPing),
+		KeyValueTab:           *NewKeyValueTable(),
+		SndStore:              sndStore,
+		SndShareContactsRecip: sndShareContactsRecip,
 	}
 	return node
 }
@@ -52,12 +60,37 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 	return true
 }
 
-// Realiza efectivamente un ping boostrap node y en caso de recibir respuesta lo intenta agregar a la tabla
-// de contactos. En caso de que ser el nodo bootstrap retorna falso
-func (node *Node) SndPingToBootstrap() {
+// Obtiene los contactos locales recomendados para la fuente, agrega los contactos compartidos por la fuente y
+// retorna los contactos recomendados para la fuente
+func (node *Node) RcvShareContactsReciprocally(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
+	// obtener contactos recomendados
+	selfContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
+	helpers.Log.Debugf("Self Contacts on rcv: %v", len(selfContacts))
+	// agregar contactos que compartió la fuente
+	node.BucketTab.AddContacts(selfContacts)
+	return selfContacts
+}
+
+// Envía los contactos propios al bootstrap node esperando que el mismo retorne los contactos recomendados
+// para la clave del presente nodo
+func (node *Node) SndShareContactsToBootstrap() {
 	if !node.IsBootstrapNode() {
-		node.BucketTab.TryToAddBoostrapNodeContact()
+		contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
+		node.SndShareContacts(*contactBoostrapNode)
 	}
+}
+
+// Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
+// para la clave del presente nodo
+func (node *Node) SndShareContacts(destContact contacts_queue.Contact) {
+	// obtener contactos recomendados
+	selfContacts := node.BucketTab.GetRecommendedContactsForId(destContact.ID)
+	helpers.Log.Debugf("Self Contacts: %v", len(selfContacts))
+	// enviar contactos a contacto desitno
+	destRcvContacts := node.SndShareContactsRecip(node.Config, destContact, selfContacts)
+	helpers.Log.Debugf("Send share: %v", len(destRcvContacts))
+	// agregar contactos recibidos
+	node.BucketTab.AddContacts(destRcvContacts)
 }
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
