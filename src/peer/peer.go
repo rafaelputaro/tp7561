@@ -92,30 +92,20 @@ func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	if err != nil {
 		log.Fatalf("could not call MyMethod: %v", err)
 	}
-
 	return nil
 }
 
 func sndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) []contacts_queue.Contact {
 	// armo los argumentos
 	shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts)
+	// conexión
+	conn, c, ctx, cancel, err := helpers.ConnectAsClient(destContact.Url, helpers.LogFatalOnFailConnect)
 
-	// Set up a connection to the gRPC server @TODO ARREGLAR ESTO PARA QUE NO ESTE DEPRECADO
-	conn, err := grpc.Dial(destContact.Url, grpc.WithInsecure())
-	if err != nil {
-		helpers.Log.Fatalf("did not connect: %v", err)
-	}
 	defer conn.Close()
 
-	// Create gRPC stub
-	c := protopb.NewOperationsClient(conn)
-
-	// Golang context pattern used to handle timeouts against the server.
-	// Defined with a 5 seconds timeout but not used in the example
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	response, err := c.ShareContactsReciprocally(ctx, shContacOp)
-	c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
+	//	c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
 	if err != nil {
 		log.Fatalf("could not call MyMethod: %v", err)
 	}

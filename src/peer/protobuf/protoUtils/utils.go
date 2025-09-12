@@ -7,6 +7,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// Retorna los operandos para hacer una operación de ping
 func CreatePingOperands(id []byte, url string) *protopb.PingOperands {
 	return &protopb.PingOperands{
 		SourceId:  id,
@@ -14,6 +15,7 @@ func CreatePingOperands(id []byte, url string) *protopb.PingOperands {
 	}
 }
 
+// Retorna los operandos para hacer compartir contactos
 func CreateShareContactsReciprocallyOperands(contact contacts_queue.Contact, contacts []contacts_queue.Contact) *protopb.ShareContactsReciprocallyOperands {
 	contacstIds, contactsUrls := contactsToArrays(contacts)
 	return &protopb.ShareContactsReciprocallyOperands{
@@ -24,12 +26,14 @@ func CreateShareContactsReciprocallyOperands(contact contacts_queue.Contact, con
 	}
 }
 
+// Hace el parseo de los operando recibidos en una operación de compartir contactos
 func ParseShareContactsReciprocallyOperands(operands *protopb.ShareContactsReciprocallyOperands) (contacts_queue.Contact, []contacts_queue.Contact) {
 	contactSource := contacts_queue.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
 	contacts := contactsFromArrays(operands.GetContactsIds(), operands.GetContactsUrls())
 	return *contactSource, contacts
 }
 
+// Crea los resultados ha retorna en una operación de compartir contactos
 func CreateShareContactsReciprocallyResults(contacts []contacts_queue.Contact) *protopb.ShareContactsReciprocallyResults {
 	contacstIds, contactsUrls := contactsToArrays(contacts)
 	return &protopb.ShareContactsReciprocallyResults{
@@ -38,6 +42,7 @@ func CreateShareContactsReciprocallyResults(contacts []contacts_queue.Contact) *
 	}
 }
 
+// Pasea los resultados de una operación de compartir contactos
 func ParseShareContactsReciprocallyResults(result *protopb.ShareContactsReciprocallyResults) []contacts_queue.Contact {
 	toReturn := []contacts_queue.Contact{}
 	for i := range result.ContactsIds {
@@ -46,6 +51,7 @@ func ParseShareContactsReciprocallyResults(result *protopb.ShareContactsReciproc
 	return toReturn
 }
 
+// Convierte una lista de contactos en sendas listas de ids y de url
 func contactsToArrays(contacts []contacts_queue.Contact) ([][]byte, []string) {
 	contacstIds := [][]byte{}
 	contactsUrls := []string{}
@@ -56,6 +62,7 @@ func contactsToArrays(contacts []contacts_queue.Contact) ([][]byte, []string) {
 	return contacstIds, contactsUrls
 }
 
+// Crea una lista de contactos en base a sendas listas de ids y urls
 func contactsFromArrays(ids [][]byte, urls []string) []contacts_queue.Contact {
 	contacts := []contacts_queue.Contact{}
 	for i := range ids {

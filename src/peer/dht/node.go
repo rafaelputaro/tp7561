@@ -65,7 +65,6 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 func (node *Node) RcvShareContactsReciprocally(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
 	// obtener contactos recomendados
 	selfContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
-	helpers.Log.Debugf("Self Contacts on rcv: %v", len(selfContacts))
 	// agregar contactos que compartió la fuente
 	node.BucketTab.AddContacts(selfContacts)
 	return selfContacts
@@ -85,10 +84,8 @@ func (node *Node) SndShareContactsToBootstrap() {
 func (node *Node) SndShareContacts(destContact contacts_queue.Contact) {
 	// obtener contactos recomendados
 	selfContacts := node.BucketTab.GetRecommendedContactsForId(destContact.ID)
-	helpers.Log.Debugf("Self Contacts: %v", len(selfContacts))
 	// enviar contactos a contacto desitno
 	destRcvContacts := node.SndShareContactsRecip(node.Config, destContact, selfContacts)
-	helpers.Log.Debugf("Send share: %v", len(destRcvContacts))
 	// agregar contactos recibidos
 	node.BucketTab.AddContacts(destRcvContacts)
 }

@@ -112,6 +112,8 @@ func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queu
 			toReturn = append(toReturn, contact)
 		}
 	}
+	// agregar el nodo actual a la lista
+	toReturn = append(toReturn, *contacts_queue.NewContact(table.Config.Id, table.Config.Url))
 	return toReturn
 }
 

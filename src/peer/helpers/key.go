@@ -17,20 +17,25 @@ func GetKey(data string) []byte {
 	return h.Sum(nil)
 }
 
+// Transforma una clave dada como una cadena de bytes en un string
 func KeyToString(key []byte) string {
 	return string(key)
 }
 
+// Transforma una clave dada como una cadena de bytes en un string dado por su representación en
+// hexadecimal
 func KeyToHexString(key []byte) string {
 	hexString := hex.EncodeToString(key)
 	return hexString
 }
 
+// Transforma una clave en su representación en bits como un string
 func ConvertToBinaryString(key []byte) string {
 	boolArray := ConvertToBoolArray(key)
 	return BoolArrayToBinaryString(boolArray)
 }
 
+// Transforma una clave en un array de booleanos
 func ConvertToBoolArray(data []byte) []bool {
 	res := make([]bool, len(data)*8)
 	for i := range res {
@@ -40,7 +45,7 @@ func ConvertToBoolArray(data []byte) []bool {
 }
 
 // Genera una lista que contiene una clave de cada uno de los árboles a los cuales
-// no pertence la clave
+// no pertenece la clave
 func GenerateKeysFromOtherTrees(key []byte) [][]byte {
 	toReturn := [][]byte{}
 	// para cada byte
@@ -67,6 +72,7 @@ func GenerateKeysFromOtherTrees(key []byte) [][]byte {
 	return toReturn
 }
 
+// Transforma la clave en un string en el formato dado por la configuración de inicio del módulo
 func KeyToLogFormatString(key []byte) string {
 	switch LoginFormatForKeys {
 	case string(HEXA):
@@ -76,7 +82,7 @@ func KeyToLogFormatString(key []byte) string {
 	}
 }
 
-// Función para convertir un array de bool en una cadena binaria
+// Convierte un array de bool en una cadena con su representación binaria
 func BoolArrayToBinaryString(arr []bool) string {
 	var result string
 	for _, b := range arr {

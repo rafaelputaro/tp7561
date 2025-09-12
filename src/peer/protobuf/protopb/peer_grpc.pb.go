@@ -28,8 +28,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OperationsClient interface {
+	// Permite hacer un ping a otro nodo enviando los datos de contacto propios
 	Ping(ctx context.Context, in *PingOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Permite compartir contactos entre dos pares recíprocamente
+	// Permite compartir contactos recomendados entre dos pares recíprocamente
 	ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error)
 }
 
@@ -65,8 +66,9 @@ func (c *operationsClient) ShareContactsReciprocally(ctx context.Context, in *Sh
 // All implementations must embed UnimplementedOperationsServer
 // for forward compatibility.
 type OperationsServer interface {
+	// Permite hacer un ping a otro nodo enviando los datos de contacto propios
 	Ping(context.Context, *PingOperands) (*emptypb.Empty, error)
-	// Permite compartir contactos entre dos pares recíprocamente
+	// Permite compartir contactos recomendados entre dos pares recíprocamente
 	ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error)
 	mustEmbedUnimplementedOperationsServer()
 }

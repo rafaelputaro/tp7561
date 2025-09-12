@@ -6,17 +6,20 @@ import "google/protobuf/empty.proto";
 
 service Operations {
 
+    // Permite hacer un ping a otro nodo enviando los datos de contacto propios
     rpc Ping (PingOperands) returns (google.protobuf.Empty);
     
-    // Permite compartir contactos entre dos pares recíprocamente
+    // Permite compartir contactos recomendados entre dos pares recíprocamente
     rpc ShareContactsReciprocally (ShareContactsReciprocallyOperands) returns (ShareContactsReciprocallyResults);
 }
 
+// Contiene los datos del contacto que hace el ping
 message PingOperands {
     required bytes sourceId = 1;
     required string sourceUrl = 2;
 }
 
+// Contiene los datos del contacto fuente y los contactos recomendados para el par destino
 message ShareContactsReciprocallyOperands {
     required bytes sourceId = 1;
     required string sourceUrl = 2;
@@ -24,6 +27,7 @@ message ShareContactsReciprocallyOperands {
     repeated string contactsUrls = 4;
 }
 
+// Contiene los contactos recomendados por el nodo destino
 message ShareContactsReciprocallyResults {
     repeated bytes contactsIds = 1;
     repeated string contactsUrls = 2;

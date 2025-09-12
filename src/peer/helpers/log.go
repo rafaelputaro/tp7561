@@ -6,6 +6,7 @@ import (
 	"github.com/op/go-logging"
 )
 
+// Variable global para logging
 var Log = logging.MustGetLogger("peer")
 
 type TLoginFormatForKeys string

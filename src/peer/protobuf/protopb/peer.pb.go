@@ -22,6 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Contiene los datos del contacto que hace el ping
 type PingOperands struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
@@ -74,6 +75,7 @@ func (x *PingOperands) GetSourceUrl() string {
 	return ""
 }
 
+// Contiene los datos del contacto fuente y los contactos recomendados para el par destino
 type ShareContactsReciprocallyOperands struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
@@ -142,6 +144,7 @@ func (x *ShareContactsReciprocallyOperands) GetContactsUrls() []string {
 	return nil
 }
 
+// Contiene los contactos recomendados por el nodo destino
 type ShareContactsReciprocallyResults struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ContactsIds   [][]byte               `protobuf:"bytes,1,rep,name=contactsIds" json:"contactsIds,omitempty"`
