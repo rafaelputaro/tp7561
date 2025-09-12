@@ -11,6 +11,7 @@ import (
 const MSG_ERROR_PREFIX_NOT_FOUND = "error prefix not found"
 const MSG_ERROR_ON_ENQUEUE_CONTACT = "error on enqueue contact"
 const MSG_CONTACT_ADDED = "The contact has been added | url: %v"
+const MSG_TRY_TO_ADD_CONTACTS = "Attempt to add %v contacts"
 const MSG_CONTACT_REPLACE_HEAD = "Contact (url: %v) has been added to replace tailhead (url: %v)"
 const MSG_CONTACT_DISCARD = "Contact has been ruled out | url: %v"
 
@@ -54,7 +55,7 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 	prefix, err := table.getPrefix(newContact.ID)
 	if err == nil {
 		queue := table.Entries[prefix]
-		err := queue.Enqueue(newContact)
+		okEnqueue, err := queue.Enqueue(newContact)
 		if err != nil {
 			headContact, _ := queue.TakeHead()
 			if table.isUnresponsiveContact(headContact) {
@@ -65,7 +66,9 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 				queue.Enqueue(headContact)
 			}
 		} else {
-			helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.ToString()))
+			if okEnqueue {
+				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.ToString()))
+			}
 		}
 		table.Entries[prefix] = queue
 		return nil
@@ -76,6 +79,7 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 
 // Intenta agregar los contactos según la capacidad actual de la tabla
 func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) error {
+	helpers.Log.Debugf(MSG_TRY_TO_ADD_CONTACTS, len(newContacts))
 	for _, contact := range newContacts {
 		err := table.AddContact(contact)
 		if err != nil {
@@ -84,18 +88,6 @@ func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) erro
 	}
 	return nil
 }
-
-// Hace efectivamente el ping al boostrap node y en caso de obtener respuesta lo intenta
-// agregar a la tabla de contactos
-/*
-func (table *BucketTable) TryToAddBoostrapNodeContact() error {
-	contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
-	if !table.isUnresponsiveContact(*contactBoostrapNode) {
-		return table.AddContact(*contactBoostrapNode)
-	}
-	return nil
-}
-*/
 
 // Retorna verdadero si el contacto no se encuentra resposivo
 func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) bool {
@@ -108,9 +100,17 @@ func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) 
 func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queue.Contact {
 	prefixes := helpers.GenerateKeysFromOtherTrees(id)
 	toReturn := []contacts_queue.Contact{}
+	idsMap := map[string]bool{}
 	for i := range prefixes {
 		contactsPref := table.GetContactsForId(prefixes[i])
-		toReturn = append(toReturn, contactsPref...)
+		for _, contact := range contactsPref {
+			idStr := helpers.KeyToString(contact.ID)
+			if idsMap[idStr] {
+				continue
+			}
+			idsMap[idStr] = true
+			toReturn = append(toReturn, contact)
+		}
 	}
 	return toReturn
 }

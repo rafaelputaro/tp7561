@@ -1,32 +1,43 @@
 package contacts_queue
 
-import "errors"
+import (
+	"errors"
+	"tp/peer/helpers"
+)
 
 const MSG_ERROR_EMPTY_QUEUE = "error queue empty"
 const MSG_ERROR_FULL_QUEUE = "error queue is full"
 
-// Representa una cola de contactos tipo FIFO
+// Representa una cola de contactos tipo FIFO que no permite id's repetidos
 type ContactQueue struct {
-	Entries  []Contact
-	Capacity int
+	Entries       []Contact
+	IdsInTheQueue map[string]bool
+	Capacity      int
 }
 
 // Retorna una instancia de cola de entradas lista para ser utilizada
 func NewQueue(capacity int) *ContactQueue {
 	queue := ContactQueue{
-		Entries:  []Contact{},
-		Capacity: capacity,
+		Entries:       []Contact{},
+		Capacity:      capacity,
+		IdsInTheQueue: map[string]bool{},
 	}
 	return &queue
 }
 
-// Encola una entrada
-func (queue *ContactQueue) Enqueue(entry Contact) error {
-	if queue.Full() {
-		return errors.New(MSG_ERROR_FULL_QUEUE)
+// Encola una entrada si la misma no se encuentra en la cola retornando error nulo.
+// En caso de que la entrada se encuentra en la cola retorna falso y error nulo.
+// Si la cosa esta llena retorna falso y un error
+func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
+	if !queue.hasId(entry.ID) {
+		if queue.Full() {
+			return false, errors.New(MSG_ERROR_FULL_QUEUE)
+		}
+		queue.Entries = append(queue.Entries, entry)
+		queue.IdsInTheQueue[helpers.KeyToString(entry.ID)] = true
+		return true, nil
 	}
-	queue.Entries = append(queue.Entries, entry)
-	return nil
+	return false, nil
 }
 
 // Obtiene el top de la cola
@@ -44,6 +55,7 @@ func (queue *ContactQueue) Dequeue() (Contact, error) {
 	}
 	temp := queue.Entries[0]
 	queue.Entries = queue.Entries[1:]
+	delete(queue.IdsInTheQueue, helpers.KeyToString(temp.ID))
 	return temp, nil
 }
 
@@ -54,6 +66,7 @@ func (queue *ContactQueue) TakeHead() (Contact, error) {
 	}
 	toReturn := queue.Entries[len(queue.Entries)-1]
 	queue.Entries = queue.Entries[:len(queue.Entries)-1]
+	delete(queue.IdsInTheQueue, helpers.KeyToString(toReturn.ID))
 	return toReturn, nil
 }
 
@@ -70,4 +83,9 @@ func (queue *ContactQueue) Full() bool {
 // Retorna todas las entradas de la cola
 func (queue *ContactQueue) GetContacs() []Contact {
 	return queue.Entries
+}
+
+// Retorna verdadero si encuentra el id en el mapa de id's presentes en la cola
+func (queue *ContactQueue) hasId(id []byte) bool {
+	return queue.IdsInTheQueue[helpers.KeyToString(id)]
 }

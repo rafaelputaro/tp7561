@@ -39,7 +39,7 @@ func main() {
 	helpers.Log.Infof("[SERVER] Starting gRPC Server")
 
 	// Sleep porque aún no he agregado retry
-	r := rand.Intn(10)
+	r := rand.Intn(30)
 	time.Sleep(time.Duration(r+10) * time.Second)
 
 	peer.SndShareContactsToBootstrap()
