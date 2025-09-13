@@ -85,7 +85,7 @@ func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 
 	// Golang context pattern used to handle timeouts against the server.
 	// Defined with a 5 seconds timeout but not used in the example
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
 	//_, err = c.Ping(ctx, &emptypb.Empty{})

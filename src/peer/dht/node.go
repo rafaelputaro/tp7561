@@ -23,6 +23,7 @@ type Node struct {
 	KeyValueTab           KeyValueTable
 	SndStore              StoreOp
 	SndShareContactsRecip SndShareContactsRecipOp
+	SndPing               bucket_table.PingOp
 	// cache
 }
 
@@ -38,6 +39,7 @@ func NewNode(
 		KeyValueTab:           *NewKeyValueTable(),
 		SndStore:              sndStore,
 		SndShareContactsRecip: sndShareContactsRecip,
+		SndPing:               sndPing,
 	}
 	return node
 }
@@ -82,6 +84,10 @@ func (node *Node) SndShareContactsToBootstrap() {
 // Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
 func (node *Node) SndShareContacts(destContact contacts_queue.Contact) {
+	// ¿Esta vivo el nodo?
+	if node.SndPing(node.Config, destContact) != nil {
+		return
+	}
 	// obtener contactos recomendados
 	selfContacts := node.BucketTab.GetRecommendedContactsForId(destContact.ID)
 	// enviar contactos a contacto desitno
