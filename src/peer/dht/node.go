@@ -6,33 +6,31 @@ import (
 	"fmt"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/bucket_table/contacts_queue"
+
 	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
 const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
-
-type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error
-
-type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) []contacts_queue.Contact
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
 	Config                helpers.PeerConfig
 	BucketTab             bucket_table.BucketTable
 	KeyValueTab           KeyValueTable
-	SndStore              StoreOp
-	SndShareContactsRecip SndShareContactsRecipOp
-	SndPing               bucket_table.PingOp
+	SndStore              rpc_ops.StoreOp
+	SndShareContactsRecip rpc_ops.SndShareContactsRecipOp
+	SndPing               rpc_ops.PingOp
 	// cache
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
 func NewNode(
 	config helpers.PeerConfig,
-	sndPing bucket_table.PingOp,
-	sndStore StoreOp,
-	sndShareContactsRecip SndShareContactsRecipOp) *Node {
+	sndPing rpc_ops.PingOp,
+	sndStore rpc_ops.StoreOp,
+	sndShareContactsRecip rpc_ops.SndShareContactsRecipOp) *Node {
 	node := &Node{
 		Config:                config,
 		BucketTab:             *bucket_table.NewBucketTable(config, sndPing),
@@ -83,17 +81,22 @@ func (node *Node) SndShareContactsToBootstrap() {
 
 // Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
-func (node *Node) SndShareContacts(destContact contacts_queue.Contact) {
+func (node *Node) SndShareContacts(destContact contacts_queue.Contact) error {
 	// ¿Esta vivo el nodo?
-	if node.SndPing(node.Config, destContact) != nil {
-		return
+	err := node.SndPing(node.Config, destContact)
+	if err != nil {
+		return err
 	}
 	// obtener contactos recomendados
 	selfContacts := node.BucketTab.GetRecommendedContactsForId(destContact.ID)
 	// enviar contactos a contacto desitno
-	destRcvContacts := node.SndShareContactsRecip(node.Config, destContact, selfContacts)
+	destRcvContacts, err := node.SndShareContactsRecip(node.Config, destContact, selfContacts)
+	if err != nil {
+		return err
+	}
 	// agregar contactos recibidos
 	node.BucketTab.AddContacts(destRcvContacts)
+	return nil
 }
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de

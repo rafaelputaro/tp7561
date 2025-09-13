@@ -6,6 +6,7 @@ import (
 	"slices"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
 )
 
 const MSG_ERROR_PREFIX_NOT_FOUND = "error prefix not found"
@@ -15,18 +16,16 @@ const MSG_TRY_TO_ADD_CONTACTS = "Attempt to add %v contacts"
 const MSG_CONTACT_REPLACE_HEAD = "Contact (url: %v) has been added to replace tailhead (url: %v)"
 const MSG_CONTACT_DISCARD = "Contact has been ruled out | url: %v"
 
-type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
-
 // Es una tabla que contiene los contactos por prefijo
 type BucketTable struct {
 	Config   helpers.PeerConfig
 	Entries  map[string]contacts_queue.ContactQueue
 	Prefixes []string
-	Ping     PingOp
+	Ping     rpc_ops.PingOp
 }
 
 // Retorna una tabla de contactos lista para ser utilizada
-func NewBucketTable(config helpers.PeerConfig, ping PingOp) *BucketTable {
+func NewBucketTable(config helpers.PeerConfig, ping rpc_ops.PingOp) *BucketTable {
 	table := BucketTable{
 		Config:   config,
 		Entries:  map[string]contacts_queue.ContactQueue{},

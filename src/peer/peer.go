@@ -2,18 +2,15 @@ package main
 
 import (
 	"context"
-	"log"
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
 	"tp/peer/protobuf/protoUtils"
 	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 )
-
-const MSG_FAIL_ON_SEND_PING = "error sending ping: %v"
-const MSG_PING_ATTEMPT = "ping attempt: %v | error: %v"
 
 type Peer struct {
 	Config  helpers.PeerConfig
@@ -24,7 +21,7 @@ type Peer struct {
 func NewPeer(config helpers.PeerConfig) *Peer {
 	peer := Peer{
 		Config:  config,
-		NodeDHT: *dht.NewNode(config, sndPing, sndStore, sndShareContactsRecip),
+		NodeDHT: *dht.NewNode(config, rpc_ops.SndPing, sndStore, rpc_ops.SndShareContactsRecip),
 	}
 	return &peer
 }
@@ -70,44 +67,4 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error {
 
 	return nil
-}
-
-// Ping con retry. En caso de no poder efectuar el ping retorna error
-func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
-	// conexión
-	conn, c, ctx, cancel, err := helpers.ConnectAsClient(contact.Url, helpers.LogFatalOnFailConnect)
-	if err == nil {
-		defer conn.Close()
-		defer cancel()
-		// ping con retry
-		for retry := range helpers.MAX_RETRIES_ON_PING {
-			_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
-			if err != nil {
-				helpers.Log.Errorf(MSG_PING_ATTEMPT, retry, err)
-				continue
-			}
-			return nil
-		}
-		return err
-	}
-	helpers.Log.Errorf(MSG_FAIL_ON_SEND_PING, err)
-	return err
-}
-
-// Share contact con retry. En caso de no poder efectuar el ping retorna error
-func sndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) []contacts_queue.Contact {
-	// armo los argumentos
-	shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts)
-	// conexión
-	conn, c, ctx, cancel, err := helpers.ConnectAsClient(destContact.Url, helpers.LogFatalOnFailConnect)
-
-	defer conn.Close()
-
-	defer cancel()
-	response, err := c.ShareContactsReciprocally(ctx, shContacOp)
-	//	c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
-	if err != nil {
-		log.Fatalf("could not call MyMethod: %v", err)
-	}
-	return protoUtils.ParseShareContactsReciprocallyResults(response)
 }
