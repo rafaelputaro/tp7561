@@ -159,6 +159,7 @@ func (node *Node) DiscardContact(contact contacts_queue.Contact) bool {
 	return node.Config.Url == contact.Url
 }
 
+// Retorna los contactos para un id dado
 func (node *Node) GetContactsForId(id []byte) []contacts_queue.Contact {
 	return node.BucketTab.GetContactsForId(id)
 }

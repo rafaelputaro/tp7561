@@ -3,16 +3,17 @@ package main
 import (
 	"context"
 	"log"
-	"time"
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/protobuf/protoUtils"
 	"tp/peer/protobuf/protopb"
 
-	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
+
+const MSG_FAIL_ON_SEND_PING = "error sending ping: %v"
+const MSG_PING_ATTEMPT = "ping attempt: %v | error: %v"
 
 type Peer struct {
 	Config  helpers.PeerConfig
@@ -71,30 +72,29 @@ func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []b
 	return nil
 }
 
-// @TODO agregar retry, mejorar todo el método, etc
+// Ping con retry. En caso de no poder efectuar el ping retorna error
 func sndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
-	// Set up a connection to the gRPC server @TODO ARREGLAR ESTO PARA QUE NO ESTE DEPRECADO
-	conn, err := grpc.Dial(contact.Url, grpc.WithInsecure())
-	if err != nil {
-		helpers.Log.Fatalf("did not connect: %v", err)
+	// conexión
+	conn, c, ctx, cancel, err := helpers.ConnectAsClient(contact.Url, helpers.LogFatalOnFailConnect)
+	if err == nil {
+		defer conn.Close()
+		defer cancel()
+		// ping con retry
+		for retry := range helpers.MAX_RETRIES_ON_PING {
+			_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
+			if err != nil {
+				helpers.Log.Errorf(MSG_PING_ATTEMPT, retry, err)
+				continue
+			}
+			return nil
+		}
+		return err
 	}
-	defer conn.Close()
-
-	// Create gRPC stub
-	c := protopb.NewOperationsClient(conn)
-
-	// Golang context pattern used to handle timeouts against the server.
-	// Defined with a 5 seconds timeout but not used in the example
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
-	_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
-	//_, err = c.Ping(ctx, &emptypb.Empty{})
-	if err != nil {
-		log.Fatalf("could not call MyMethod: %v", err)
-	}
-	return nil
+	helpers.Log.Errorf(MSG_FAIL_ON_SEND_PING, err)
+	return err
 }
 
+// Share contact con retry. En caso de no poder efectuar el ping retorna error
 func sndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) []contacts_queue.Contact {
 	// armo los argumentos
 	shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts)

@@ -40,7 +40,7 @@ func main() {
 
 	// Sleep porque aún no he agregado retry
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := randSource.Intn(60)
+	r := randSource.Intn(30)
 	t := time.Duration(r+15) * time.Second
 	helpers.Log.Debugf("Tiempo: %v", t)
 	time.Sleep(t)

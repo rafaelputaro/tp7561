@@ -11,6 +11,8 @@ import (
 
 const MAX_RETRIES_ON_CONNECT = 20
 const MAX_TIMEOUT_ON_CONNECT = 60
+const MAX_RETRIES_ON_PING = 20
+const MAX_RETRIES_ON_SHARE_CONTACTS_RECIP = 20
 const MSG_FAIL_ON_CONNECT_AS_CLIENT = "error trying to connect as a client: %v"
 
 // Se conecta a otro nodo como cliente grpc. En caso de conexión fallido luego de cierta cantidad

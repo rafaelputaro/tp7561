@@ -7,6 +7,7 @@ import (
 
 const MSG_ERROR_EMPTY_QUEUE = "error queue empty"
 const MSG_ERROR_FULL_QUEUE = "error queue is full"
+const MSG_CONTACT_ALREADY_ADDED = "The contact has already been added previously: %v"
 
 // Representa una cola de contactos tipo FIFO que no permite id's repetidos
 type ContactQueue struct {
@@ -37,6 +38,7 @@ func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
 		queue.IdsInTheQueue[helpers.KeyToString(entry.ID)] = true
 		return true, nil
 	}
+	helpers.Log.Debugf(MSG_CONTACT_ALREADY_ADDED, entry.ToString())
 	return false, nil
 }
 
