@@ -3,7 +3,7 @@ package bucket_table
 import (
 	"fmt"
 	"testing"
-	"tp/peer/common/helpers"
+	"tp/peer/helpers"
 )
 
 func TestBucketTable(t *testing.T) {

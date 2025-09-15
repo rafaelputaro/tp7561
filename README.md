@@ -4,7 +4,7 @@
 
 Crear un modulo Peer el cual presentará al exterior las funciones grpc para el manejo de la DHT y las operaciones sobre los archivos del IPFS. 
 Los valores a almacenar en la DHT van a ser los nombres de los archivos dados como strings (posteriormente puede sumarse la durabilidad u otras características).
-Las claves se encriptan mediante SHA1.
+Las claves se encriptan mediante SHA256.
 Tanto las funcionalidad de la DHT y del IPFS se implementan en paquetes separados del módulo Peer.
 
 ![Diagrama De Clases Peer](./docs/DiagramaDeClasesPeer.png)

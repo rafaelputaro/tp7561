@@ -1,8 +1,8 @@
 package protoUtils
 
 import (
-	"tp/peer/common/dht/bucket_table/contacts_queue"
-	"tp/peer/common/protobuf/protopb"
+	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/protobuf/proto"
 )

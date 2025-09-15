@@ -1,13 +1,13 @@
-package common
+package main
 
 import (
 	"context"
-	"tp/peer/common/dht"
-	"tp/peer/common/dht/bucket_table/contacts_queue"
-	"tp/peer/common/helpers"
-	"tp/peer/common/helpers/rpc_ops"
-	"tp/peer/common/protobuf/protoUtils"
-	"tp/peer/common/protobuf/protopb"
+	"tp/peer/dht"
+	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
+	"tp/peer/protobuf/protoUtils"
+	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 )

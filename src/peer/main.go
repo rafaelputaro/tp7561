@@ -8,9 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"tp/peer/common"
-	"tp/peer/common/helpers"
-	"tp/peer/common/protobuf/protopb"
+	"tp/peer/helpers"
+	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -23,7 +22,7 @@ func main() {
 	helpers.InitLogger()
 	config := helpers.LoadConfig()
 
-	peer := common.NewPeer(*config)
+	peer := NewPeer(*config)
 
 	lis, err := net.Listen("tcp", config.Url) //":"+config.Port)
 	if err != nil {
@@ -66,3 +65,23 @@ func handleSigintSignal(server *grpc.Server) {
 		server.Stop()
 	}()
 }
+
+/*
+func connectAsServer() {
+	lis, err := net.Listen("tcp", config.Url) //":"+config.Port)
+	if err != nil {
+		helpers.Log.Fatalf("failed to listen: %v", err)
+	}
+	// New server
+	server := grpc.NewServer()
+	protopb.RegisterOperationsServer(server, peer)
+	// Register reflection service on gRPC server.
+	reflection.Register(server)
+
+	// Stop the gRPC server when the SIGINT signal arrives
+	handleSigintSignal(server)
+
+	helpers.Log.Infof("[SERVER] Starting gRPC Server")
+
+}
+*/

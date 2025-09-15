@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"tp/peer/common/helpers"
-	"tp/peer/common/protobuf/protopb"
+	"tp/peer/helpers"
+	"tp/peer/protobuf/protopb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -36,52 +36,6 @@ func ConnectAsClient(serverUrl string, callbackOnFailConn func(err error)) (*grp
 	ctx, cancel := context.WithTimeout(context.Background(), MAX_TIMEOUT_ON_CONNECT*time.Second)
 	return conn, c, ctx, cancel, err
 }
-
-/*
-func ConnectAsServer(peer common.Peer) {
-
-	lis, err := net.Listen("tcp", peer.Config.Url) //":"+config.Port)
-	if err != nil {
-		helpers.Log.Fatalf("failed to listen: %v", err)
-	}
-	// New server
-	server := grpc.NewServer()
-	protopb.RegisterOperationsServer(server, &peer)
-	// Register reflection service on gRPC server.
-	reflection.Register(server)
-
-	// Stop the gRPC server when the SIGINT signal arrives
-	handleSigintSignal(server)
-
-	helpers.Log.Infof("[SERVER] Starting gRPC Server")
-
-	// Sleep porque aún no he agregado retry
-	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := randSource.Intn(30)
-	t := time.Duration(r+15) * time.Second
-	helpers.Log.Debugf("Tiempo: %v", t)
-	time.Sleep(t)
-
-	peer.SndShareContactsToBootstrap()
-
-	if err := server.Serve(lis); err != nil {
-		helpers.Log.Fatalf("failed to serve: %v", err)
-	}
-	helpers.Log.Infof("[SERVER] gRPC server has been stopped")
-}
-
-func handleSigintSignal(server *grpc.Server) {
-	c := make(chan os.Signal, syscall.SIGINT)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		// Se bloque hasta recibir una señal SIGINT
-		<-c
-		helpers.Log.Infof(MSG_SIGNIT_ARRIVED)
-		server.Stop()
-	}()
-}
-
-*/
 
 func LogFatalOnFailConnect(err error) {
 	helpers.Log.Fatalf(MSG_FAIL_ON_CONNECT_AS_CLIENT, err)

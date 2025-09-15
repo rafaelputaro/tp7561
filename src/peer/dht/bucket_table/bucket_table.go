@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"slices"
-	"tp/peer/common/dht/bucket_table/contacts_queue"
-	"tp/peer/common/helpers"
-	"tp/peer/common/helpers/rpc_ops"
+	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
 )
 
 const MSG_ERROR_PREFIX_NOT_FOUND = "error prefix not found"

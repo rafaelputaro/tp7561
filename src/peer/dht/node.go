@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"tp/peer/common/dht/bucket_table"
-	"tp/peer/common/dht/bucket_table/contacts_queue"
+	"tp/peer/dht/bucket_table"
+	"tp/peer/dht/bucket_table/contacts_queue"
 
-	"tp/peer/common/helpers"
-	"tp/peer/common/helpers/rpc_ops"
+	"tp/peer/helpers"
+	"tp/peer/helpers/rpc_ops"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"

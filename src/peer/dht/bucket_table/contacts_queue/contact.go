@@ -2,7 +2,7 @@ package contacts_queue
 
 import (
 	"fmt"
-	"tp/peer/common/helpers"
+	"tp/peer/helpers"
 )
 
 // Es un contacto el cual esta dada por un id y una url

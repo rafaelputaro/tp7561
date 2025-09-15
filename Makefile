@@ -12,7 +12,7 @@ docker-compose-dev.yaml:
 .PHONY: docker-compose-dev.yaml
 
 docker-image: deps
-	protoc -I=./src/peer/common/protobuf --go_out=./src/peer/common/protobuf --go-grpc_out=./src/peer/common/protobuf ./src/peer/common/protobuf/*.proto
+	protoc -I=./src/peer/protobuf --go_out=./src/peer/protobuf --go-grpc_out=./src/peer/protobuf ./src/peer/protobuf/*.proto
 	docker build -f ./src/peer/Dockerfile -t "peer:latest" .
 .PHONY: docker-image
 

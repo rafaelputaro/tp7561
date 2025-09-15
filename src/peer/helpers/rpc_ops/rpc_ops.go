@@ -1,12 +1,12 @@
 package rpc_ops
 
 import (
-	"tp/peer/common/dht/bucket_table/contacts_queue"
-	"tp/peer/common/helpers"
-	"tp/peer/common/helpers/connection"
+	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/peer/helpers"
+	"tp/peer/helpers/connection"
 
-	"tp/peer/common/protobuf/protoUtils"
-	"tp/peer/common/protobuf/protopb"
+	"tp/peer/protobuf/protoUtils"
+	"tp/peer/protobuf/protopb"
 )
 
 const MSG_FAIL_ON_SEND_PING = "error sending ping: %v"
