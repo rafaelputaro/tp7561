@@ -3,7 +3,7 @@ package rpc_ops
 import (
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
-	"tp/peer/helpers/connection"
+	"tp/peer/helpers/communication"
 
 	"tp/peer/protobuf/protoUtils"
 	"tp/peer/protobuf/protopb"
@@ -25,7 +25,7 @@ type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) erro
 // Ping con retry. En caso de no poder efectuar el ping retorna error
 func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	// conexión
-	conn, c, ctx, cancel, err := connection.ConnectAsClient(contact.Url, connection.LogFatalOnFailConnect)
+	conn, c, ctx, cancel, err := communication.ConnectAsClient(contact.Url, communication.LogFatalOnFailConnect)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()
@@ -49,7 +49,7 @@ func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 // Share contact con retry. En caso de no poder efectuar el ping retorna error
 func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error) {
 	// conexión
-	conn, c, ctx, cancel, err := connection.ConnectAsClient(destContact.Url, connection.LogFatalOnFailConnect)
+	conn, c, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()

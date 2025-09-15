@@ -5,7 +5,7 @@ import (
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
-	"tp/peer/helpers/rpc_ops"
+	"tp/peer/helpers/communication/rpc_ops"
 	"tp/peer/protobuf/protoUtils"
 	"tp/peer/protobuf/protopb"
 
@@ -13,8 +13,9 @@ import (
 )
 
 type Peer struct {
-	Config  helpers.PeerConfig
-	NodeDHT dht.Node
+	Config      helpers.PeerConfig
+	NodeDHT     dht.Node
+	GrpcService PeerService
 	protopb.UnimplementedOperationsServer
 }
 
@@ -23,7 +24,12 @@ func NewPeer(config helpers.PeerConfig) *Peer {
 		Config:  config,
 		NodeDHT: *dht.NewNode(config, rpc_ops.SndPing, sndStore, rpc_ops.SndShareContactsRecip),
 	}
+	peer.GrpcService = *NewPeerService(&peer)
 	return &peer
+}
+
+func (peer *Peer) Serve() {
+	peer.GrpcService.Serve()
 }
 
 // Hace el procesamiento de la recepción de un ping desde el contacto parámetro e intenta agregarlo

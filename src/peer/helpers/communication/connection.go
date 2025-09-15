@@ -1,4 +1,4 @@
-package connection
+package communication
 
 import (
 	"context"

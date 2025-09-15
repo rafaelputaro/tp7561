@@ -8,7 +8,7 @@ import (
 	"tp/peer/dht/bucket_table/contacts_queue"
 
 	"tp/peer/helpers"
-	"tp/peer/helpers/rpc_ops"
+	"tp/peer/helpers/communication/rpc_ops"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
