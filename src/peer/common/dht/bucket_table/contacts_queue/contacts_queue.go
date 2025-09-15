@@ -2,7 +2,7 @@ package contacts_queue
 
 import (
 	"errors"
-	"tp/peer/helpers"
+	"tp/peer/common/helpers"
 )
 
 const MSG_ERROR_EMPTY_QUEUE = "error queue empty"

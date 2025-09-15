@@ -8,8 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"tp/peer/helpers"
-	"tp/peer/protobuf/protopb"
+	"tp/peer/common"
+	"tp/peer/common/helpers"
+	"tp/peer/common/protobuf/protopb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -22,7 +23,7 @@ func main() {
 	helpers.InitLogger()
 	config := helpers.LoadConfig()
 
-	peer := NewPeer(*config)
+	peer := common.NewPeer(*config)
 
 	lis, err := net.Listen("tcp", config.Url) //":"+config.Port)
 	if err != nil {

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"tp/peer/dht/bucket_table/contacts_queue"
-	"tp/peer/helpers"
+	"tp/peer/common/dht/bucket_table/contacts_queue"
+	"tp/peer/common/helpers"
 )
 
 func TestKeys(t *testing.T) {

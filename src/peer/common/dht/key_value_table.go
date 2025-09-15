@@ -2,7 +2,7 @@ package dht
 
 import (
 	"errors"
-	"tp/peer/helpers"
+	"tp/peer/common/helpers"
 )
 
 const MSG_ERROR_ON_GET_VALUE = "error on get value from key value table"
