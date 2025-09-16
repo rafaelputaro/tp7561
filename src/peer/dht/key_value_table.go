@@ -2,6 +2,7 @@ package dht
 
 import (
 	"errors"
+	"sync"
 	"tp/peer/helpers"
 )
 
@@ -12,6 +13,7 @@ const EMPTY_VALUE = ""
 
 // Es una table que contiene pares clave valor
 type KeyValueTable struct {
+	mutex   sync.Mutex
 	Entries map[string]string
 }
 
@@ -26,6 +28,10 @@ func NewKeyValueTable() *KeyValueTable {
 // Agrega una nueva clave a la tabla. En caso de que la clave ya se encontraba
 // en la tabla retorna error
 func (table *KeyValueTable) Add(key []byte, value string) error {
+	// tomar lock
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
+	// operar
 	keyS := helpers.KeyToString(key)
 	_, exists := table.Entries[keyS]
 	if exists {
@@ -37,6 +43,10 @@ func (table *KeyValueTable) Add(key []byte, value string) error {
 
 // Remueve una clave de la tabla
 func (table *KeyValueTable) Remove(key []byte) {
+	// tomar lock
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
+	// operar
 	delete(table.Entries, helpers.KeyToString(key))
 }
 
@@ -51,6 +61,10 @@ func (table *KeyValueTable) GetValue(key []byte) (string, error) {
 
 // Actualiza el valor para una clave. En caso de no disponer la clave retorna error
 func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
+	// tomar lock
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
+	// operar
 	if _, ok := table.Entries[helpers.KeyToString(key)]; ok {
 		table.Entries[helpers.KeyToString(key)] = newValue
 		return nil

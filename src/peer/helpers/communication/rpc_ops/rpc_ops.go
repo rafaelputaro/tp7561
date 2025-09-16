@@ -33,7 +33,7 @@ func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 		for retry := range MAX_RETRIES_ON_PING {
 			_, err = c.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
 			if err != nil {
-				helpers.Log.Errorf(MSG_PING_ATTEMPT, retry, err)
+				helpers.Log.Infof(MSG_PING_ATTEMPT, retry, err)
 				// esperar
 				helpers.SleepBetweenRetries()
 				continue
@@ -62,7 +62,7 @@ func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue
 			// compartir contacto
 			response, err = c.ShareContactsReciprocally(ctx, shContacOp)
 			if err != nil {
-				helpers.Log.Errorf(MSG_SHARE_CONTACTS_ATTEMPT, retry, err)
+				helpers.Log.Infof(MSG_SHARE_CONTACTS_ATTEMPT, retry, err)
 				// esperar
 				helpers.SleepBetweenRetries()
 				continue

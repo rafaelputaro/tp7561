@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"sync"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
@@ -22,6 +23,7 @@ type BucketTable struct {
 	Entries  map[string]contacts_queue.ContactQueue
 	Prefixes []string
 	Ping     rpc_ops.PingOp
+	mutex    sync.Mutex
 }
 
 // Retorna una tabla de contactos lista para ser utilizada
@@ -51,6 +53,15 @@ func (table *BucketTable) initEntries(capacity int) {
 
 // Si la tabla no se encuentra llena agrega el contacto
 func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
+	// tomar lock
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
+	// operar
+	return table.doAddContact(newContact)
+}
+
+// Si la tabla no se encuentra llena agrega el contacto
+func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error {
 	prefix, err := table.getPrefix(newContact.ID)
 	if err == nil {
 		queue := table.Entries[prefix]
@@ -78,9 +89,13 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 
 // Intenta agregar los contactos según la capacidad actual de la tabla
 func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) error {
+	// tomar lock
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
+	// operar
 	helpers.Log.Debugf(MSG_TRY_TO_ADD_CONTACTS, len(newContacts))
 	for _, contact := range newContacts {
-		err := table.AddContact(contact)
+		err := table.doAddContact(contact)
 		if err != nil {
 			return err
 		}

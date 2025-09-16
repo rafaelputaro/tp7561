@@ -22,7 +22,6 @@ type Node struct {
 	SndStore              rpc_ops.StoreOp
 	SndShareContactsRecip rpc_ops.SndShareContactsRecipOp
 	SndPing               rpc_ops.PingOp
-	// cache
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
