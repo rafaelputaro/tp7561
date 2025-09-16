@@ -6,8 +6,8 @@ import (
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
-	"tp/peer/protobuf/protoUtils"
-	"tp/peer/protobuf/protopb"
+	"tp/protobuf/protoUtils"
+	"tp/protobuf/protopb"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 )

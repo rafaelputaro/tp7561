@@ -2,6 +2,7 @@ package contacts_queue
 
 import (
 	"errors"
+	"tp/common"
 	"tp/peer/helpers"
 )
 
@@ -38,7 +39,7 @@ func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
 		queue.IdsInTheQueue[helpers.KeyToString(entry.ID)] = true
 		return true, nil
 	}
-	helpers.Log.Debugf(MSG_CONTACT_ALREADY_ADDED, entry.ToString())
+	common.Log.Debugf(MSG_CONTACT_ALREADY_ADDED, entry.ToString())
 	return false, nil
 }
 

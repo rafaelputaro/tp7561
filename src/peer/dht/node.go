@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"tp/common"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/bucket_table/contacts_queue"
 
@@ -51,7 +52,7 @@ func (node *Node) IsBootstrapNode() bool {
 func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
+		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return false
 	}
 	// Trata de agregar el contacto
@@ -103,7 +104,7 @@ func (node *Node) SndShareContacts(destContact contacts_queue.Contact) error {
 func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
+		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return []contacts_queue.Contact{}
 	}
 	// Agregar contacto a la bucket_table
@@ -118,7 +119,7 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey []byte) (string, []contacts_queue.Contact, error) {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
+		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return EMPTY_VALUE, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
@@ -138,7 +139,7 @@ func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey [
 func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, value string) error {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
-		helpers.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
+		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table

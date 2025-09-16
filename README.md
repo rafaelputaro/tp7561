@@ -28,6 +28,11 @@ Iniciar o crear en entorno virtual:
 python3 -m venv myenv
 
 source myenv/bin/activate
+
+```
+Instalar lorem-ipsum generator:
+```
+pip install lorem-text
 ```
 Configurar entorno para protobufer:
 ```

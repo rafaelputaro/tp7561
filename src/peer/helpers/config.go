@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"tp/common"
 )
 
 const DEFAULT_ENTRIES_PER_K_BUCKET = 10
@@ -44,7 +45,7 @@ func LoadConfig() *PeerConfig {
 	entries_per_k_bucket, err := strconv.Atoi(entries_per_k_bucket_s)
 	if err != nil {
 		entries_per_k_bucket = DEFAULT_ENTRIES_PER_K_BUCKET
-		Log.Debugf(MSG_ERROR_ON_LOAD_ENTRIES_PER_K_BUCKET)
+		common.Log.Debugf(MSG_ERROR_ON_LOAD_ENTRIES_PER_K_BUCKET)
 	}
 	var config = NewNodeConfig(name, GenerateURL(host, port), port, entries_per_k_bucket)
 	config.LogConfig()
@@ -53,7 +54,7 @@ func LoadConfig() *PeerConfig {
 
 // Hace un log por debug de la configuración
 func (config *PeerConfig) LogConfig() {
-	Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v",
+	common.Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v",
 		config.Name,
 		config.Url,
 		fmt.Sprintf("%v", KeyToLogFormatString(config.Id)),

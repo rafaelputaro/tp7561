@@ -3,6 +3,7 @@ package dht
 import (
 	"errors"
 	"sync"
+	"tp/common"
 	"tp/peer/helpers"
 )
 
@@ -55,7 +56,7 @@ func (table *KeyValueTable) GetValue(key []byte) (string, error) {
 	if value, ok := table.Entries[helpers.KeyToString(key)]; ok {
 		return value, nil
 	}
-	helpers.Log.Errorf(MSG_ERROR_ON_GET_VALUE)
+	common.Log.Errorf(MSG_ERROR_ON_GET_VALUE)
 	return EMPTY_VALUE, errors.New(MSG_ERROR_ON_GET_VALUE)
 }
 
@@ -69,7 +70,7 @@ func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
 		table.Entries[helpers.KeyToString(key)] = newValue
 		return nil
 	}
-	helpers.Log.Errorf(MSG_ERROR_ON_UPDATE_VALUE)
+	common.Log.Errorf(MSG_ERROR_ON_UPDATE_VALUE)
 	return errors.New(MSG_ERROR_ON_UPDATE_VALUE)
 }
 

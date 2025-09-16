@@ -5,8 +5,9 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"tp/common"
 	"tp/peer/helpers"
-	"tp/peer/protobuf/protopb"
+	"tp/protobuf/protopb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -37,10 +38,10 @@ func NewPeerService(peer *Peer) *PeerService {
 			break
 		}
 		helpers.SleepBetweenRetries()
-		helpers.Log.Debugf(MSG_RETRY_LISTEN)
+		common.Log.Debugf(MSG_RETRY_LISTEN)
 	}
 	if err != nil {
-		helpers.Log.Fatalf(MSG_FAILED_TO_LISTEN, err)
+		common.Log.Fatalf(MSG_FAILED_TO_LISTEN, err)
 	}
 	// Nuevo servicio
 	server := grpc.NewServer()
@@ -50,7 +51,7 @@ func NewPeerService(peer *Peer) *PeerService {
 	// Detener el servidor gRPC cuando llega la señal SIGINT
 	handleSigintSignal(server)
 	// Servidor inicializado
-	helpers.Log.Infof(MSG_SERVER_GRPC_STARTING)
+	common.Log.Infof(MSG_SERVER_GRPC_STARTING)
 	return &PeerService{
 		Listener: lis,
 		Server:   server,
@@ -64,7 +65,7 @@ func handleSigintSignal(server *grpc.Server) {
 	go func() {
 		// Bloquear hasta que recibamos la señal SIGINT
 		<-c
-		helpers.Log.Infof(MSG_SERVER_SIGINT_ARRIVED)
+		common.Log.Infof(MSG_SERVER_SIGINT_ARRIVED)
 		server.Stop()
 	}()
 }
@@ -74,11 +75,11 @@ func (service *PeerService) Serve() {
 	var err error = nil
 	for range MAX_RETRY_SERVE {
 		if err = service.Server.Serve(service.Listener); err != nil {
-			helpers.Log.Debugf(MSG_FAILED_TO_SERVE, err)
+			common.Log.Debugf(MSG_FAILED_TO_SERVE, err)
 		}
 	}
 	if err != nil {
-		helpers.Log.Fatalf(MSG_FAILED_TO_SERVE, err)
+		common.Log.Fatalf(MSG_FAILED_TO_SERVE, err)
 	}
-	helpers.Log.Infof(MSG_SERVER_STOPPED)
+	common.Log.Infof(MSG_SERVER_STOPPED)
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"slices"
 	"sync"
+	"tp/common"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
@@ -69,21 +70,21 @@ func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error 
 		if err != nil {
 			headContact, _ := queue.TakeHead()
 			if table.isUnresponsiveContact(headContact) {
-				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.ToString(), headContact.ToString()))
+				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.ToString(), headContact.ToString()))
 				queue.Enqueue(newContact)
 			} else {
-				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.ToString()))
+				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.ToString()))
 				queue.Enqueue(headContact)
 			}
 		} else {
 			if okEnqueue {
-				helpers.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.ToString()))
+				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.ToString()))
 			}
 		}
 		table.Entries[prefix] = queue
 		return nil
 	}
-	helpers.Log.Errorf(MSG_ERROR_ON_ENQUEUE_CONTACT)
+	common.Log.Errorf(MSG_ERROR_ON_ENQUEUE_CONTACT)
 	return errors.New(MSG_ERROR_ON_ENQUEUE_CONTACT)
 }
 
@@ -93,7 +94,7 @@ func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) erro
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// operar
-	helpers.Log.Debugf(MSG_TRY_TO_ADD_CONTACTS, len(newContacts))
+	common.Log.Debugf(MSG_TRY_TO_ADD_CONTACTS, len(newContacts))
 	for _, contact := range newContacts {
 		err := table.doAddContact(contact)
 		if err != nil {

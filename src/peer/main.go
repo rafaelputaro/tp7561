@@ -1,14 +1,15 @@
 package main
 
 import (
+	"tp/common"
 	"tp/peer/helpers"
 )
 
 const MESSAGE_START = "Starting node..."
 
 func main() {
-	helpers.Log.Info(MESSAGE_START)
-	helpers.InitLogger()
+	common.Log.Info(MESSAGE_START)
+	common.InitLogger()
 	config := helpers.LoadConfig()
 	// crear par
 	peer := NewPeer(*config)

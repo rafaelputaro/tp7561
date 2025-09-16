@@ -3,6 +3,7 @@ package helpers
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"tp/common"
 )
 
 const EMPTY_KEY = ""
@@ -74,8 +75,8 @@ func GenerateKeysFromOtherTrees(key []byte) [][]byte {
 
 // Transforma la clave en un string en el formato dado por la configuración de inicio del módulo
 func KeyToLogFormatString(key []byte) string {
-	switch LoginFormatForKeys {
-	case string(HEXA):
+	switch common.LoginFormatForKeys {
+	case string(common.HEXA):
 		return KeyToHexString(key)
 	default:
 		return ConvertToBinaryString(key)

@@ -4,8 +4,9 @@ import (
 	"context"
 	"time"
 
+	"tp/common"
 	"tp/peer/helpers"
-	"tp/peer/protobuf/protopb"
+	"tp/protobuf/protopb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -38,9 +39,9 @@ func ConnectAsClient(serverUrl string, callbackOnFailConn func(err error)) (*grp
 }
 
 func LogFatalOnFailConnect(err error) {
-	helpers.Log.Fatalf(MSG_FAIL_ON_CONNECT_AS_CLIENT, err)
+	common.Log.Fatalf(MSG_FAIL_ON_CONNECT_AS_CLIENT, err)
 }
 
 func LogErrorOnFailConnectError(err error) {
-	helpers.Log.Errorf(MSG_FAIL_ON_CONNECT_AS_CLIENT, err)
+	common.Log.Errorf(MSG_FAIL_ON_CONNECT_AS_CLIENT, err)
 }

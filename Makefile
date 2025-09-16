@@ -8,11 +8,12 @@ deps:
 .PHONY: deps
 
 docker-compose-dev.yaml: 
+	python3 generate-data.py 
 	python3 compose-generator.py
 .PHONY: docker-compose-dev.yaml
 
 docker-image: deps
-	protoc -I=./src/peer/protobuf --go_out=./src/peer/protobuf --go-grpc_out=./src/peer/protobuf ./src/peer/protobuf/*.proto
+	protoc -I=./src/protobuf --go_out=./src/protobuf --go-grpc_out=./src/protobuf ./src/protobuf/*.proto
 	docker build -f ./src/peer/Dockerfile -t "peer:latest" .
 .PHONY: docker-image
 
