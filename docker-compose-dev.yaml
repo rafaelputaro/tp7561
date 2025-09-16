@@ -6,8 +6,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50051:50051"
+    volumes:
+    - /tmp/data/peer-1:/tmp/data
+    - /tmp/store-ipfs/peer-1:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-1
       - PEER_HOST=peer-1
@@ -27,8 +29,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50052:50051"
+    volumes:
+    - /tmp/data/peer-2:/tmp/data
+    - /tmp/store-ipfs/peer-2:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-2
       - PEER_HOST=peer-2
@@ -48,8 +52,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50053:50051"
+    volumes:
+    - /tmp/data/peer-3:/tmp/data
+    - /tmp/store-ipfs/peer-3:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-3
       - PEER_HOST=peer-3
@@ -69,8 +75,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50054:50051"
+    volumes:
+    - /tmp/data/peer-4:/tmp/data
+    - /tmp/store-ipfs/peer-4:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-4
       - PEER_HOST=peer-4
@@ -90,8 +98,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50055:50051"
+    volumes:
+    - /tmp/data/peer-5:/tmp/data
+    - /tmp/store-ipfs/peer-5:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-5
       - PEER_HOST=peer-5
@@ -111,8 +121,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50056:50051"
+    volumes:
+    - /tmp/data/peer-6:/tmp/data
+    - /tmp/store-ipfs/peer-6:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-6
       - PEER_HOST=peer-6
@@ -132,8 +144,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50057:50051"
+    volumes:
+    - /tmp/data/peer-7:/tmp/data
+    - /tmp/store-ipfs/peer-7:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-7
       - PEER_HOST=peer-7
@@ -153,8 +167,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50058:50051"
+    volumes:
+    - /tmp/data/peer-8:/tmp/data
+    - /tmp/store-ipfs/peer-8:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-8
       - PEER_HOST=peer-8
@@ -174,8 +190,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50059:50051"
+    volumes:
+    - /tmp/data/peer-9:/tmp/data
+    - /tmp/store-ipfs/peer-9:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-9
       - PEER_HOST=peer-9
@@ -195,8 +213,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50060:50051"
+    volumes:
+    - /tmp/data/peer-10:/tmp/data
+    - /tmp/store-ipfs/peer-10:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-10
       - PEER_HOST=peer-10
@@ -216,8 +236,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50061:50051"
+    volumes:
+    - /tmp/data/peer-11:/tmp/data
+    - /tmp/store-ipfs/peer-11:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-11
       - PEER_HOST=peer-11
@@ -237,8 +259,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50062:50051"
+    volumes:
+    - /tmp/data/peer-12:/tmp/data
+    - /tmp/store-ipfs/peer-12:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-12
       - PEER_HOST=peer-12
@@ -258,8 +282,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50063:50051"
+    volumes:
+    - /tmp/data/peer-13:/tmp/data
+    - /tmp/store-ipfs/peer-13:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-13
       - PEER_HOST=peer-13
@@ -279,8 +305,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50064:50051"
+    volumes:
+    - /tmp/data/peer-14:/tmp/data
+    - /tmp/store-ipfs/peer-14:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-14
       - PEER_HOST=peer-14
@@ -300,8 +328,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "50065:50051"
+    volumes:
+    - /tmp/data/peer-15:/tmp/data
+    - /tmp/store-ipfs/peer-15:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-15
       - PEER_HOST=peer-15

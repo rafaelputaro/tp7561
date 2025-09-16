@@ -6,8 +6,10 @@ services:
 #    expose:
 #      - "50051"
     ports:
-#      - "50051:50051"  # Puerto gRPC
       - "{{ 50050 + i }}:50051"
+    volumes:
+    - /tmp/data/peer-{{ i }}:/tmp/data
+    - /tmp/store-ipfs/peer-{{ i }}:/tmp/store-ipfs
     environment:
       - PEER_NAME=peer-{{ i }}
       - PEER_HOST=peer-{{ i }}

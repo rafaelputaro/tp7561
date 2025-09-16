@@ -17,4 +17,5 @@ func main() {
 	peer.SndShareContactsToBootstrap()
 	// servir a resto de pares
 	peer.Serve()
+
 }

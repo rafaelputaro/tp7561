@@ -30,7 +30,7 @@ python3 -m venv myenv
 source myenv/bin/activate
 
 ```
-Instalar lorem-ipsum generator:
+Instalar lorem-ipsum generator p/crear set's de datos /tmp:
 ```
 pip install lorem-text
 ```

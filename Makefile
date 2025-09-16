@@ -8,7 +8,7 @@ deps:
 .PHONY: deps
 
 docker-compose-dev.yaml: 
-	python3 generate-data.py 
+	python3 data-generator.py 
 	python3 compose-generator.py
 .PHONY: docker-compose-dev.yaml
 

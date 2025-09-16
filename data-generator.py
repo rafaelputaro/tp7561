@@ -20,14 +20,14 @@ def main():
     # crear carpeta datos
     os.makedirs(BASE_FOLDER, exist_ok=True)
     # generar datos para cada par
-    for pair_number in range(number_of_pairs):
+    for pair_number in range(1, number_of_pairs+1):
         generate_data_for_pair(pair_number, number_of_files, min_paragraphs, max_paragraphs)
 
 # generar archivos para un par específico en la carpeta del par dado    
 def generate_data_for_pair(pair_number, number_of_files, min_paragraphs, max_paragraphs):
     folder = f"{BASE_FOLDER}/{BASE_PEER_FOLDER}{pair_number}"
     os.makedirs(folder, exist_ok=True)
-    for file_num in range(number_of_files):
+    for file_num in range(1, number_of_files):
         file_path = f"{folder}/{BASE_FILE_NAME}{pair_number}-{file_num}.{FILE_EXT}"        
         with open(file_path, "w") as out:
             begin = f"[begin, {file_path}]\n"
