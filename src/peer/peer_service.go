@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net"
 	"os"
 	"os/signal"
@@ -60,10 +61,9 @@ func NewPeerService(peer *Peer) *PeerService {
 
 // Manejo de señal SIGINT
 func handleSigintSignal(server *grpc.Server) {
-	c := make(chan os.Signal, syscall.SIGINT)
-	signal.Notify(c, os.Interrupt)
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
-		// Bloquear hasta que recibamos la señal SIGINT
 		<-c
 		common.Log.Infof(MSG_SERVER_SIGINT_ARRIVED)
 		server.Stop()
@@ -79,7 +79,9 @@ func (service *PeerService) Serve() {
 		}
 	}
 	if err != nil {
-		common.Log.Fatalf(MSG_FAILED_TO_SERVE, err)
+		if !errors.Is(err, grpc.ErrServerStopped) {
+			common.Log.Fatalf(MSG_FAILED_TO_SERVE, err)
+		}
 	}
 	common.Log.Infof(MSG_SERVER_STOPPED)
 }

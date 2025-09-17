@@ -1,6 +1,7 @@
 package main
 
 import (
+	"sync"
 	"tp/common"
 	"tp/peer/helpers"
 )
@@ -13,9 +14,15 @@ func main() {
 	config := helpers.LoadConfig()
 	// crear par
 	peer := NewPeer(*config)
+	wg := new(sync.WaitGroup)
+	wg.Add(1)
 	// obtener contactos para la tabla propia en el inicio
-	peer.SndShareContactsToBootstrap()
+	go func() {
+		helpers.SleepOnStart()
+		peer.SndShareContactsToBootstrap()
+		wg.Done()
+	}()
 	// servir a resto de pares
 	peer.Serve()
-
+	wg.Wait()
 }

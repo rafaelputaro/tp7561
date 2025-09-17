@@ -12,6 +12,7 @@ import (
 )
 
 const MSG_ERROR_PREFIX_NOT_FOUND = "error prefix not found"
+const MSG_CONTACT_HAS_NOT_BEEN_ADDED = "The contact has not been added: %v"
 const MSG_ERROR_ON_ENQUEUE_CONTACT = "error on enqueue contact"
 const MSG_CONTACT_ADDED = "The contact has been added | url: %v"
 const MSG_TRY_TO_ADD_CONTACTS = "Attempt to add %v contacts"
@@ -84,7 +85,7 @@ func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error 
 		table.Entries[prefix] = queue
 		return nil
 	}
-	common.Log.Errorf(MSG_ERROR_ON_ENQUEUE_CONTACT)
+	common.Log.Infof(MSG_CONTACT_HAS_NOT_BEEN_ADDED, newContact.ToString())
 	return errors.New(MSG_ERROR_ON_ENQUEUE_CONTACT)
 }
 
