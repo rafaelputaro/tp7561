@@ -11,6 +11,12 @@ Tanto las funcionalidad de la DHT y del IPFS se implementan en paquetes separado
 
 NOTA: El IPFS actualmente no tiene funciones definidas ya que aguardo requerimientos al respecto, sólo esta en el diamgrama para ilustrar su lugar en la arquitectura.
 
+Idea sobre la estructura de los archivos:
+
+{
+    <contenido_bloque>,
+    <id_siguiente_bloque>
+}
 
 
 ## Notas para ejecución:

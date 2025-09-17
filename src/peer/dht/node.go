@@ -7,6 +7,7 @@ import (
 	"tp/common"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/peer/dht/key_value_table"
 
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
@@ -19,7 +20,7 @@ const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
 type Node struct {
 	Config                helpers.PeerConfig
 	BucketTab             bucket_table.BucketTable
-	KeyValueTab           KeyValueTable
+	KeyValueTab           key_value_table.KeyValueTable
 	SndStore              rpc_ops.StoreOp
 	SndShareContactsRecip rpc_ops.SndShareContactsRecipOp
 	SndPing               rpc_ops.PingOp
@@ -34,7 +35,7 @@ func NewNode(
 	node := &Node{
 		Config:                config,
 		BucketTab:             *bucket_table.NewBucketTable(config, sndPing),
-		KeyValueTab:           *NewKeyValueTable(),
+		KeyValueTab:           *key_value_table.NewKeyValueTable(),
 		SndStore:              sndStore,
 		SndShareContactsRecip: sndShareContactsRecip,
 		SndPing:               sndPing,
@@ -120,7 +121,7 @@ func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey [
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
-		return EMPTY_VALUE, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
+		return key_value_table.EMPTY_VALUE, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
 	node.BucketTab.AddContact(sourceContact)
@@ -130,7 +131,7 @@ func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey [
 		return valueToReturn, nil, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
-	return EMPTY_VALUE, contactsToReturn, err
+	return key_value_table.EMPTY_VALUE, contactsToReturn, err
 }
 
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
@@ -165,4 +166,15 @@ func (node *Node) DiscardContact(contact contacts_queue.Contact) bool {
 // Retorna los contactos para un id dado
 func (node *Node) GetContactsForId(id []byte) []contacts_queue.Contact {
 	return node.BucketTab.GetContactsForId(id)
+}
+
+// Agrega una nueva clave a la tabla. En caso de que la clave ya se encontraba
+// en la tabla retorna error
+func (node *Node) Add(key []byte, value string) error {
+	return node.KeyValueTab.Add(key, value)
+}
+
+// Obtiene el valor para una clave. En caso de no disponer la clave retorna error
+func (node *Node) GetValue(key []byte) (string, error) {
+	return node.KeyValueTab.GetValue(key)
 }

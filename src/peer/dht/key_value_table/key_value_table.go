@@ -1,4 +1,4 @@
-package dht
+package key_value_table
 
 import (
 	"errors"

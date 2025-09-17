@@ -32,3 +32,4 @@ message ShareContactsReciprocallyResults {
     repeated bytes contactsIds = 1;
     repeated string contactsUrls = 2;
 }
+
