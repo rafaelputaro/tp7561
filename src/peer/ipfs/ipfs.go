@@ -10,6 +10,7 @@ func AddFile(node dht.Node, fileName string) error {
 		c) Crear el primer bloque, guardarlo localmente y agregar key localmente. (AddBlock)
 		d) Mientras haya bloques, enviarlos a vecinos con <key-block><fileName-block><data block>
 	**/
+
 	return nil
 }
 
