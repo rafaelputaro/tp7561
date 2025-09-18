@@ -8,14 +8,16 @@ services:
     ports:
       - "{{ 50050 + i }}:50051"
     volumes:
-    - /tmp/data/peer-{{ i }}:/tmp/data
-    - /tmp/store-ipfs/peer-{{ i }}:/tmp/store-ipfs
+      - {{ input_data_folder }}/peer-{{ i }}:{{ input_data_folder }}
+      - {{ store_ipfs_folder }}/peer-{{ i }}:{{ store_ipfs_folder }}
     environment:
       - PEER_NAME=peer-{{ i }}
       - PEER_HOST=peer-{{ i }}
       - PEER_PORT=50051
       - ENTRIES_PER_K_BUCKET={{ entries_per_k_bucket }}
       - LOGIN_FORMAT_FOR_KEYS={{ login_format_for_keys }}
+      - INPUT_DATA_FOLDER={{ input_data_folder }}
+      - STORE_IPFS_FOLDER={{ store_ipfs_folder }}
     networks:
       - tp_net
 {% if i < number_of_pairs %}

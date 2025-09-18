@@ -18,16 +18,20 @@ type PeerConfig struct {
 	Url               string
 	Port              string
 	EntriesPerKBucket int
+	InputDataFolder   string
+	StoreIpfsFolder   string
 }
 
 // Retorna una nueva instancia de la configuración
-func NewNodeConfig(name string, url string, port string, entriesPerKBucket int) *PeerConfig {
+func NewNodeConfig(name string, url string, port string, entriesPerKBucket int, inputDataFolder string, storeIpfsFolder string) *PeerConfig {
 	config := &PeerConfig{
 		Id:                GetKey(name),
 		Name:              name,
 		Url:               url,
 		Port:              port,
 		EntriesPerKBucket: entriesPerKBucket,
+		InputDataFolder:   inputDataFolder,
+		StoreIpfsFolder:   storeIpfsFolder,
 	}
 	return config
 }
@@ -43,21 +47,25 @@ func LoadConfig() *PeerConfig {
 	host := os.Getenv("PEER_HOST")
 	entries_per_k_bucket_s := os.Getenv("ENTRIES_PER_K_BUCKET")
 	entries_per_k_bucket, err := strconv.Atoi(entries_per_k_bucket_s)
+	inputDataFolder := os.Getenv("INPUT_DATA_FOLDER")
+	storeIpfsFolder := os.Getenv("STORE_IPFS_FOLDER")
 	if err != nil {
 		entries_per_k_bucket = DEFAULT_ENTRIES_PER_K_BUCKET
 		common.Log.Debugf(MSG_ERROR_ON_LOAD_ENTRIES_PER_K_BUCKET)
 	}
-	var config = NewNodeConfig(name, GenerateURL(host, port), port, entries_per_k_bucket)
+	var config = NewNodeConfig(name, GenerateURL(host, port), port, entries_per_k_bucket, inputDataFolder, storeIpfsFolder)
 	config.LogConfig()
 	return config
 }
 
 // Hace un log por debug de la configuración
 func (config *PeerConfig) LogConfig() {
-	common.Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v",
+	common.Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v | InputDataFolder: %v | StoreIpfsFolder: %v",
 		config.Name,
 		config.Url,
 		fmt.Sprintf("%v", KeyToLogFormatString(config.Id)),
 		config.EntriesPerKBucket,
+		config.InputDataFolder,
+		config.StoreIpfsFolder,
 	)
 }
