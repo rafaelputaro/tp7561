@@ -75,6 +75,8 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 // fuente en la tabla de contactos
 func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOperands) (*emptypb.Empty, error) {
 	//sourceContact, blockKey, blockName, data := protoUtils.ParseStoreBlockOperands(operands)
+	// agregar key en node
+	// obtener vecino más cercano a la clave
 	return nil, nil
 }
 
