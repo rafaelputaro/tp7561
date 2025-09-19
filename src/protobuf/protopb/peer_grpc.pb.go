@@ -22,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Operations_Ping_FullMethodName                      = "/Operations/Ping"
 	Operations_ShareContactsReciprocally_FullMethodName = "/Operations/ShareContactsReciprocally"
+	Operations_StoreBlock_FullMethodName                = "/Operations/StoreBlock"
 )
 
 // OperationsClient is the client API for Operations service.
@@ -32,6 +33,8 @@ type OperationsClient interface {
 	Ping(ctx context.Context, in *PingOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Permite compartir contactos recomendados entre dos pares recíprocamente
 	ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error)
+	// Permite enviar un bloque a ser guardado en un nodo dado
+	StoreBlock(ctx context.Context, in *StoreBlockOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type operationsClient struct {
@@ -62,6 +65,16 @@ func (c *operationsClient) ShareContactsReciprocally(ctx context.Context, in *Sh
 	return out, nil
 }
 
+func (c *operationsClient) StoreBlock(ctx context.Context, in *StoreBlockOperands, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Operations_StoreBlock_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperationsServer is the server API for Operations service.
 // All implementations must embed UnimplementedOperationsServer
 // for forward compatibility.
@@ -70,6 +83,8 @@ type OperationsServer interface {
 	Ping(context.Context, *PingOperands) (*emptypb.Empty, error)
 	// Permite compartir contactos recomendados entre dos pares recíprocamente
 	ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error)
+	// Permite enviar un bloque a ser guardado en un nodo dado
+	StoreBlock(context.Context, *StoreBlockOperands) (*emptypb.Empty, error)
 	mustEmbedUnimplementedOperationsServer()
 }
 
@@ -85,6 +100,9 @@ func (UnimplementedOperationsServer) Ping(context.Context, *PingOperands) (*empt
 }
 func (UnimplementedOperationsServer) ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ShareContactsReciprocally not implemented")
+}
+func (UnimplementedOperationsServer) StoreBlock(context.Context, *StoreBlockOperands) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StoreBlock not implemented")
 }
 func (UnimplementedOperationsServer) mustEmbedUnimplementedOperationsServer() {}
 func (UnimplementedOperationsServer) testEmbeddedByValue()                    {}
@@ -143,6 +161,24 @@ func _Operations_ShareContactsReciprocally_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Operations_StoreBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StoreBlockOperands)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperationsServer).StoreBlock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Operations_StoreBlock_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperationsServer).StoreBlock(ctx, req.(*StoreBlockOperands))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Operations_ServiceDesc is the grpc.ServiceDesc for Operations service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -157,6 +193,10 @@ var Operations_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ShareContactsReciprocally",
 			Handler:    _Operations_ShareContactsReciprocally_Handler,
+		},
+		{
+			MethodName: "StoreBlock",
+			Handler:    _Operations_StoreBlock_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

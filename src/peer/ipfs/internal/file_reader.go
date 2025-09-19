@@ -52,6 +52,9 @@ func (file *FileReader) Close() {
 // En caso de error retorna: <nil><-1><false><err>
 // En caso de eof:  <nil><-1><true><nil>
 func (file *FileReader) Next() ([]byte, int, bool, error) {
+	if file.eof {
+		return nil, INVALID_BLOCK_NUMBER, true, nil
+	}
 	b := make([]byte, BLOCK_SIZE)
 	n, err := file.reader.Read(b)
 	// si es eof retorna <nil><-1><true><nil>

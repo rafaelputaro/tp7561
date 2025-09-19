@@ -70,7 +70,16 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 // fuente en la tabla de contactos
 //func (node *Node) Store(contactSource contacts_queue.Contact, key []byte, value string) error
 
-func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error {
+// Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
+// En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
+// fuente en la tabla de contactos
+func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOperands) (*emptypb.Empty, error) {
+	//sourceContact, blockKey, blockName, data := protoUtils.ParseStoreBlockOperands(operands)
+	return nil, nil
+}
+
+// Envía a un contacto la solicitud
+func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error {
 
 	return nil
 }

@@ -137,7 +137,7 @@ func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey [
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
-func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, value string) error {
+func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, value string, data []byte) error {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
@@ -153,7 +153,7 @@ func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, val
 	// Buscar contactos cercanos
 	contacts := node.BucketTab.GetContactsForId(key)
 	for index := range contacts {
-		node.SndStore(node.Config, contacts[index], key, value)
+		node.SndStore(node.Config, contacts[index], key, value, data)
 	}
 	return nil
 }

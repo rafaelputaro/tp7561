@@ -197,6 +197,83 @@ func (x *ShareContactsReciprocallyResults) GetContactsUrls() []string {
 	return nil
 }
 
+// Contiene la información sobre un bloque a guardar
+type StoreBlockOperands struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
+	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
+	Key           []byte                 `protobuf:"bytes,3,req,name=key" json:"key,omitempty"`
+	BlockName     *string                `protobuf:"bytes,4,req,name=blockName" json:"blockName,omitempty"`
+	Data          []byte                 `protobuf:"bytes,5,req,name=data" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StoreBlockOperands) Reset() {
+	*x = StoreBlockOperands{}
+	mi := &file_peer_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StoreBlockOperands) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StoreBlockOperands) ProtoMessage() {}
+
+func (x *StoreBlockOperands) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StoreBlockOperands.ProtoReflect.Descriptor instead.
+func (*StoreBlockOperands) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *StoreBlockOperands) GetSourceId() []byte {
+	if x != nil {
+		return x.SourceId
+	}
+	return nil
+}
+
+func (x *StoreBlockOperands) GetSourceUrl() string {
+	if x != nil && x.SourceUrl != nil {
+		return *x.SourceUrl
+	}
+	return ""
+}
+
+func (x *StoreBlockOperands) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+func (x *StoreBlockOperands) GetBlockName() string {
+	if x != nil && x.BlockName != nil {
+		return *x.BlockName
+	}
+	return ""
+}
+
+func (x *StoreBlockOperands) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 var File_peer_proto protoreflect.FileDescriptor
 
 const file_peer_proto_rawDesc = "" +
@@ -213,11 +290,19 @@ const file_peer_proto_rawDesc = "" +
 	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"h\n" +
 	" ShareContactsReciprocallyResults\x12 \n" +
 	"\vcontactsIds\x18\x01 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls2\x9f\x01\n" +
+	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls\"\x92\x01\n" +
+	"\x12StoreBlockOperands\x12\x1a\n" +
+	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
+	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\x12\x10\n" +
+	"\x03key\x18\x03 \x02(\fR\x03key\x12\x1c\n" +
+	"\tblockName\x18\x04 \x02(\tR\tblockName\x12\x12\n" +
+	"\x04data\x18\x05 \x02(\fR\x04data2\xda\x01\n" +
 	"\n" +
 	"Operations\x12-\n" +
 	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x12b\n" +
-	"\x19ShareContactsReciprocally\x12\".ShareContactsReciprocallyOperands\x1a!.ShareContactsReciprocallyResultsB\vZ\t./protopb"
+	"\x19ShareContactsReciprocally\x12\".ShareContactsReciprocallyOperands\x1a!.ShareContactsReciprocallyResults\x129\n" +
+	"\n" +
+	"StoreBlock\x12\x13.StoreBlockOperands\x1a\x16.google.protobuf.EmptyB\vZ\t./protopb"
 
 var (
 	file_peer_proto_rawDescOnce sync.Once
@@ -231,20 +316,23 @@ func file_peer_proto_rawDescGZIP() []byte {
 	return file_peer_proto_rawDescData
 }
 
-var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_peer_proto_goTypes = []any{
 	(*PingOperands)(nil),                      // 0: PingOperands
 	(*ShareContactsReciprocallyOperands)(nil), // 1: ShareContactsReciprocallyOperands
 	(*ShareContactsReciprocallyResults)(nil),  // 2: ShareContactsReciprocallyResults
-	(*emptypb.Empty)(nil),                     // 3: google.protobuf.Empty
+	(*StoreBlockOperands)(nil),                // 3: StoreBlockOperands
+	(*emptypb.Empty)(nil),                     // 4: google.protobuf.Empty
 }
 var file_peer_proto_depIdxs = []int32{
 	0, // 0: Operations.Ping:input_type -> PingOperands
 	1, // 1: Operations.ShareContactsReciprocally:input_type -> ShareContactsReciprocallyOperands
-	3, // 2: Operations.Ping:output_type -> google.protobuf.Empty
-	2, // 3: Operations.ShareContactsReciprocally:output_type -> ShareContactsReciprocallyResults
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	3, // 2: Operations.StoreBlock:input_type -> StoreBlockOperands
+	4, // 3: Operations.Ping:output_type -> google.protobuf.Empty
+	2, // 4: Operations.ShareContactsReciprocally:output_type -> ShareContactsReciprocallyResults
+	4, // 5: Operations.StoreBlock:output_type -> google.protobuf.Empty
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -261,7 +349,7 @@ func file_peer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_peer_proto_rawDesc), len(file_peer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

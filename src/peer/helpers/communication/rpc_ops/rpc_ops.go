@@ -19,7 +19,7 @@ const MAX_RETRIES_ON_SHARE_CONTACTS_RECIP = 20
 
 type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error)
 
-type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error
+type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error
 
 type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
 

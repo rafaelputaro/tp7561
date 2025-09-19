@@ -11,6 +11,9 @@ service Operations {
     
     // Permite compartir contactos recomendados entre dos pares recíprocamente
     rpc ShareContactsReciprocally (ShareContactsReciprocallyOperands) returns (ShareContactsReciprocallyResults);
+
+    // Permite enviar un bloque a ser guardado en un nodo dado
+    rpc StoreBlock (StoreBlockOperands) returns (google.protobuf.Empty);
 }
 
 // Contiene los datos del contacto que hace el ping
@@ -31,5 +34,14 @@ message ShareContactsReciprocallyOperands {
 message ShareContactsReciprocallyResults {
     repeated bytes contactsIds = 1;
     repeated string contactsUrls = 2;
+}
+
+// Contiene la información sobre un bloque a guardar
+message StoreBlockOperands {
+    required bytes sourceId = 1;
+    required string sourceUrl = 2;
+    required bytes key = 3;
+    required string blockName = 4;
+    required bytes data = 5;
 }
 
