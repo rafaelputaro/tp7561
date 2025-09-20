@@ -11,6 +11,7 @@ import (
 
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
+	"tp/peer/helpers/file_manager"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
@@ -125,19 +126,21 @@ func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey [
 	}
 	// Agregar contacto a la bucket_table
 	node.BucketTab.AddContact(sourceContact)
+
 	// Búsqueda de valor
 	valueToReturn, err := node.KeyValueTab.GetValue(targetKey)
 	if err == nil {
 		return valueToReturn, nil, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
+
 	return key_value_table.EMPTY_VALUE, contactsToReturn, err
 }
 
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
-func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, value string, data []byte) error {
+func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fileName string, data []byte) error {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
@@ -146,14 +149,20 @@ func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, val
 	// Agregar contacto a la bucket_table
 	node.BucketTab.AddContact(sourceContact)
 	// Almacenar localmente
-	err := node.KeyValueTab.Add(key, value)
+	return node.doStoreBlock(key, fileName, data)
+}
+
+// Intenta guardar bloque localmente y añadir key a la tabla
+func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
+	// Almacenar localmente
+	err := node.KeyValueTab.Add(key, fileName, data)
 	if err != nil {
 		return err
 	}
-	// Buscar contactos cercanos
+	// Buscar contactos cercanos a la clave
 	contacts := node.BucketTab.GetContactsForId(key)
 	for index := range contacts {
-		node.SndStore(node.Config, contacts[index], key, value, data)
+		node.SndStore(node.Config, contacts[index], key, fileName, data)
 	}
 	return nil
 }
@@ -168,13 +177,38 @@ func (node *Node) GetContactsForId(id []byte) []contacts_queue.Contact {
 	return node.BucketTab.GetContactsForId(id)
 }
 
-// Agrega una nueva clave a la tabla. En caso de que la clave ya se encontraba
-// en la tabla retorna error
-func (node *Node) Add(key []byte, value string) error {
-	return node.KeyValueTab.Add(key, value)
-}
-
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
 func (node *Node) GetValue(key []byte) (string, error) {
 	return node.KeyValueTab.GetValue(key)
+}
+
+// Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
+func (node *Node) AddFile(fileName string) error {
+	return file_manager.AddFile(fileName, node.createSndBlockNeighbors())
+}
+
+// Retorna una función que intenta enviar la orden de store a los vecinos más cercanos a la clave
+// y en caso de no encontrar alguno almacena el bloque localmente
+func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
+	return func(key []byte, fileName string, data []byte) error {
+		// buscar contactos cercanos a la clave
+		contacts := node.BucketTab.GetContactsForId(key)
+		// enviar mensaje de store a cada nodo encontrado
+		countSended := 0
+		for index := range contacts {
+			if node.SndStore(node.Config, contacts[index], key, fileName, data) == nil {
+				countSended++
+			}
+		}
+		// si no se pudo agregar a algún vecino se guarda localmente
+		if countSended == 0 {
+			return node.doStoreBlock(key, fileName, data)
+		}
+		return nil
+	}
+}
+
+func (node *Node) GetFile(fileName string) error {
+	// obtener primer
+	return nil
 }

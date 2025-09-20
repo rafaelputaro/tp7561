@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"tp/common"
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
@@ -74,14 +75,22 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
 func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOperands) (*emptypb.Empty, error) {
-	//sourceContact, blockKey, blockName, data := protoUtils.ParseStoreBlockOperands(operands)
-	// agregar key en node
-	// obtener vecino más cercano a la clave
+	sourceContact, blockKey, blockName, data := protoUtils.ParseStoreBlockOperands(operands)
+	peer.NodeDHT.RcvStore(*sourceContact, blockKey, blockName, data)
 	return nil, nil
+}
+
+func (peer *Peer) AddFile(fileName string) error {
+	return peer.NodeDHT.AddFile(fileName)
+}
+
+func (peer *Peer) GetFile(fileName string) error {
+	return peer.NodeDHT.GetFile(fileName)
 }
 
 // Envía a un contacto la solicitud
 func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error {
-
+	//common.Log.Debugf("Data: %v", string(data))
+	common.Log.Infof("Send Store")
 	return nil
 }

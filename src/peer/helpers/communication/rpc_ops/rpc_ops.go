@@ -17,11 +17,11 @@ const MSG_FAIL_ON_SHARE_CONTACTS = "error on sharing contacts: %v"
 const MAX_RETRIES_ON_PING = 20
 const MAX_RETRIES_ON_SHARE_CONTACTS_RECIP = 20
 
+type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
+
 type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error)
 
 type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error
-
-type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
 
 // Ping con retry. En caso de no poder efectuar el ping retorna error
 func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
@@ -74,4 +74,9 @@ func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue
 	}
 	common.Log.Errorf(MSG_FAIL_ON_SHARE_CONTACTS, err)
 	return nil, err
+}
+
+func SndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error {
+	// @TODO seguir aquí
+	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"sync"
 	"tp/common"
 	"tp/peer/helpers"
+	"tp/peer/helpers/file_manager"
 )
 
 const MESSAGE_START = "Starting node..."
@@ -12,6 +13,7 @@ func main() {
 	common.Log.Info(MESSAGE_START)
 	common.InitLogger()
 	config := helpers.LoadConfig()
+	file_manager.LoadConfig()
 	// crear par
 	peer := NewPeer(*config)
 	wg := new(sync.WaitGroup)
@@ -20,6 +22,11 @@ func main() {
 	go func() {
 		helpers.SleepOnStart()
 		peer.SndShareContactsToBootstrap()
+		helpers.SleepOnStart()
+		helpers.SleepOnStart()
+		if peer.NodeDHT.IsBootstrapNode() {
+			peer.AddFile("file-1-1.txt")
+		}
 		wg.Done()
 	}()
 	// servir a resto de pares

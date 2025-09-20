@@ -5,6 +5,7 @@ import (
 	"sync"
 	"tp/common"
 	"tp/peer/helpers"
+	"tp/peer/helpers/file_manager"
 )
 
 const MSG_ERROR_ON_GET_VALUE = "error on get value from key value table"
@@ -12,7 +13,9 @@ const MSG_ERROR_ON_ADD_VALUE = "error on add key value"
 const MSG_ERROR_ON_UPDATE_VALUE = "error on update value from key value table"
 const EMPTY_VALUE = ""
 
-// Es una table que contiene pares clave valor
+// Es una table que contiene pares clave valor y permite almacenar localmente bloques
+// asociados a las claves como archivos donde los valores almacenados son los nombres
+// de los archivos
 type KeyValueTable struct {
 	mutex   sync.Mutex
 	Entries map[string]string
@@ -28,17 +31,23 @@ func NewKeyValueTable() *KeyValueTable {
 
 // Agrega una nueva clave a la tabla. En caso de que la clave ya se encontraba
 // en la tabla retorna error
-func (table *KeyValueTable) Add(key []byte, value string) error {
+func (table *KeyValueTable) Add(key []byte, fileName string, data []byte) error {
 	// tomar lock
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
-	// operar
+	// verificar si existe la clave localmente
 	keyS := helpers.KeyToString(key)
 	_, exists := table.Entries[keyS]
 	if exists {
 		return errors.New(MSG_ERROR_ON_ADD_VALUE)
 	}
-	table.Entries[keyS] = value
+	// guardar en disco
+	err := file_manager.StoreBlock(fileName, data)
+	if err != nil {
+		return err
+	}
+	// almacenar clave en tabla
+	table.Entries[keyS] = fileName
 	return nil
 }
 
