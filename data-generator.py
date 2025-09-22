@@ -7,6 +7,7 @@ BASE_FOLDER = "/tmp/data"
 BASE_PEER_FOLDER="peer-"
 BASE_FILE_NAME = "file-"
 FILE_EXT = "txt"
+MSG_GENERATING_DATASET = "Generating dataset for peer number %d\n"
 
 def main():
     # leer configuración
@@ -26,6 +27,9 @@ def main():
 # generar archivos para un par específico en la carpeta del par dado    
 def generate_data_for_pair(pair_number, number_of_files, min_paragraphs, max_paragraphs):
     folder = f"{BASE_FOLDER}/{BASE_PEER_FOLDER}{pair_number}"
+    if os.path.isdir(folder):
+        return
+    print(MSG_GENERATING_DATASET%(pair_number))
     os.makedirs(folder, exist_ok=True)
     for file_num in range(1, number_of_files):
         file_path = f"{folder}/{BASE_FILE_NAME}{pair_number}-{file_num}.{FILE_EXT}"        

@@ -19,6 +19,7 @@ type Peer struct {
 	protopb.UnimplementedOperationsServer
 }
 
+// Retorna una instancia de peer lista para ser utilizada
 func NewPeer(config helpers.PeerConfig) *Peer {
 	peer := Peer{
 		Config:  config,
@@ -28,6 +29,7 @@ func NewPeer(config helpers.PeerConfig) *Peer {
 	return &peer
 }
 
+// Inicia el servicio de atención de solicitudes rpc
 func (peer *Peer) Serve() {
 	peer.GrpcService.Serve()
 }
@@ -39,6 +41,8 @@ func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands)
 	return nil, nil
 }
 
+// Intenta agregar los contactos recibidos a la bucket tabler, agregar el contacto fuente a la bucket table y
+// retorna los contactos útiles para el contacto fuente
 func (peer *Peer) ShareContactsReciprocally(ctx context.Context, sourceOperands *protopb.ShareContactsReciprocallyOperands) (*protopb.ShareContactsReciprocallyResults, error) {
 	// parsear parámetros
 	sourceContact, sourceContactList := protoUtils.ParseShareContactsReciprocallyOperands(sourceOperands)
@@ -54,9 +58,6 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 	peer.NodeDHT.SndShareContactsToBootstrap()
 }
 
-// Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
-// agregar el contacto solicitante a la bucket_table
-
 //func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte) []contacts_queue.Contact
 
 // Si la target key se encuentra en el nodo retorna el valor de la misma, caso contrario retorna
@@ -68,17 +69,13 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
-//func (node *Node) Store(contactSource contacts_queue.Contact, key []byte, value string) error
-
-// Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
-// En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
-// fuente en la tabla de contactos
 func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOperands) (*emptypb.Empty, error) {
 	sourceContact, blockKey, blockName, data := protoUtils.ParseStoreBlockOperands(operands)
 	peer.NodeDHT.RcvStore(*sourceContact, blockKey, blockName, data)
 	return nil, nil
 }
 
+// Agrega un archivo local a la red de nodos del ipfs
 func (peer *Peer) AddFile(fileName string) error {
 	return peer.NodeDHT.AddFile(fileName)
 }
@@ -86,12 +83,3 @@ func (peer *Peer) AddFile(fileName string) error {
 func (peer *Peer) GetFile(fileName string) error {
 	return peer.NodeDHT.GetFile(fileName)
 }
-
-/*
-// Envía a un contacto la solicitud
-func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error {
-	//common.Log.Debugf("Data: %v", string(data))
-	common.Log.Infof("Send Store")
-	return nil
-}
-*/

@@ -77,7 +77,7 @@ func GetFile(fileName string) (string, error) {
 func StoreBlock(fileName string, data []byte) error {
 	filepath := generateIpfsFilePath(fileName)
 	// chequear si el archivo ya existe
-	if fileExists(filepath) {
+	if internal.FileExists(filepath) {
 		common.Log.Debugf(MSG_ERROR_FILE_EXIST)
 		return errors.New(MSG_ERROR_FILE_EXIST)
 	}
@@ -133,6 +133,7 @@ func generateIpfsFilePath(fileName string) string {
 	return LocalStorageConfig.StoreIpfsFolder + "/" + fileName
 }
 
+/*
 // Retorna verdadero si el archivo existe
 func fileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
@@ -142,3 +143,4 @@ func fileExists(filePath string) bool {
 		return !errors.Is(err, os.ErrNotExist)
 	}
 }
+*/

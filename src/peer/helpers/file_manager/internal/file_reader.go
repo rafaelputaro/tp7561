@@ -7,13 +7,6 @@ import (
 	"tp/common"
 )
 
-const MSG_FILE_COULD_NOT_BE_OPONED = "the file could not be opened: %v"
-const MSG_ERROR_CLOSING_FILE = "error closing file: %v"
-const MSG_ERROR_READING_FILE = "error reading file: %v"
-
-const INVALID_BLOCK_NUMBER = -1
-const BLOCK_SIZE = 256 * 1024 // tamaño de los bloques en bytes
-
 // Permite leer un archivo de a bloques
 type FileReader struct {
 	fd           *os.File
