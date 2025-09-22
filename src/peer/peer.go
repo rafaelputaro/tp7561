@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"tp/common"
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
@@ -23,7 +22,7 @@ type Peer struct {
 func NewPeer(config helpers.PeerConfig) *Peer {
 	peer := Peer{
 		Config:  config,
-		NodeDHT: *dht.NewNode(config, rpc_ops.SndPing, sndStore, rpc_ops.SndShareContactsRecip),
+		NodeDHT: *dht.NewNode(config, rpc_ops.SndPing, rpc_ops.SndStore, rpc_ops.SndShareContactsRecip),
 	}
 	peer.GrpcService = *NewPeerService(&peer)
 	return &peer
@@ -88,9 +87,11 @@ func (peer *Peer) GetFile(fileName string) error {
 	return peer.NodeDHT.GetFile(fileName)
 }
 
+/*
 // Envía a un contacto la solicitud
 func sndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error {
 	//common.Log.Debugf("Data: %v", string(data))
 	common.Log.Infof("Send Store")
 	return nil
 }
+*/
