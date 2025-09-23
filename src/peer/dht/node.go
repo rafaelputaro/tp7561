@@ -115,26 +115,24 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 	return node.BucketTab.GetContactsForId(targetId)
 }
 
-// Si la target key se encuentra en el nodo retorna el valor de la misma, caso contrario retorna
+// Si la target key se encuentra en el nodo retorna el archivo asociado a la misma, caso contrario retorna
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
-func (node *Node) RcvFindValue(sourceContact contacts_queue.Contact, targetKey []byte) (string, []contacts_queue.Contact, error) {
+func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error) {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
-		return key_value_table.EMPTY_VALUE, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
+		return key_value_table.EMPTY_VALUE, []byte{}, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
 	node.BucketTab.AddContact(sourceContact)
-
-	// Búsqueda de valor
-	valueToReturn, err := node.KeyValueTab.GetValue(targetKey)
+	// Búsqueda de archivo
+	fileName, data, err := node.KeyValueTab.Get(targetKey)
 	if err == nil {
-		return valueToReturn, nil, nil
+		return fileName, data, []contacts_queue.Contact{}, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
-
-	return key_value_table.EMPTY_VALUE, contactsToReturn, err
+	return key_value_table.EMPTY_VALUE, []byte{}, contactsToReturn, err
 }
 
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
@@ -178,13 +176,19 @@ func (node *Node) GetContactsForId(id []byte) []contacts_queue.Contact {
 }
 
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
-func (node *Node) GetValue(key []byte) (string, error) {
-	return node.KeyValueTab.GetValue(key)
+func (node *Node) GetValue(key []byte) (string, []byte, error) {
+	return node.KeyValueTab.Get(key)
 }
 
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFile(fileName string) error {
 	return file_manager.AddFile(fileName, node.createSndBlockNeighbors())
+}
+
+func (node *Node) GetFile(fileName string) error {
+
+	// obtener primer
+	return nil
 }
 
 // Retorna una función que intenta enviar la orden de store a los vecinos más cercanos a la clave
@@ -206,9 +210,4 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 		}
 		return nil
 	}
-}
-
-func (node *Node) GetFile(fileName string) error {
-	// obtener primer
-	return nil
 }

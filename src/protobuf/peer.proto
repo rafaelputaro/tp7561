@@ -14,6 +14,9 @@ service Operations {
 
     // Permite enviar un bloque a ser guardado en un nodo dado
     rpc StoreBlock (StoreBlockOperands) returns (google.protobuf.Empty);
+
+    // Permite enviar un bloque a ser guardado en un nodo dado
+    rpc FindBlock (FindBlockOperands) returns (FindBlockResults);
 }
 
 // Contiene los datos del contacto que hace el ping
@@ -45,3 +48,16 @@ message StoreBlockOperands {
     required bytes data = 5;
 }
 
+// Contiene la información sobre un bloque a buscar
+message FindBlockOperands {
+    required bytes sourceId = 1;
+    required string sourceUrl = 2;
+    required bytes blockKey = 3;
+}
+
+message FindBlockResults {
+    required string blockName = 1;
+    required bytes blockData = 2;
+    repeated bytes contactsIds = 3;
+    repeated string contactsUrls = 4;
+}

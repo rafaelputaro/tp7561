@@ -4,7 +4,7 @@ import (
 	"sync"
 	"tp/common"
 	"tp/peer/helpers"
-	"tp/peer/helpers/file_manager"
+	"tp/peer/helpers/file_manager/config_fm"
 )
 
 const MESSAGE_START = "Starting node..."
@@ -13,7 +13,7 @@ func main() {
 	common.Log.Info(MESSAGE_START)
 	common.InitLogger()
 	config := helpers.LoadConfig()
-	file_manager.LoadConfig()
+	config_fm.LoadConfig()
 	// crear par
 	peer := NewPeer(*config)
 	wg := new(sync.WaitGroup)

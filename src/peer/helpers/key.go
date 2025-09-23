@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"tp/common"
@@ -126,4 +127,9 @@ func GeneratePrefixes(key []byte) []string {
 		toReturn = append(toReturn, string(BoolArrayToBinaryString(prefix)))
 	}
 	return toReturn
+}
+
+// Retorna verdadero si la key es nula
+func IsNullKey(key []byte) bool {
+	return bytes.Equal(key, nullKey)
 }

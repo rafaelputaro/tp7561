@@ -1,4 +1,4 @@
-package file_manager
+package config_fm
 
 import (
 	"os"

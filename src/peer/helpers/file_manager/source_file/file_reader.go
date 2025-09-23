@@ -1,10 +1,12 @@
-package internal
+package source_file
 
 import (
 	"bufio"
 	"io"
 	"os"
 	"tp/common"
+	"tp/peer/helpers/file_manager/config_fm"
+	"tp/peer/helpers/file_manager/utils"
 )
 
 // Permite leer un archivo de a bloques
@@ -20,7 +22,7 @@ type FileReader struct {
 func NewFileReader(filePath string) (*FileReader, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		common.Log.Errorf(MSG_FILE_COULD_NOT_BE_OPONED, err)
+		common.Log.Errorf(utils.MSG_FILE_COULD_NOT_BE_OPONED, err)
 		return nil, err
 	}
 	r := bufio.NewReader(file)
@@ -28,7 +30,7 @@ func NewFileReader(filePath string) (*FileReader, error) {
 		fd:           file,
 		reader:       r,
 		currentBlock: []byte{},
-		blockNumber:  INVALID_BLOCK_NUMBER,
+		blockNumber:  config_fm.INVALID_BLOCK_NUMBER,
 		eof:          false,
 	}
 	return &toReturn, nil
@@ -37,7 +39,7 @@ func NewFileReader(filePath string) (*FileReader, error) {
 // Cierra el archivo asociado
 func (file *FileReader) Close() {
 	if err := file.fd.Close(); err != nil {
-		common.Log.Errorf(MSG_ERROR_CLOSING_FILE, err)
+		common.Log.Errorf(utils.MSG_ERROR_CLOSING_FILE, err)
 	}
 }
 
@@ -46,18 +48,18 @@ func (file *FileReader) Close() {
 // En caso de eof:  <nil><-1><true><nil>
 func (file *FileReader) Next() ([]byte, int, bool, error) {
 	if file.eof {
-		return nil, INVALID_BLOCK_NUMBER, true, nil
+		return nil, config_fm.INVALID_BLOCK_NUMBER, true, nil
 	}
-	b := make([]byte, BLOCK_SIZE)
+	b := make([]byte, config_fm.BLOCK_SIZE)
 	n, err := file.reader.Read(b)
 	// si es eof retorna <nil><-1><true><nil>
 	if err == io.EOF {
 		file.eof = true
-		return nil, INVALID_BLOCK_NUMBER, true, nil
+		return nil, config_fm.INVALID_BLOCK_NUMBER, true, nil
 	}
 	// si hay error retorna <nil><-1><false><err>
 	if err != nil {
-		common.Log.Errorf(MSG_ERROR_READING_FILE, err)
+		common.Log.Errorf(utils.MSG_ERROR_READING_FILE, err)
 		return nil, file.blockNumber, file.eof, err
 	}
 	file.currentBlock = b[0:n]

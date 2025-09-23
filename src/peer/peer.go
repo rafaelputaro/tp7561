@@ -34,6 +34,15 @@ func (peer *Peer) Serve() {
 	peer.GrpcService.Serve()
 }
 
+// Agrega un archivo local a la red de nodos del ipfs
+func (peer *Peer) AddFile(fileName string) error {
+	return peer.NodeDHT.AddFile(fileName)
+}
+
+func (peer *Peer) GetFile(fileName string) error {
+	return peer.NodeDHT.GetFile(fileName)
+}
+
 // Hace el procesamiento de la recepción de un ping desde el contacto parámetro e intenta agregarlo
 // a la tabla de contactos.
 func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands) (*emptypb.Empty, error) {
@@ -58,14 +67,6 @@ func (peer *Peer) SndShareContactsToBootstrap() {
 	peer.NodeDHT.SndShareContactsToBootstrap()
 }
 
-//func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte) []contacts_queue.Contact
-
-// Si la target key se encuentra en el nodo retorna el valor de la misma, caso contrario retorna
-// un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
-// agregar el contacto solicitante a la bucket_table
-
-//func (node *Node) FindValue(contactSource contacts_queue.Contact, targetKey []byte) (string, []contacts_queue.Contact, error)
-
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
@@ -75,11 +76,15 @@ func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOp
 	return nil, nil
 }
 
-// Agrega un archivo local a la red de nodos del ipfs
-func (peer *Peer) AddFile(fileName string) error {
-	return peer.NodeDHT.AddFile(fileName)
+// Si la target key se encuentra en el nodo retorna el valor de la misma, caso contrario retorna
+// un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
+// agregar el contacto solicitante a la bucket_table
+func (peer *Peer) FindBlock(ctx context.Context, operands *protopb.FindBlockOperands) (*protopb.FindBlockResults, error) {
+	sourceContact, key := protoUtils.ParseFindBlockOperands(operands)
+	fileName, data, contacts, err := peer.NodeDHT.RcvFindBlock(sourceContact, key)
+	return protoUtils.CreateFindBlockResults(fileName, data, contacts), err
 }
 
-func (peer *Peer) GetFile(fileName string) error {
-	return peer.NodeDHT.GetFile(fileName)
-}
+//func (peer *Peer) FindBlock(contactSource contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error)
+
+//func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte) []contacts_queue.Contact

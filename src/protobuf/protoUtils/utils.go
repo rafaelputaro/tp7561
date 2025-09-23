@@ -2,74 +2,7 @@ package protoUtils
 
 import (
 	"tp/peer/dht/bucket_table/contacts_queue"
-	"tp/protobuf/protopb"
-
-	"google.golang.org/protobuf/proto"
 )
-
-// Retorna los operandos para hacer una operación de ping
-func CreatePingOperands(id []byte, url string) *protopb.PingOperands {
-	return &protopb.PingOperands{
-		SourceId:  id,
-		SourceUrl: proto.String(url),
-	}
-}
-
-// Retorna los operandos para hacer compartir contactos
-func CreateShareContactsReciprocallyOperands(contact contacts_queue.Contact, contacts []contacts_queue.Contact) *protopb.ShareContactsReciprocallyOperands {
-	contacstIds, contactsUrls := contactsToArrays(contacts)
-	return &protopb.ShareContactsReciprocallyOperands{
-		SourceId:     contact.ID,
-		SourceUrl:    proto.String(contact.Url),
-		ContactsIds:  contacstIds,
-		ContactsUrls: contactsUrls,
-	}
-}
-
-// Hace el parseo de los operando recibidos en una operación de compartir contactos
-func ParseShareContactsReciprocallyOperands(operands *protopb.ShareContactsReciprocallyOperands) (contacts_queue.Contact, []contacts_queue.Contact) {
-	contactSource := contacts_queue.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
-	contacts := contactsFromArrays(operands.GetContactsIds(), operands.GetContactsUrls())
-	return *contactSource, contacts
-}
-
-// Crea los resultados ha retorna en una operación de compartir contactos
-func CreateShareContactsReciprocallyResults(contacts []contacts_queue.Contact) *protopb.ShareContactsReciprocallyResults {
-	contacstIds, contactsUrls := contactsToArrays(contacts)
-	return &protopb.ShareContactsReciprocallyResults{
-		ContactsIds:  contacstIds,
-		ContactsUrls: contactsUrls,
-	}
-}
-
-// Pasea los resultados de una operación de compartir contactos
-func ParseShareContactsReciprocallyResults(result *protopb.ShareContactsReciprocallyResults) []contacts_queue.Contact {
-	toReturn := []contacts_queue.Contact{}
-	for i := range result.ContactsIds {
-		toReturn = append(toReturn, *contacts_queue.NewContact(result.ContactsIds[i], result.ContactsUrls[i]))
-	}
-	return toReturn
-}
-
-// Crea los operandos para realizar una operación de rpc de guardado de bloque
-func CreateStoreBlockOperands(sourceId []byte, sourceUrl string, key []byte, blockName string, data []byte) *protopb.StoreBlockOperands {
-	return &protopb.StoreBlockOperands{
-		SourceId:  sourceId,
-		SourceUrl: proto.String(sourceUrl),
-		Key:       key,
-		BlockName: proto.String(blockName),
-		Data:      data,
-	}
-}
-
-// Parsea los operandos de la operación store block a <source contact><block key><block name><data>
-func ParseStoreBlockOperands(operands *protopb.StoreBlockOperands) (*contacts_queue.Contact, []byte, string, []byte) {
-	sourceContact := contacts_queue.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
-	blockKey := operands.GetKey()
-	blockName := operands.GetBlockName()
-	data := operands.GetData()
-	return sourceContact, blockKey, blockName, data
-}
 
 // Convierte una lista de contactos en sendas listas de ids y de url
 func contactsToArrays(contacts []contacts_queue.Contact) ([][]byte, []string) {

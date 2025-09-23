@@ -10,6 +10,7 @@ import (
 const DEFAULT_ENTRIES_PER_K_BUCKET = 10
 const MSG_ERROR_ON_LOAD_ENTRIES_PER_K_BUCKET = "Error on load entries per k bucket"
 const EMPTY_URL = ""
+const RECOVERED_FOLDER = "recovered"
 
 // Representa la configuración del par
 type PeerConfig struct {

@@ -23,6 +23,7 @@ const (
 	Operations_Ping_FullMethodName                      = "/Operations/Ping"
 	Operations_ShareContactsReciprocally_FullMethodName = "/Operations/ShareContactsReciprocally"
 	Operations_StoreBlock_FullMethodName                = "/Operations/StoreBlock"
+	Operations_FindBlock_FullMethodName                 = "/Operations/FindBlock"
 )
 
 // OperationsClient is the client API for Operations service.
@@ -35,6 +36,8 @@ type OperationsClient interface {
 	ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
 	StoreBlock(ctx context.Context, in *StoreBlockOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Permite enviar un bloque a ser guardado en un nodo dado
+	FindBlock(ctx context.Context, in *FindBlockOperands, opts ...grpc.CallOption) (*FindBlockResults, error)
 }
 
 type operationsClient struct {
@@ -75,6 +78,16 @@ func (c *operationsClient) StoreBlock(ctx context.Context, in *StoreBlockOperand
 	return out, nil
 }
 
+func (c *operationsClient) FindBlock(ctx context.Context, in *FindBlockOperands, opts ...grpc.CallOption) (*FindBlockResults, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FindBlockResults)
+	err := c.cc.Invoke(ctx, Operations_FindBlock_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperationsServer is the server API for Operations service.
 // All implementations must embed UnimplementedOperationsServer
 // for forward compatibility.
@@ -85,6 +98,8 @@ type OperationsServer interface {
 	ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
 	StoreBlock(context.Context, *StoreBlockOperands) (*emptypb.Empty, error)
+	// Permite enviar un bloque a ser guardado en un nodo dado
+	FindBlock(context.Context, *FindBlockOperands) (*FindBlockResults, error)
 	mustEmbedUnimplementedOperationsServer()
 }
 
@@ -103,6 +118,9 @@ func (UnimplementedOperationsServer) ShareContactsReciprocally(context.Context, 
 }
 func (UnimplementedOperationsServer) StoreBlock(context.Context, *StoreBlockOperands) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoreBlock not implemented")
+}
+func (UnimplementedOperationsServer) FindBlock(context.Context, *FindBlockOperands) (*FindBlockResults, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindBlock not implemented")
 }
 func (UnimplementedOperationsServer) mustEmbedUnimplementedOperationsServer() {}
 func (UnimplementedOperationsServer) testEmbeddedByValue()                    {}
@@ -179,6 +197,24 @@ func _Operations_StoreBlock_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Operations_FindBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindBlockOperands)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperationsServer).FindBlock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Operations_FindBlock_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperationsServer).FindBlock(ctx, req.(*FindBlockOperands))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Operations_ServiceDesc is the grpc.ServiceDesc for Operations service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -197,6 +233,10 @@ var Operations_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StoreBlock",
 			Handler:    _Operations_StoreBlock_Handler,
+		},
+		{
+			MethodName: "FindBlock",
+			Handler:    _Operations_FindBlock_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

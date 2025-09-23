@@ -60,8 +60,22 @@ func (table *KeyValueTable) Remove(key []byte) {
 	delete(table.Entries, helpers.KeyToString(key))
 }
 
+// Obtiene el nombre del archivo junto a sus datos para cierta clave. En caso de no disponer
+// la clave retorna error. Los datos del archivo se retornan con su header completo.
+func (table *KeyValueTable) Get(key []byte) (string, []byte, error) {
+	// obtener nombre del archivo
+	fileName, err := table.getFileName(key)
+	// si no lo contiene retornar err
+	if err != nil {
+		return "", nil, err
+	}
+	// leer datos del archivo
+	data, err := file_manager.GetBlock(fileName)
+	return fileName, data, err
+}
+
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
-func (table *KeyValueTable) GetValue(key []byte) (string, error) {
+func (table *KeyValueTable) getFileName(key []byte) (string, error) {
 	if value, ok := table.Entries[helpers.KeyToString(key)]; ok {
 		return value, nil
 	}
@@ -85,6 +99,6 @@ func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
 
 // Retorna verdadero si la table contiene cierta clave
 func (table *KeyValueTable) HasKey(key []byte) bool {
-	_, err := table.GetValue(key)
+	_, err := table.getFileName(key)
 	return err != nil
 }
