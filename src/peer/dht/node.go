@@ -54,9 +54,8 @@ func (node *Node) IsBootstrapNode() bool {
 	return bytes.Equal(node.Config.Id, helpers.BootstrapNodeID)
 }
 
-// Representa la recepción de un ping el cuál consiste en intentar agregar el contacto a la tabla de
-// contactos
-func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
+// Chequea si es un contacto a si mismo e intenta agregarlo
+func (node *Node) AddContactPreventingLoop(sourceContact contacts_queue.Contact) bool {
 	// Prevenir bucle
 	if node.DiscardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
@@ -65,6 +64,12 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 	// Trata de agregar el contacto
 	node.BucketTab.AddContact(sourceContact)
 	return true
+}
+
+// Representa la recepción de un ping el cuál consiste en intentar agregar el contacto a la tabla de
+// contactos
+func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
+	return node.AddContactPreventingLoop(sourceContact)
 }
 
 // Obtiene los contactos locales recomendados para la fuente, agrega los contactos compartidos por la fuente y
@@ -115,7 +120,8 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 		return []contacts_queue.Contact{}
 	}
 	// Agregar contacto a la bucket_table
-	node.BucketTab.AddContact(sourceContact)
+	node.AddContactPreventingLoop(sourceContact)
+	//node.BucketTab.AddContact(sourceContact)
 	// Buscar los contactos
 	return node.BucketTab.GetContactsForId(targetId)
 }
@@ -130,7 +136,8 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 		return key_value_table.EMPTY_VALUE, []byte{}, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
-	node.BucketTab.AddContact(sourceContact)
+	node.AddContactPreventingLoop(sourceContact)
+	//node.BucketTab.AddContact(sourceContact)
 	// Búsqueda de archivo
 	fileName, data, err := node.KeyValueTab.Get(targetKey)
 	if err == nil {
@@ -150,7 +157,8 @@ func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fil
 		return errors.New(MSG_ERROR_OWN_REQUEST)
 	}
 	// Agregar contacto a la bucket_table
-	node.BucketTab.AddContact(sourceContact)
+	node.AddContactPreventingLoop(sourceContact)
+	//node.BucketTab.AddContact(sourceContact)
 	// Almacenar localmente
 	return node.doStoreBlock(key, fileName, data)
 }

@@ -92,11 +92,12 @@ func GetBlock(fileName string) ([]byte, error) {
 
 // Limpia el store
 func CleanStore() {
-	path := utils.GenerateIpfsFilePath("")
+	path := utils.GenerateInputFilePath("")
 	if utils.PathExists(path) {
 		err := os.RemoveAll(path)
 		if err != nil {
-			common.Log.Errorf(utils.MSG_ERROR_ON_CLEAN_STORE, err)
+			common.Log.Errorf(utils.MSG_ERROR_ON_CLEAN_STORE, path, err)
+			return
 		}
 		common.Log.Infof(utils.MSG_STORE_HAS_BENN_CLEANED)
 	}
