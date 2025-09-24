@@ -22,8 +22,12 @@ type Peer struct {
 // Retorna una instancia de peer lista para ser utilizada
 func NewPeer(config helpers.PeerConfig) *Peer {
 	peer := Peer{
-		Config:  config,
-		NodeDHT: *dht.NewNode(config, rpc_ops.SndPing, rpc_ops.SndStore, rpc_ops.SndShareContactsRecip),
+		Config: config,
+		NodeDHT: *dht.NewNode(
+			config, rpc_ops.SndPing,
+			rpc_ops.SndStore,
+			rpc_ops.SndShareContactsRecip,
+			rpc_ops.SndFindBlock),
 	}
 	peer.GrpcService = *NewPeerService(&peer)
 	return &peer

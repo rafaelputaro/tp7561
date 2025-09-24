@@ -33,7 +33,7 @@ func ParseFindBlockOperands(operands *protopb.FindBlockOperands) (contacts_queue
 	return *contactSource, operands.GetBlockKey()
 }
 
-// Pasea los resultados de una operación de encontrar bloque
+// Pasea los resultados de una operación de encontrar bloque <fileName>,<data>,<contacts>
 func ParseFindBlockResults(result *protopb.FindBlockResults) (string, []byte, []contacts_queue.Contact) {
 	return result.GetBlockName(), result.GetBlockData(), contactsFromArrays(result.ContactsIds, result.ContactsUrls)
 }

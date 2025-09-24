@@ -21,7 +21,7 @@ func NewStorageConfig(inputDataFolder string, storeIpfsFolder string) *StorageCo
 	return config
 }
 
-// Lee las variables de entorno que establecen la configuración de almacenamiento
+// Lee las variables de entorno que establecen la configuración de almacenamiento and clean the store
 func LoadConfig() {
 	inputDataFolder := os.Getenv("INPUT_DATA_FOLDER")
 	storeIpfsFolder := os.Getenv("STORE_IPFS_FOLDER")

@@ -2,6 +2,7 @@ package key_value_table
 
 import (
 	"errors"
+	"os"
 	"sync"
 	"tp/common"
 	"tp/peer/helpers"
@@ -44,7 +45,10 @@ func (table *KeyValueTable) Add(key []byte, fileName string, data []byte) error 
 	// guardar en disco
 	err := file_manager.StoreBlock(fileName, data)
 	if err != nil {
-		return err
+		if !errors.Is(err, os.ErrExist) {
+			common.Log.Debugf(MSG_ERROR_ON_ADD_VALUE + ":" + err.Error())
+			return err
+		}
 	}
 	// almacenar clave en tabla
 	table.Entries[keyS] = fileName

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"os"
 	"tp/common"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/bucket_table/contacts_queue"
@@ -12,6 +13,7 @@ import (
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
 	"tp/peer/helpers/file_manager"
+	"tp/peer/helpers/file_manager/blocks"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
@@ -25,6 +27,7 @@ type Node struct {
 	SndStore              rpc_ops.StoreOp
 	SndShareContactsRecip rpc_ops.SndShareContactsRecipOp
 	SndPing               rpc_ops.PingOp
+	SndFindBlock          rpc_ops.FindBlockOp
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
@@ -32,7 +35,8 @@ func NewNode(
 	config helpers.PeerConfig,
 	sndPing rpc_ops.PingOp,
 	sndStore rpc_ops.StoreOp,
-	sndShareContactsRecip rpc_ops.SndShareContactsRecipOp) *Node {
+	sndShareContactsRecip rpc_ops.SndShareContactsRecipOp,
+	sndFindBlock rpc_ops.FindBlockOp) *Node {
 	node := &Node{
 		Config:                config,
 		BucketTab:             *bucket_table.NewBucketTable(config, sndPing),
@@ -40,6 +44,7 @@ func NewNode(
 		SndStore:              sndStore,
 		SndShareContactsRecip: sndShareContactsRecip,
 		SndPing:               sndPing,
+		SndFindBlock:          sndFindBlock,
 	}
 	return node
 }
@@ -155,7 +160,9 @@ func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
 	// Almacenar localmente
 	err := node.KeyValueTab.Add(key, fileName, data)
 	if err != nil {
-		return err
+		if !errors.Is(err, os.ErrExist) {
+			return err
+		}
 	}
 	// Buscar contactos cercanos a la clave
 	contacts := node.BucketTab.GetContactsForId(key)
@@ -186,7 +193,16 @@ func (node *Node) AddFile(fileName string) error {
 }
 
 func (node *Node) GetFile(fileName string) error {
-
+	name := blocks.GenerateBlockName(fileName, 1)
+	key := helpers.GetKey(name)
+	contacts := node.GetContactsForId(key)
+	if contacts != nil {
+		fileName, data, _, _ := node.SndFindBlock(node.Config, contacts[0], key)
+		file_manager.StoreBlockOnDownload(fileName, data)
+		common.Log.Debugf(fileName)
+	} else {
+		common.Log.Debugf("No hay contactos")
+	}
 	// obtener primer
 	return nil
 }

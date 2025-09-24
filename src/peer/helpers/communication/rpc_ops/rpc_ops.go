@@ -11,20 +11,29 @@ import (
 )
 
 const MSG_FAIL_ON_SEND_PING = "error sending ping: %v"
-const MSG_PING_ATTEMPT = "ping attempt: %v | error: %v"
-const MSG_SHARE_CONTACTS_ATTEMPT = "share contacts attempt: %v | error: %v"
 const MSG_FAIL_ON_SHARE_CONTACTS = "error on sharing contacts: %v"
 const MSG_FAIL_ON_SEND_STORE = "error sending store message: %v"
+const MSG_FAIL_ON_SEND_FIND_BLOCK = "error sending find block message: %v"
+const MSG_PING_ATTEMPT = "ping attempt: %v | error: %v"
+const MSG_SHARE_CONTACTS_ATTEMPT = "share contacts attempt: %v | error: %v"
 const MSG_STORE_ATTEMPT = "store block attempt: %v | error: %v"
+const MSG_FIND_BLOCK_ATTEMPT = "find block attempt: %v | error: %v"
 const MAX_RETRIES_ON_PING = 20
 const MAX_RETRIES_ON_SHARE_CONTACTS_RECIP = 20
 const MAX_RETRIES_ON_STORE = 20
+const MAX_RETRIES_ON_FIND_BLOCK = 20
 
+// Ping con retry. En caso de no poder efectuar el ping retorna error
 type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
 
+// Share contact con retry. Retorna  <contacts><error>.En caso de no poder enviar el mensaje retorna error
 type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error)
 
+// Envío de store a un contacto con reintentos. Retorna <error>
 type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error
+
+// Find block con retry. Retorna <fileName><data con header><contacts><error> . En caso de no poder enviar el mensaje retorna error
+type FindBlockOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, key []byte) (string, []byte, []contacts_queue.Contact, error)
 
 // Ping con retry. En caso de no poder efectuar el ping retorna error
 func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
@@ -50,7 +59,7 @@ func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
 	return err
 }
 
-// Share contact con retry. En caso de no poder efectuar el ping retorna error
+// Share contact con retry. Retorna  <contacts><error>.En caso de no poder enviar el mensaje retorna error
 func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error) {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
@@ -79,7 +88,7 @@ func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue
 	return nil, err
 }
 
-// Envío de store a un contacto con reintentos
+// Envío de store a un contacto con reintentos. Retorna <error>
 func SndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, blockName string, data []byte) error {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(contact.Url, communication.LogFatalOnFailConnect)
@@ -104,4 +113,34 @@ func SndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []b
 	}
 	common.Log.Errorf(MSG_FAIL_ON_SEND_STORE, err)
 	return err
+}
+
+// Find block con retry. Retorna <fileName><data con header><contacts><error> . En caso de no poder enviar el mensaje retorna error
+func SndFindBlock(config helpers.PeerConfig, destContact contacts_queue.Contact, key []byte) (string, []byte, []contacts_queue.Contact, error) {
+	// conexión
+	conn, client, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
+	if err == nil {
+		defer conn.Close()
+		defer cancel()
+		// find block con retry
+		for retry := range MAX_RETRIES_ON_FIND_BLOCK {
+			// armo los argumentos
+			operands := protoUtils.CreateFindBlockOperands(config.Id, config.Url, key)
+			// compartir contacto
+			var response *protopb.FindBlockResults
+			// compartir contacto
+			response, err = client.FindBlock(ctx, operands)
+			if err != nil {
+				common.Log.Infof(MSG_FIND_BLOCK_ATTEMPT, retry, err)
+				// esperar
+				helpers.SleepBetweenRetries()
+				continue
+			}
+			fileName, data, contacts := protoUtils.ParseFindBlockResults(response)
+			return fileName, data, contacts, nil
+		}
+		return "", nil, nil, err
+	}
+	common.Log.Errorf(MSG_FAIL_ON_SEND_FIND_BLOCK, err)
+	return "", nil, nil, err
 }

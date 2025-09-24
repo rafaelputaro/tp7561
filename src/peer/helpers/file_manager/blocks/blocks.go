@@ -79,7 +79,7 @@ func ReadAndDeleteBlock(path string) ([]byte, []byte, []byte, error) {
 // el path de dicho archivo
 func RecoverFile(fileName string) (string, error) {
 	// crear carpeta recover en caso de que no exista
-	err := creatRecoverFolder()
+	err := CreateRecoverFolder()
 	if err != nil {
 		return "", err
 	}
@@ -137,9 +137,9 @@ func GenerateBlockToStore(data []byte, key []byte, nextKey []byte) []byte {
 // presenta algún error de acceso a disco
 func StoreBlock(filepath string, data []byte) error {
 	// chequear si el archivo ya existe
-	if utils.FileExists(filepath) {
+	if utils.PathExists(filepath) {
 		common.Log.Debugf(utils.MSG_ERROR_FILE_EXIST)
-		return errors.New(utils.MSG_ERROR_FILE_EXIST)
+		return os.ErrExist
 	}
 	file, err := os.Create(filepath)
 	if err != nil {
@@ -156,8 +156,11 @@ func StoreBlock(filepath string, data []byte) error {
 }
 
 // Crea la carpeta recover si no existe
-func creatRecoverFolder() error {
-	path := utils.GenertaIpfsRecoverPath("")
+func CreateRecoverFolder() error {
+	path := utils.GenertaIpfsRecoverFolderPath()
+	if utils.PathExists(path) {
+		return nil
+	}
 	err := os.Mkdir(path, 0755)
 	if err != nil {
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
