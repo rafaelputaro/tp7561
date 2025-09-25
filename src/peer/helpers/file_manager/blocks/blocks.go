@@ -78,11 +78,6 @@ func ReadAndDeleteBlock(path string) ([]byte, []byte, []byte, error) {
 // Reconstruye un archivo en base a sus partes y lo almacena en la carpeta recovered retornando el
 // el path de dicho archivo
 func RecoverFile(fileName string) (string, error) {
-	// crear carpeta recover en caso de que no exista
-	err := CreateRecoverFolder()
-	if err != nil {
-		return "", err
-	}
 	// creo archivo de salida
 	outputFile := utils.GenertaIpfsRecoverPath(fileName)
 	file, err := os.Create(outputFile)
@@ -150,20 +145,6 @@ func StoreBlock(filepath string, data []byte) error {
 	_, err = file.Write(data)
 	if err != nil {
 		common.Log.Errorf(utils.MSG_ERROR_WRITING_FILE, err)
-		return err
-	}
-	return nil
-}
-
-// Crea la carpeta recover si no existe
-func CreateRecoverFolder() error {
-	path := utils.GenertaIpfsRecoverFolderPath()
-	if utils.PathExists(path) {
-		return nil
-	}
-	err := os.Mkdir(path, 0755)
-	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
 		return err
 	}
 	return nil

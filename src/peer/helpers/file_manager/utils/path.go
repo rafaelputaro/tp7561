@@ -16,13 +16,13 @@ func GenerateIpfsFilePath(fileName string) string {
 }
 
 // Retorna el path de la carpeta recover
-func GenertaIpfsRecoverFolderPath() string {
+func GenerateIpfsRecoverFolderPath() string {
 	return config_fm.LocalStorageConfig.StoreIpfsFolder + "/" + config_fm.RECOVERED_FOLDER
 }
 
 // Retorna el path completo de un archivo recuperado
 func GenertaIpfsRecoverPath(fileName string) string {
-	return GenertaIpfsRecoverFolderPath() + "/" + fileName + ".rec"
+	return GenerateIpfsRecoverFolderPath() + "/" + fileName + ".rec"
 }
 
 // Retorna el path completo de una parte de un archivo descargado de la red de nodos

@@ -78,9 +78,6 @@ func StoreBlock(fileName string, data []byte) error {
 // Escribe un bloque en un archivo localmente como parte de un archivo a ser recuparado.
 // Retorna error si el archivo ya existe o si se presenta algún error de acceso a disco
 func StoreBlockOnDownload(fileName string, data []byte) error {
-	if err := blocks.CreateRecoverFolder(); err != nil {
-		return err
-	}
 	return blocks.StoreBlock(utils.GenertaIpfsRecoverPath(fileName), data)
 }
 
@@ -92,7 +89,7 @@ func GetBlock(fileName string) ([]byte, error) {
 
 // Limpia el store
 func CleanStore() {
-	path := utils.GenerateInputFilePath("")
+	path := utils.GenerateIpfsFilePath("")
 	if utils.PathExists(path) {
 		err := os.RemoveAll(path)
 		if err != nil {
@@ -106,5 +103,24 @@ func CleanStore() {
 // Lee las variables de entorno que establecen la configuración de almacenamiento and clean the store
 func InitStore() {
 	config_fm.LoadConfig()
+	// limpiar archivos viejos
 	CleanStore()
+	// crear carpetas necesarias
+	CreateStoreFolders()
+}
+
+func CreateStoreFolders() {
+	// crear store folder
+	path := utils.GenerateIpfsFilePath("")
+	err := os.Mkdir(path, 0755)
+	if err != nil {
+		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
+	}
+	// crear recover folder dentro de store
+	path = utils.GenerateIpfsRecoverFolderPath()
+	err = os.Mkdir(path, 0755)
+	if err != nil {
+		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
+
+	}
 }

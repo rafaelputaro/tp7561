@@ -3,7 +3,7 @@ import configparser
 import os
 import random
 
-BASE_FOLDER = "/tmp/data" 
+#BASE_FOLDER = "/tmp/data" 
 BASE_PEER_FOLDER="peer-"
 BASE_FILE_NAME = "file-"
 FILE_EXT = "txt"
@@ -18,15 +18,18 @@ def main():
     number_of_pairs = int(default_config["NUMBER_OF_PAIRS"])
     min_paragraphs = int(default_config["MIN_PARAGRAPHS"])
     max_paragraphs = int(default_config["MAX_PARAGRAPHS"])
+    host_folder = default_config["HOST_FOLDER"]
+    input_data_folder = default_config["INPUT_DATA_FOLDER"]
+    base_folder = host_folder+input_data_folder
     # crear carpeta datos
-    os.makedirs(BASE_FOLDER, exist_ok=True)
+    os.makedirs(base_folder, exist_ok=True)
     # generar datos para cada par
     for pair_number in range(1, number_of_pairs+1):
-        generate_data_for_pair(pair_number, number_of_files, min_paragraphs, max_paragraphs)
+        generate_data_for_pair(base_folder, pair_number, number_of_files, min_paragraphs, max_paragraphs)
 
 # generar archivos para un par específico en la carpeta del par dado    
-def generate_data_for_pair(pair_number, number_of_files, min_paragraphs, max_paragraphs):
-    folder = f"{BASE_FOLDER}/{BASE_PEER_FOLDER}{pair_number}"
+def generate_data_for_pair(base_folder, pair_number, number_of_files, min_paragraphs, max_paragraphs):
+    folder = f"{base_folder}/{BASE_PEER_FOLDER}{pair_number}"
     if os.path.isdir(folder):
         return
     print(MSG_GENERATING_DATASET%(pair_number))
