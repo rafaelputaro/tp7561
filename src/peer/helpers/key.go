@@ -11,6 +11,7 @@ const EMPTY_KEY = ""
 const NULL_KEY_SOURCE_DATA = ""
 const LENGTH_KEY_IN_BITS = 256
 const LENGTH_IN_BYTES = LENGTH_KEY_IN_BITS / 8
+
 const MSG_ERROR_ON_PARSE = "error on parse"
 
 var nullKey = GetKey(NULL_KEY_SOURCE_DATA)
