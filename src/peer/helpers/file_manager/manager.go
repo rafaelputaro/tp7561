@@ -77,14 +77,19 @@ func StoreBlock(fileName string, data []byte) error {
 
 // Escribe un bloque en un archivo localmente como parte de un archivo a ser recuparado.
 // Retorna error si el archivo ya existe o si se presenta algún error de acceso a disco
-func StoreBlockOnDownload(fileName string, data []byte) error {
-	return blocks.StoreBlock(utils.GenertaIpfsRecoverPath(fileName), data)
+// Retorna verdadero si es el bloque final, falso caso contrario
+func StoreBlockOnDownload(fileName string, data []byte) (bool, error) {
+	err := blocks.StoreBlock(utils.GenertaIpfsRecoverPath(fileName), data)
+	if err != nil {
+		return false, err
+	}
+	return blocks.IsFinalBlock(data), err
 }
 
 // Obtiene un block completo con su header y datos.
 func GetBlock(fileName string) ([]byte, error) {
-	_, data, err := blocks.ReadBlock(utils.GenerateIpfsFilePath(fileName))
-	return data, err
+	nBytes, data, err := blocks.ReadBlock(utils.GenerateIpfsFilePath(fileName))
+	return data[:nBytes], err
 }
 
 // Limpia el store

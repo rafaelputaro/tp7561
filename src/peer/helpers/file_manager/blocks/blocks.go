@@ -50,12 +50,12 @@ func ReadAndParseBlock(path string) ([]byte, []byte, []byte, error) {
 		return nil, nil, nil, errors.New(utils.MSG_ERROR_READING_HEADER)
 	}
 	// parseo header
-	blockKey := fileContent[:helpers.LENGTH_KEY_IN_BITS-1]
-	nextBlockKey := fileContent[helpers.LENGTH_IN_BYTES : config_fm.HEADER_BLOCK_FILE_SIZE-1]
+	blockKey := fileContent[:helpers.LENGTH_KEY_IN_BITS]
+	nextBlockKey := fileContent[helpers.LENGTH_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 	// parseo data
 	data := []byte{}
 	if nBytes-config_fm.HEADER_BLOCK_FILE_SIZE > 0 {
-		data = fileContent[config_fm.HEADER_BLOCK_FILE_SIZE : nBytes-1]
+		data = fileContent[config_fm.HEADER_BLOCK_FILE_SIZE:nBytes]
 	}
 	return blockKey, nextBlockKey, data, nil
 }
@@ -148,4 +148,18 @@ func StoreBlock(filepath string, data []byte) error {
 		return err
 	}
 	return nil
+}
+
+// Retorna verdadero si el dato contiene el bloque final
+func IsFinalBlock(data []byte) bool {
+	return helpers.IsNullKey(getNextBlock(data))
+}
+
+// Obtiene el id del siguiente bloque desde un dato con header
+func getNextBlock(data []byte) []byte {
+	length := len(data)
+	if length < config_fm.HEADER_BLOCK_FILE_SIZE {
+		common.Log.Debugf(utils.MSG_ERROR_HEADER_SIZE, length)
+	}
+	return data[helpers.LENGTH_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 }

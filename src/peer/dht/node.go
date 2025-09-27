@@ -9,6 +9,7 @@ import (
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/dht/key_value_table"
+	"tp/peer/dht/tiered_contact_storage"
 
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
@@ -18,6 +19,7 @@ import (
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
 const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
+const MSG_ERROR_FILE_NOT_FOUND = "the file could not be found: %v"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -201,17 +203,49 @@ func (node *Node) AddFile(fileName string) error {
 }
 
 func (node *Node) GetFile(fileName string) error {
-	name := blocks.GenerateBlockName(fileName, 1)
-	key := helpers.GetKey(name)
-	contacts := node.GetContactsForId(key)
-	if contacts != nil {
-		fileName, data, _, _ := node.SndFindBlock(node.Config, contacts[0], key)
-		file_manager.StoreBlockOnDownload(fileName, data)
-		common.Log.Debugf(fileName)
-	} else {
-		common.Log.Debugf("No hay contactos")
+	// Obtener archivo completo
+	blockNum := 0
+	endFile := false
+	for !endFile {
+		// Generar nombre y clave del bloque
+		blockName := blocks.GenerateBlockName(fileName, blockNum)
+		key := helpers.GetKey(blockName)
+		// Obtengo contactos locales
+		localContacts := node.GetContactsForId(key)
+		// Si no hay contactos locales se retorna error
+		if len(localContacts) == 0 {
+			msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)
+			common.Log.Errorf(msg)
+			return errors.New(msg)
+		}
+		// creo el storage de contactos y agrego los locales
+		contactStorage := tiered_contact_storage.NewTieredContactStorage(key)
+		contactStorage.PushContacts(localContacts)
+		// Obtener bloque
+		endBlock := false
+		for !endBlock {
+			// Si no hay más contactos retornar error
+			if contactStorage.IsEmpty() {
+				msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
+				common.Log.Errorf(msg)
+				return errors.New(msg)
+			}
+			// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
+			contact, _ := contactStorage.Pop()
+			fileNameFound, data, neighborContacts, _ := node.SndFindBlock(node.Config, *contact, key)
+			if len(fileNameFound) > 0 {
+				endFile, _ = file_manager.StoreBlockOnDownload(fileNameFound, data)
+				common.Log.Debugf(fileName)
+				endBlock = true
+				blockNum++
+				continue
+			}
+			// Agregar contactos encontrados
+			if neighborContacts != nil {
+				contactStorage.PushContacts(neighborContacts)
+			}
+		}
 	}
-	// obtener primer
 	return nil
 }
 
@@ -235,3 +269,17 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 		return nil
 	}
 }
+
+/*
+	blockName := blocks.GenerateBlockName(fileName, 1)
+	key := helpers.GetKey(blockName)
+	contacts := node.GetContactsForId(key)
+	if contacts != nil {
+		fileName, data, _, _ := node.SndFindBlock(node.Config, contacts[0], key)
+		file_manager.StoreBlockOnDownload(fileName, data)
+		common.Log.Debugf("Contact: %v", contacts[0].Url)
+		common.Log.Debugf("Primer corrida: %v", fileName)
+	} else {
+		common.Log.Debugf("No hay contactos")
+	}
+*/

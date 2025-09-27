@@ -16,7 +16,7 @@ const MSG_ERROR_ON_PARSE = "error on parse"
 
 var nullKey = GetKey(NULL_KEY_SOURCE_DATA)
 
-func GetNullKey(data string) []byte {
+func GetNullKey() []byte {
 	return nullKey
 }
 

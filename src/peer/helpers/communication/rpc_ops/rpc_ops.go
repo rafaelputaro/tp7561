@@ -21,7 +21,7 @@ const MSG_FIND_BLOCK_ATTEMPT = "find block attempt: %v | error: %v"
 const MAX_RETRIES_ON_PING = 20
 const MAX_RETRIES_ON_SHARE_CONTACTS_RECIP = 20
 const MAX_RETRIES_ON_STORE = 20
-const MAX_RETRIES_ON_FIND_BLOCK = 20
+const MAX_RETRIES_ON_FIND_BLOCK = 1
 
 // Ping con retry. En caso de no poder efectuar el ping retorna error
 type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
