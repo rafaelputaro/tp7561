@@ -1,6 +1,7 @@
 package file_manager
 
 import (
+	"fmt"
 	"os"
 	"tp/common"
 	"tp/peer/helpers"
@@ -128,4 +129,20 @@ func CreateStoreFolders() {
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
 
 	}
+}
+
+func UploadLocalFiles(uploadFile func(fileName string) error) error {
+	// leer archivos del directorio
+	entries, err := os.ReadDir(config_fm.LocalStorageConfig.InputDataFolder)
+	if err != nil {
+		common.Log.Errorf(utils.MSG_ERROR_READING_DIRECTORY, err)
+	}
+	// carga en la red de nodos
+	for _, entry := range entries {
+		fmt.Printf("- %s", entry.Name())
+		if !entry.IsDir() {
+			uploadFile(entry.Name())
+		}
+	}
+	return nil
 }

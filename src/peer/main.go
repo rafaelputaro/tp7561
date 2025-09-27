@@ -24,12 +24,16 @@ func main() {
 		peer.SndShareContactsToBootstrap()
 		helpers.SleepOnStart()
 		helpers.SleepOnStart()
-		if peer.NodeDHT.IsBootstrapNode() {
-			peer.AddFile("file-1-1.txt")
-		}
+		//if peer.NodeDHT.IsBootstrapNode() {
+		file_manager.UploadLocalFiles(func(fileName string) error {
+			peer.AddFile(fileName)
+			return nil
+		})
+		//}
 		helpers.SleepOnStart()
 		if peer.NodeDHT.IsBootstrapNode() {
-			peer.GetFile("file-1-1.txt")
+			peer.GetFile("file-2-1.txt")
+
 		}
 		wg.Done()
 	}()
