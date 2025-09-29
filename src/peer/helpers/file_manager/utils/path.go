@@ -16,18 +16,28 @@ func GenerateIpfsFilePath(fileName string) string {
 }
 
 // Retorna el path de la carpeta recover
-func GenerateIpfsRecoverFolderPath() string {
+func GenerateRecoverFolderPath() string {
 	return config_fm.LocalStorageConfig.StoreIpfsFolder + "/" + config_fm.RECOVERED_FOLDER
 }
 
-// Retorna el path completo de un archivo recuperado
-func GenertaIpfsRecoverPath(fileName string) string {
-	return GenerateIpfsRecoverFolderPath() + "/" + fileName + ".rec"
+// Retorna el path completo de un archivo recuperado <folder rec>/<fileName>.rec
+func GenerateRecoverPath(fileName string) string {
+	return GenerateRecoverFolderPath() + "/" + fileName + config_fm.RECOVERED_EXTENSION
 }
 
 // Retorna el path completo de una parte de un archivo descargado de la red de nodos
 func GenertaIpfsDownloadPartPath(fileName string, blockNumber int) string {
-	return GenertaIpfsRecoverPath(fileName + GeneratePartExtension(blockNumber))
+	return GenerateRecoverFolderPath() + "/" + fileName + GeneratePartExtension(blockNumber)
+}
+
+// Retorna el path completo de una parte de un archivo descargado de la red de nodos
+func GenerateIpfsDownloadPath(fileName string) string {
+	return GenerateRecoverPath(fileName + generateDownloadPathExtension())
+}
+
+// Agrega al archivo la extensión de descarga de una parte
+func generateDownloadPathExtension() string {
+	return ".down"
 }
 
 func GeneratePartExtension(blockNumber int) string {

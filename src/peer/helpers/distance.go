@@ -29,7 +29,7 @@ func GetLogDistance(key1 []byte, key2 []byte) (int, error) {
 
 func initDistanceScale() []int {
 	toReturn := []int{}
-	for nByte := range LENGTH_IN_BYTES {
+	for nByte := range LENGTH_KEY_IN_BYTES {
 		toReturn = append(toReturn, int(math.Log10(math.Pow(2.0, float64(8*nByte)))))
 	}
 	return toReturn

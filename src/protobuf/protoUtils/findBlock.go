@@ -2,6 +2,7 @@ package protoUtils
 
 import (
 	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/peer/helpers/file_manager/blocks"
 	"tp/protobuf/protopb"
 
 	"google.golang.org/protobuf/proto"
@@ -33,7 +34,7 @@ func ParseFindBlockOperands(operands *protopb.FindBlockOpers) (contacts_queue.Co
 	return *contactSource, operands.GetBlockKey()
 }
 
-// Pasea los resultados de una operación de encontrar bloque <fileName>,<data>,<contacts>
-func ParseFindBlockResults(result *protopb.FindBlockRes) (string, []byte, []contacts_queue.Contact) {
-	return result.GetBlockName(), result.GetBlockData(), contactsFromArrays(result.ContactsIds, result.ContactsUrls)
+// Pasea los resultados de una operación de encontrar bloque <fileName>,<next block key>,<data>,<contacts>
+func ParseFindBlockResults(result *protopb.FindBlockRes) (string, []byte, []byte, []contacts_queue.Contact) {
+	return result.GetBlockName(), blocks.GetNextBlock(result.BlockData), result.GetBlockData(), contactsFromArrays(result.ContactsIds, result.ContactsUrls)
 }

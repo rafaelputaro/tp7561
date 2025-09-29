@@ -2,6 +2,7 @@ package blocks
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"tp/common"
@@ -26,8 +27,10 @@ func ReadBlock(path string) (int, []byte, error) {
 	}
 	defer f.Close()
 	fileContent := make([]byte, config_fm.MAX_BLOCK_FILE_SIZE)
+	common.Log.Debugf("MAX_BLOCK_FILE_SIZE: %v", config_fm.MAX_BLOCK_FILE_SIZE) //@Todo borrar luego
 	// leer bloque completo
 	nBytes, err := f.Read(fileContent)
+	common.Log.Debugf("Bytes leídos: %v", nBytes) //@Todo borrar luego
 	if err != nil {
 		if err != io.EOF {
 			common.Log.Errorf(utils.MSG_ERROR_READING_FILE, err)
@@ -46,12 +49,13 @@ func ReadAndParseBlock(path string) ([]byte, []byte, []byte, error) {
 		return nil, nil, nil, err
 	}
 	// parseo de contenido del archivo
-	if nBytes > config_fm.HEADER_BLOCK_FILE_SIZE {
-		return nil, nil, nil, errors.New(utils.MSG_ERROR_READING_HEADER)
+	if nBytes < config_fm.HEADER_BLOCK_FILE_SIZE {
+		msg := fmt.Sprintf(utils.MSG_ERROR_READING_HEADER, path)
+		return nil, nil, nil, errors.New(msg)
 	}
 	// parseo header
 	blockKey := fileContent[:helpers.LENGTH_KEY_IN_BITS]
-	nextBlockKey := fileContent[helpers.LENGTH_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
+	nextBlockKey := fileContent[helpers.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 	// parseo data
 	data := []byte{}
 	if nBytes-config_fm.HEADER_BLOCK_FILE_SIZE > 0 {
@@ -79,7 +83,7 @@ func ReadAndDeleteBlock(path string) ([]byte, []byte, []byte, error) {
 // el path de dicho archivo
 func RecoverFile(fileName string) (string, error) {
 	// creo archivo de salida
-	outputFile := utils.GenertaIpfsRecoverPath(fileName)
+	outputFile := utils.GenerateRecoverPath(fileName)
 	file, err := os.Create(outputFile)
 	if err != nil {
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, err)
@@ -152,14 +156,14 @@ func StoreBlock(filepath string, data []byte) error {
 
 // Retorna verdadero si el dato contiene el bloque final
 func IsFinalBlock(data []byte) bool {
-	return helpers.IsNullKey(getNextBlock(data))
+	return helpers.IsNullKey(GetNextBlock(data))
 }
 
 // Obtiene el id del siguiente bloque desde un dato con header
-func getNextBlock(data []byte) []byte {
+func GetNextBlock(data []byte) []byte {
 	length := len(data)
 	if length < config_fm.HEADER_BLOCK_FILE_SIZE {
 		common.Log.Debugf(utils.MSG_ERROR_HEADER_SIZE, length)
 	}
-	return data[helpers.LENGTH_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
+	return data[helpers.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 }

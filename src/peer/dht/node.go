@@ -20,6 +20,8 @@ import (
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
 const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
 const MSG_ERROR_FILE_NOT_FOUND = "the file could not be found: %v"
+const MSG_FILE_FOUND = "the file has been found: %v"
+const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -203,13 +205,12 @@ func (node *Node) AddFile(fileName string) error {
 }
 
 func (node *Node) GetFile(fileName string) error {
+	// Primer bloque
+	blockName := blocks.GenerateBlockName(fileName, 0)
+	key := helpers.GetKey(blockName)
 	// Obtener archivo completo
-	blockNum := 0
 	endFile := false
 	for !endFile {
-		// Generar nombre y clave del bloque
-		blockName := blocks.GenerateBlockName(fileName, blockNum)
-		key := helpers.GetKey(blockName)
 		// Obtengo contactos locales
 		localContacts := node.getContactsForId(key)
 		// Si no hay contactos locales se retorna error
@@ -232,18 +233,24 @@ func (node *Node) GetFile(fileName string) error {
 			}
 			// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
 			contact, _ := contactStorage.Pop()
-			fileNameFound, data, neighborContacts, _ := node.SndFindBlock(node.Config, *contact, key)
+			fileNameFound, nextBlockKeyFound, data, neighborContacts, _ := node.SndFindBlock(node.Config, *contact, key)
 			if len(fileNameFound) > 0 {
 				endFile, _ = file_manager.StoreBlockOnDownload(fileNameFound, data)
 				common.Log.Debugf(fileName)
 				endBlock = true
-				blockNum++
+				key = nextBlockKeyFound
+				common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
 				continue
 			}
 			// Agregar contactos encontrados
 			if neighborContacts != nil {
 				contactStorage.PushContacts(neighborContacts)
 			}
+		}
+		if endFile {
+			common.Log.Debugf(MSG_FILE_DOWLOADED, fileName)
+			// Juntar todas las partes del archivo
+			//blocks.RecoverFile(fileName)
 		}
 	}
 	return nil

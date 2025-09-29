@@ -80,7 +80,7 @@ func StoreBlock(fileName string, data []byte) error {
 // Retorna error si el archivo ya existe o si se presenta algún error de acceso a disco
 // Retorna verdadero si es el bloque final, falso caso contrario
 func StoreBlockOnDownload(fileName string, data []byte) (bool, error) {
-	err := blocks.StoreBlock(utils.GenertaIpfsRecoverPath(fileName), data)
+	err := blocks.StoreBlock(utils.GenerateIpfsDownloadPath(fileName) /*GenertaIpfsRecoverPath(fileName)*/, data)
 	if err != nil {
 		return false, err
 	}
@@ -123,7 +123,7 @@ func CreateStoreFolders() {
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
 	}
 	// crear recover folder dentro de store
-	path = utils.GenerateIpfsRecoverFolderPath()
+	path = utils.GenerateRecoverFolderPath()
 	err = os.Mkdir(path, 0755)
 	if err != nil {
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)

@@ -88,7 +88,3 @@ func (peer *Peer) FindBlock(ctx context.Context, operands *protopb.FindBlockOper
 	fileName, data, contacts, err := peer.NodeDHT.RcvFindBlock(sourceContact, key)
 	return protoUtils.CreateFindBlockResults(fileName, data, contacts), err
 }
-
-//func (peer *Peer) FindBlock(contactSource contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error)
-
-//func (node *Node) FindNode(contactSource contacts_queue.Contact, targetId []byte) []contacts_queue.Contact

@@ -10,7 +10,7 @@ import (
 const EMPTY_KEY = ""
 const NULL_KEY_SOURCE_DATA = ""
 const LENGTH_KEY_IN_BITS = 256
-const LENGTH_IN_BYTES = LENGTH_KEY_IN_BITS / 8
+const LENGTH_KEY_IN_BYTES = LENGTH_KEY_IN_BITS / 8
 
 const MSG_ERROR_ON_PARSE = "error on parse"
 
@@ -72,7 +72,7 @@ func GenerateKeysFromOtherTrees(key []byte) [][]byte {
 			// agregar byte calculado
 			newKey = append(newKey, byteResultXor)
 			// completar bytes altos
-			for range LENGTH_IN_BYTES - nByte - 1 {
+			for range LENGTH_KEY_IN_BYTES - nByte - 1 {
 				newKey = append(newKey, 0)
 			}
 			// agregar nueva clave

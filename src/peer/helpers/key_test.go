@@ -10,7 +10,7 @@ func TestDistance(t *testing.T) {
 	key3 := GetKey("2")
 	dist, _ := GetLogDistance(key1, key2)
 	println(dist)
-	for i := range LENGTH_IN_BYTES {
+	for i := range LENGTH_KEY_IN_BYTES {
 		key2[i] = key3[i]
 		dist, err := GetLogDistance(key1, key2)
 		if err != nil {
