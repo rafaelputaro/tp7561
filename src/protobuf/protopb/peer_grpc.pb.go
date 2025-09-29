@@ -20,10 +20,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Operations_Ping_FullMethodName                      = "/Operations/Ping"
-	Operations_ShareContactsReciprocally_FullMethodName = "/Operations/ShareContactsReciprocally"
-	Operations_StoreBlock_FullMethodName                = "/Operations/StoreBlock"
-	Operations_FindBlock_FullMethodName                 = "/Operations/FindBlock"
+	Operations_Ping_FullMethodName              = "/Operations/Ping"
+	Operations_ShCtsReciprocally_FullMethodName = "/Operations/ShCtsReciprocally"
+	Operations_StoreBlock_FullMethodName        = "/Operations/StoreBlock"
+	Operations_FindBlock_FullMethodName         = "/Operations/FindBlock"
 )
 
 // OperationsClient is the client API for Operations service.
@@ -33,11 +33,11 @@ type OperationsClient interface {
 	// Permite hacer un ping a otro nodo enviando los datos de contacto propios
 	Ping(ctx context.Context, in *PingOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Permite compartir contactos recomendados entre dos pares recíprocamente
-	ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error)
+	ShCtsReciprocally(ctx context.Context, in *ShCtsRecipOpers, opts ...grpc.CallOption) (*ShCtsRecipRes, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
-	StoreBlock(ctx context.Context, in *StoreBlockOperands, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	StoreBlock(ctx context.Context, in *StoreBlockOpers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
-	FindBlock(ctx context.Context, in *FindBlockOperands, opts ...grpc.CallOption) (*FindBlockResults, error)
+	FindBlock(ctx context.Context, in *FindBlockOpers, opts ...grpc.CallOption) (*FindBlockRes, error)
 }
 
 type operationsClient struct {
@@ -58,17 +58,17 @@ func (c *operationsClient) Ping(ctx context.Context, in *PingOperands, opts ...g
 	return out, nil
 }
 
-func (c *operationsClient) ShareContactsReciprocally(ctx context.Context, in *ShareContactsReciprocallyOperands, opts ...grpc.CallOption) (*ShareContactsReciprocallyResults, error) {
+func (c *operationsClient) ShCtsReciprocally(ctx context.Context, in *ShCtsRecipOpers, opts ...grpc.CallOption) (*ShCtsRecipRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ShareContactsReciprocallyResults)
-	err := c.cc.Invoke(ctx, Operations_ShareContactsReciprocally_FullMethodName, in, out, cOpts...)
+	out := new(ShCtsRecipRes)
+	err := c.cc.Invoke(ctx, Operations_ShCtsReciprocally_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *operationsClient) StoreBlock(ctx context.Context, in *StoreBlockOperands, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *operationsClient) StoreBlock(ctx context.Context, in *StoreBlockOpers, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Operations_StoreBlock_FullMethodName, in, out, cOpts...)
@@ -78,9 +78,9 @@ func (c *operationsClient) StoreBlock(ctx context.Context, in *StoreBlockOperand
 	return out, nil
 }
 
-func (c *operationsClient) FindBlock(ctx context.Context, in *FindBlockOperands, opts ...grpc.CallOption) (*FindBlockResults, error) {
+func (c *operationsClient) FindBlock(ctx context.Context, in *FindBlockOpers, opts ...grpc.CallOption) (*FindBlockRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(FindBlockResults)
+	out := new(FindBlockRes)
 	err := c.cc.Invoke(ctx, Operations_FindBlock_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -95,11 +95,11 @@ type OperationsServer interface {
 	// Permite hacer un ping a otro nodo enviando los datos de contacto propios
 	Ping(context.Context, *PingOperands) (*emptypb.Empty, error)
 	// Permite compartir contactos recomendados entre dos pares recíprocamente
-	ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error)
+	ShCtsReciprocally(context.Context, *ShCtsRecipOpers) (*ShCtsRecipRes, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
-	StoreBlock(context.Context, *StoreBlockOperands) (*emptypb.Empty, error)
+	StoreBlock(context.Context, *StoreBlockOpers) (*emptypb.Empty, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
-	FindBlock(context.Context, *FindBlockOperands) (*FindBlockResults, error)
+	FindBlock(context.Context, *FindBlockOpers) (*FindBlockRes, error)
 	mustEmbedUnimplementedOperationsServer()
 }
 
@@ -113,13 +113,13 @@ type UnimplementedOperationsServer struct{}
 func (UnimplementedOperationsServer) Ping(context.Context, *PingOperands) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
-func (UnimplementedOperationsServer) ShareContactsReciprocally(context.Context, *ShareContactsReciprocallyOperands) (*ShareContactsReciprocallyResults, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ShareContactsReciprocally not implemented")
+func (UnimplementedOperationsServer) ShCtsReciprocally(context.Context, *ShCtsRecipOpers) (*ShCtsRecipRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShCtsReciprocally not implemented")
 }
-func (UnimplementedOperationsServer) StoreBlock(context.Context, *StoreBlockOperands) (*emptypb.Empty, error) {
+func (UnimplementedOperationsServer) StoreBlock(context.Context, *StoreBlockOpers) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StoreBlock not implemented")
 }
-func (UnimplementedOperationsServer) FindBlock(context.Context, *FindBlockOperands) (*FindBlockResults, error) {
+func (UnimplementedOperationsServer) FindBlock(context.Context, *FindBlockOpers) (*FindBlockRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindBlock not implemented")
 }
 func (UnimplementedOperationsServer) mustEmbedUnimplementedOperationsServer() {}
@@ -161,26 +161,26 @@ func _Operations_Ping_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Operations_ShareContactsReciprocally_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ShareContactsReciprocallyOperands)
+func _Operations_ShCtsReciprocally_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShCtsRecipOpers)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OperationsServer).ShareContactsReciprocally(ctx, in)
+		return srv.(OperationsServer).ShCtsReciprocally(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Operations_ShareContactsReciprocally_FullMethodName,
+		FullMethod: Operations_ShCtsReciprocally_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperationsServer).ShareContactsReciprocally(ctx, req.(*ShareContactsReciprocallyOperands))
+		return srv.(OperationsServer).ShCtsReciprocally(ctx, req.(*ShCtsRecipOpers))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Operations_StoreBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StoreBlockOperands)
+	in := new(StoreBlockOpers)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -192,13 +192,13 @@ func _Operations_StoreBlock_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: Operations_StoreBlock_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperationsServer).StoreBlock(ctx, req.(*StoreBlockOperands))
+		return srv.(OperationsServer).StoreBlock(ctx, req.(*StoreBlockOpers))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Operations_FindBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FindBlockOperands)
+	in := new(FindBlockOpers)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -210,7 +210,7 @@ func _Operations_FindBlock_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: Operations_FindBlock_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperationsServer).FindBlock(ctx, req.(*FindBlockOperands))
+		return srv.(OperationsServer).FindBlock(ctx, req.(*FindBlockOpers))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -227,8 +227,8 @@ var Operations_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Operations_Ping_Handler,
 		},
 		{
-			MethodName: "ShareContactsReciprocally",
-			Handler:    _Operations_ShareContactsReciprocally_Handler,
+			MethodName: "ShCtsReciprocally",
+			Handler:    _Operations_ShCtsReciprocally_Handler,
 		},
 		{
 			MethodName: "StoreBlock",

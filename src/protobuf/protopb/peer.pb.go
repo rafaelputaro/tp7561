@@ -76,7 +76,7 @@ func (x *PingOperands) GetSourceUrl() string {
 }
 
 // Contiene los datos del contacto fuente y los contactos recomendados para el par destino
-type ShareContactsReciprocallyOperands struct {
+type ShCtsRecipOpers struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
 	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
@@ -86,20 +86,20 @@ type ShareContactsReciprocallyOperands struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ShareContactsReciprocallyOperands) Reset() {
-	*x = ShareContactsReciprocallyOperands{}
+func (x *ShCtsRecipOpers) Reset() {
+	*x = ShCtsRecipOpers{}
 	mi := &file_peer_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ShareContactsReciprocallyOperands) String() string {
+func (x *ShCtsRecipOpers) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ShareContactsReciprocallyOperands) ProtoMessage() {}
+func (*ShCtsRecipOpers) ProtoMessage() {}
 
-func (x *ShareContactsReciprocallyOperands) ProtoReflect() protoreflect.Message {
+func (x *ShCtsRecipOpers) ProtoReflect() protoreflect.Message {
 	mi := &file_peer_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -111,33 +111,33 @@ func (x *ShareContactsReciprocallyOperands) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ShareContactsReciprocallyOperands.ProtoReflect.Descriptor instead.
-func (*ShareContactsReciprocallyOperands) Descriptor() ([]byte, []int) {
+// Deprecated: Use ShCtsRecipOpers.ProtoReflect.Descriptor instead.
+func (*ShCtsRecipOpers) Descriptor() ([]byte, []int) {
 	return file_peer_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ShareContactsReciprocallyOperands) GetSourceId() []byte {
+func (x *ShCtsRecipOpers) GetSourceId() []byte {
 	if x != nil {
 		return x.SourceId
 	}
 	return nil
 }
 
-func (x *ShareContactsReciprocallyOperands) GetSourceUrl() string {
+func (x *ShCtsRecipOpers) GetSourceUrl() string {
 	if x != nil && x.SourceUrl != nil {
 		return *x.SourceUrl
 	}
 	return ""
 }
 
-func (x *ShareContactsReciprocallyOperands) GetContactsIds() [][]byte {
+func (x *ShCtsRecipOpers) GetContactsIds() [][]byte {
 	if x != nil {
 		return x.ContactsIds
 	}
 	return nil
 }
 
-func (x *ShareContactsReciprocallyOperands) GetContactsUrls() []string {
+func (x *ShCtsRecipOpers) GetContactsUrls() []string {
 	if x != nil {
 		return x.ContactsUrls
 	}
@@ -145,7 +145,7 @@ func (x *ShareContactsReciprocallyOperands) GetContactsUrls() []string {
 }
 
 // Contiene los contactos recomendados por el nodo destino
-type ShareContactsReciprocallyResults struct {
+type ShCtsRecipRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ContactsIds   [][]byte               `protobuf:"bytes,1,rep,name=contactsIds" json:"contactsIds,omitempty"`
 	ContactsUrls  []string               `protobuf:"bytes,2,rep,name=contactsUrls" json:"contactsUrls,omitempty"`
@@ -153,20 +153,20 @@ type ShareContactsReciprocallyResults struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ShareContactsReciprocallyResults) Reset() {
-	*x = ShareContactsReciprocallyResults{}
+func (x *ShCtsRecipRes) Reset() {
+	*x = ShCtsRecipRes{}
 	mi := &file_peer_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ShareContactsReciprocallyResults) String() string {
+func (x *ShCtsRecipRes) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ShareContactsReciprocallyResults) ProtoMessage() {}
+func (*ShCtsRecipRes) ProtoMessage() {}
 
-func (x *ShareContactsReciprocallyResults) ProtoReflect() protoreflect.Message {
+func (x *ShCtsRecipRes) ProtoReflect() protoreflect.Message {
 	mi := &file_peer_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -178,19 +178,19 @@ func (x *ShareContactsReciprocallyResults) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ShareContactsReciprocallyResults.ProtoReflect.Descriptor instead.
-func (*ShareContactsReciprocallyResults) Descriptor() ([]byte, []int) {
+// Deprecated: Use ShCtsRecipRes.ProtoReflect.Descriptor instead.
+func (*ShCtsRecipRes) Descriptor() ([]byte, []int) {
 	return file_peer_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *ShareContactsReciprocallyResults) GetContactsIds() [][]byte {
+func (x *ShCtsRecipRes) GetContactsIds() [][]byte {
 	if x != nil {
 		return x.ContactsIds
 	}
 	return nil
 }
 
-func (x *ShareContactsReciprocallyResults) GetContactsUrls() []string {
+func (x *ShCtsRecipRes) GetContactsUrls() []string {
 	if x != nil {
 		return x.ContactsUrls
 	}
@@ -198,7 +198,7 @@ func (x *ShareContactsReciprocallyResults) GetContactsUrls() []string {
 }
 
 // Contiene la información sobre un bloque a guardar
-type StoreBlockOperands struct {
+type StoreBlockOpers struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
 	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
@@ -209,20 +209,20 @@ type StoreBlockOperands struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StoreBlockOperands) Reset() {
-	*x = StoreBlockOperands{}
+func (x *StoreBlockOpers) Reset() {
+	*x = StoreBlockOpers{}
 	mi := &file_peer_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StoreBlockOperands) String() string {
+func (x *StoreBlockOpers) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StoreBlockOperands) ProtoMessage() {}
+func (*StoreBlockOpers) ProtoMessage() {}
 
-func (x *StoreBlockOperands) ProtoReflect() protoreflect.Message {
+func (x *StoreBlockOpers) ProtoReflect() protoreflect.Message {
 	mi := &file_peer_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -234,40 +234,40 @@ func (x *StoreBlockOperands) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StoreBlockOperands.ProtoReflect.Descriptor instead.
-func (*StoreBlockOperands) Descriptor() ([]byte, []int) {
+// Deprecated: Use StoreBlockOpers.ProtoReflect.Descriptor instead.
+func (*StoreBlockOpers) Descriptor() ([]byte, []int) {
 	return file_peer_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *StoreBlockOperands) GetSourceId() []byte {
+func (x *StoreBlockOpers) GetSourceId() []byte {
 	if x != nil {
 		return x.SourceId
 	}
 	return nil
 }
 
-func (x *StoreBlockOperands) GetSourceUrl() string {
+func (x *StoreBlockOpers) GetSourceUrl() string {
 	if x != nil && x.SourceUrl != nil {
 		return *x.SourceUrl
 	}
 	return ""
 }
 
-func (x *StoreBlockOperands) GetKey() []byte {
+func (x *StoreBlockOpers) GetKey() []byte {
 	if x != nil {
 		return x.Key
 	}
 	return nil
 }
 
-func (x *StoreBlockOperands) GetBlockName() string {
+func (x *StoreBlockOpers) GetBlockName() string {
 	if x != nil && x.BlockName != nil {
 		return *x.BlockName
 	}
 	return ""
 }
 
-func (x *StoreBlockOperands) GetData() []byte {
+func (x *StoreBlockOpers) GetData() []byte {
 	if x != nil {
 		return x.Data
 	}
@@ -275,7 +275,7 @@ func (x *StoreBlockOperands) GetData() []byte {
 }
 
 // Contiene la información sobre un bloque a buscar
-type FindBlockOperands struct {
+type FindBlockOpers struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
 	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
@@ -284,20 +284,20 @@ type FindBlockOperands struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *FindBlockOperands) Reset() {
-	*x = FindBlockOperands{}
+func (x *FindBlockOpers) Reset() {
+	*x = FindBlockOpers{}
 	mi := &file_peer_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *FindBlockOperands) String() string {
+func (x *FindBlockOpers) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FindBlockOperands) ProtoMessage() {}
+func (*FindBlockOpers) ProtoMessage() {}
 
-func (x *FindBlockOperands) ProtoReflect() protoreflect.Message {
+func (x *FindBlockOpers) ProtoReflect() protoreflect.Message {
 	mi := &file_peer_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -309,33 +309,33 @@ func (x *FindBlockOperands) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FindBlockOperands.ProtoReflect.Descriptor instead.
-func (*FindBlockOperands) Descriptor() ([]byte, []int) {
+// Deprecated: Use FindBlockOpers.ProtoReflect.Descriptor instead.
+func (*FindBlockOpers) Descriptor() ([]byte, []int) {
 	return file_peer_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *FindBlockOperands) GetSourceId() []byte {
+func (x *FindBlockOpers) GetSourceId() []byte {
 	if x != nil {
 		return x.SourceId
 	}
 	return nil
 }
 
-func (x *FindBlockOperands) GetSourceUrl() string {
+func (x *FindBlockOpers) GetSourceUrl() string {
 	if x != nil && x.SourceUrl != nil {
 		return *x.SourceUrl
 	}
 	return ""
 }
 
-func (x *FindBlockOperands) GetBlockKey() []byte {
+func (x *FindBlockOpers) GetBlockKey() []byte {
 	if x != nil {
 		return x.BlockKey
 	}
 	return nil
 }
 
-type FindBlockResults struct {
+type FindBlockRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	BlockName     *string                `protobuf:"bytes,1,req,name=blockName" json:"blockName,omitempty"`
 	BlockData     []byte                 `protobuf:"bytes,2,req,name=blockData" json:"blockData,omitempty"`
@@ -345,20 +345,20 @@ type FindBlockResults struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *FindBlockResults) Reset() {
-	*x = FindBlockResults{}
+func (x *FindBlockRes) Reset() {
+	*x = FindBlockRes{}
 	mi := &file_peer_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *FindBlockResults) String() string {
+func (x *FindBlockRes) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*FindBlockResults) ProtoMessage() {}
+func (*FindBlockRes) ProtoMessage() {}
 
-func (x *FindBlockResults) ProtoReflect() protoreflect.Message {
+func (x *FindBlockRes) ProtoReflect() protoreflect.Message {
 	mi := &file_peer_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -370,33 +370,33 @@ func (x *FindBlockResults) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FindBlockResults.ProtoReflect.Descriptor instead.
-func (*FindBlockResults) Descriptor() ([]byte, []int) {
+// Deprecated: Use FindBlockRes.ProtoReflect.Descriptor instead.
+func (*FindBlockRes) Descriptor() ([]byte, []int) {
 	return file_peer_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *FindBlockResults) GetBlockName() string {
+func (x *FindBlockRes) GetBlockName() string {
 	if x != nil && x.BlockName != nil {
 		return *x.BlockName
 	}
 	return ""
 }
 
-func (x *FindBlockResults) GetBlockData() []byte {
+func (x *FindBlockRes) GetBlockData() []byte {
 	if x != nil {
 		return x.BlockData
 	}
 	return nil
 }
 
-func (x *FindBlockResults) GetContactsIds() [][]byte {
+func (x *FindBlockRes) GetContactsIds() [][]byte {
 	if x != nil {
 		return x.ContactsIds
 	}
 	return nil
 }
 
-func (x *FindBlockResults) GetContactsUrls() []string {
+func (x *FindBlockRes) GetContactsUrls() []string {
 	if x != nil {
 		return x.ContactsUrls
 	}
@@ -411,37 +411,37 @@ const file_peer_proto_rawDesc = "" +
 	"peer.proto\x1a\x1bgoogle/protobuf/empty.proto\"H\n" +
 	"\fPingOperands\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
-	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\"\xa3\x01\n" +
-	"!ShareContactsReciprocallyOperands\x12\x1a\n" +
+	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\"\x91\x01\n" +
+	"\x0fShCtsRecipOpers\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
 	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\x12 \n" +
 	"\vcontactsIds\x18\x03 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"h\n" +
-	" ShareContactsReciprocallyResults\x12 \n" +
+	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"U\n" +
+	"\rShCtsRecipRes\x12 \n" +
 	"\vcontactsIds\x18\x01 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls\"\x92\x01\n" +
-	"\x12StoreBlockOperands\x12\x1a\n" +
+	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls\"\x8f\x01\n" +
+	"\x0fStoreBlockOpers\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
 	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\x12\x10\n" +
 	"\x03key\x18\x03 \x02(\fR\x03key\x12\x1c\n" +
 	"\tblockName\x18\x04 \x02(\tR\tblockName\x12\x12\n" +
-	"\x04data\x18\x05 \x02(\fR\x04data\"i\n" +
-	"\x11FindBlockOperands\x12\x1a\n" +
+	"\x04data\x18\x05 \x02(\fR\x04data\"f\n" +
+	"\x0eFindBlockOpers\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
 	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\x12\x1a\n" +
-	"\bblockKey\x18\x03 \x02(\fR\bblockKey\"\x94\x01\n" +
-	"\x10FindBlockResults\x12\x1c\n" +
+	"\bblockKey\x18\x03 \x02(\fR\bblockKey\"\x90\x01\n" +
+	"\fFindBlockRes\x12\x1c\n" +
 	"\tblockName\x18\x01 \x02(\tR\tblockName\x12\x1c\n" +
 	"\tblockData\x18\x02 \x02(\fR\tblockData\x12 \n" +
 	"\vcontactsIds\x18\x03 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls2\x8e\x02\n" +
+	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls2\xd7\x01\n" +
 	"\n" +
 	"Operations\x12-\n" +
-	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x12b\n" +
-	"\x19ShareContactsReciprocally\x12\".ShareContactsReciprocallyOperands\x1a!.ShareContactsReciprocallyResults\x129\n" +
+	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x125\n" +
+	"\x11ShCtsReciprocally\x12\x10.ShCtsRecipOpers\x1a\x0e.ShCtsRecipRes\x126\n" +
 	"\n" +
-	"StoreBlock\x12\x13.StoreBlockOperands\x1a\x16.google.protobuf.Empty\x122\n" +
-	"\tFindBlock\x12\x12.FindBlockOperands\x1a\x11.FindBlockResultsB\vZ\t./protopb"
+	"StoreBlock\x12\x10.StoreBlockOpers\x1a\x16.google.protobuf.Empty\x12+\n" +
+	"\tFindBlock\x12\x0f.FindBlockOpers\x1a\r.FindBlockResB\vZ\t./protopb"
 
 var (
 	file_peer_proto_rawDescOnce sync.Once
@@ -457,23 +457,23 @@ func file_peer_proto_rawDescGZIP() []byte {
 
 var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_peer_proto_goTypes = []any{
-	(*PingOperands)(nil),                      // 0: PingOperands
-	(*ShareContactsReciprocallyOperands)(nil), // 1: ShareContactsReciprocallyOperands
-	(*ShareContactsReciprocallyResults)(nil),  // 2: ShareContactsReciprocallyResults
-	(*StoreBlockOperands)(nil),                // 3: StoreBlockOperands
-	(*FindBlockOperands)(nil),                 // 4: FindBlockOperands
-	(*FindBlockResults)(nil),                  // 5: FindBlockResults
-	(*emptypb.Empty)(nil),                     // 6: google.protobuf.Empty
+	(*PingOperands)(nil),    // 0: PingOperands
+	(*ShCtsRecipOpers)(nil), // 1: ShCtsRecipOpers
+	(*ShCtsRecipRes)(nil),   // 2: ShCtsRecipRes
+	(*StoreBlockOpers)(nil), // 3: StoreBlockOpers
+	(*FindBlockOpers)(nil),  // 4: FindBlockOpers
+	(*FindBlockRes)(nil),    // 5: FindBlockRes
+	(*emptypb.Empty)(nil),   // 6: google.protobuf.Empty
 }
 var file_peer_proto_depIdxs = []int32{
 	0, // 0: Operations.Ping:input_type -> PingOperands
-	1, // 1: Operations.ShareContactsReciprocally:input_type -> ShareContactsReciprocallyOperands
-	3, // 2: Operations.StoreBlock:input_type -> StoreBlockOperands
-	4, // 3: Operations.FindBlock:input_type -> FindBlockOperands
+	1, // 1: Operations.ShCtsReciprocally:input_type -> ShCtsRecipOpers
+	3, // 2: Operations.StoreBlock:input_type -> StoreBlockOpers
+	4, // 3: Operations.FindBlock:input_type -> FindBlockOpers
 	6, // 4: Operations.Ping:output_type -> google.protobuf.Empty
-	2, // 5: Operations.ShareContactsReciprocally:output_type -> ShareContactsReciprocallyResults
+	2, // 5: Operations.ShCtsReciprocally:output_type -> ShCtsRecipRes
 	6, // 6: Operations.StoreBlock:output_type -> google.protobuf.Empty
-	5, // 7: Operations.FindBlock:output_type -> FindBlockResults
+	5, // 7: Operations.FindBlock:output_type -> FindBlockRes
 	4, // [4:8] is the sub-list for method output_type
 	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

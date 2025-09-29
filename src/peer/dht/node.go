@@ -59,7 +59,7 @@ func (node *Node) IsBootstrapNode() bool {
 // Chequea si es un contacto a si mismo e intenta agregarlo
 func (node *Node) AddContactPreventingLoop(sourceContact contacts_queue.Contact) bool {
 	// Prevenir bucle
-	if node.DiscardContact(sourceContact) {
+	if node.discardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return false
 	}
@@ -76,7 +76,7 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 
 // Obtiene los contactos locales recomendados para la fuente, agrega los contactos compartidos por la fuente y
 // retorna los contactos recomendados para la fuente
-func (node *Node) RcvShareContactsReciprocally(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
+func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
 	// obtener contactos recomendados
 	selfContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
 	// agregar contactos que compartió la fuente
@@ -86,16 +86,16 @@ func (node *Node) RcvShareContactsReciprocally(sourceContact contacts_queue.Cont
 
 // Envía los contactos propios al bootstrap node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
-func (node *Node) SndShareContactsToBootstrap() {
+func (node *Node) SndShCtsToBootstrap() {
 	if !node.IsBootstrapNode() {
 		contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
-		node.SndShareContacts(*contactBoostrapNode)
+		node.SndShCts(*contactBoostrapNode)
 	}
 }
 
 // Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
-func (node *Node) SndShareContacts(destContact contacts_queue.Contact) error {
+func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
 	// ¿Esta vivo el nodo?
 	err := node.SndPing(node.Config, destContact)
 	if err != nil {
@@ -117,13 +117,12 @@ func (node *Node) SndShareContacts(destContact contacts_queue.Contact) error {
 // agregar el contacto solicitante a la bucket_table
 func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
 	// Prevenir bucle
-	if node.DiscardContact(sourceContact) {
+	if node.discardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return []contacts_queue.Contact{}
 	}
 	// Agregar contacto a la bucket_table
 	node.AddContactPreventingLoop(sourceContact)
-	//node.BucketTab.AddContact(sourceContact)
 	// Buscar los contactos
 	return node.BucketTab.GetContactsForId(targetId)
 }
@@ -133,7 +132,7 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 // agregar el contacto solicitante a la bucket_table
 func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error) {
 	// Prevenir bucle
-	if node.DiscardContact(sourceContact) {
+	if node.discardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return key_value_table.EMPTY_VALUE, []byte{}, []contacts_queue.Contact{}, errors.New(MSG_ERROR_OWN_REQUEST)
 	}
@@ -154,7 +153,7 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 // fuente en la tabla de contactos
 func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fileName string, data []byte) error {
 	// Prevenir bucle
-	if node.DiscardContact(sourceContact) {
+	if node.discardContact(sourceContact) {
 		common.Log.Debugf(fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, sourceContact.ToString()))
 		return errors.New(MSG_ERROR_OWN_REQUEST)
 	}
@@ -183,20 +182,21 @@ func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
 }
 
 // Retorna verdadero si la url propia y la del contacto coinciden
-func (node *Node) DiscardContact(contact contacts_queue.Contact) bool {
+func (node *Node) discardContact(contact contacts_queue.Contact) bool {
 	return node.Config.Url == contact.Url
 }
 
 // Retorna los contactos para un id dado
-func (node *Node) GetContactsForId(id []byte) []contacts_queue.Contact {
+func (node *Node) getContactsForId(id []byte) []contacts_queue.Contact {
 	return node.BucketTab.GetContactsForId(id)
 }
 
+/*
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
 func (node *Node) GetValue(key []byte) (string, []byte, error) {
 	return node.KeyValueTab.Get(key)
 }
-
+*/
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFile(fileName string) error {
 	return file_manager.AddFile(fileName, node.createSndBlockNeighbors())
@@ -211,7 +211,7 @@ func (node *Node) GetFile(fileName string) error {
 		blockName := blocks.GenerateBlockName(fileName, blockNum)
 		key := helpers.GetKey(blockName)
 		// Obtengo contactos locales
-		localContacts := node.GetContactsForId(key)
+		localContacts := node.getContactsForId(key)
 		// Si no hay contactos locales se retorna error
 		if len(localContacts) == 0 {
 			msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)

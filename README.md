@@ -1,15 +1,32 @@
 # tp7561
 
-## Plan De Desarrollo
+## Introducción DHS
+@TODO desarrollar el tema de DHS
 
-Crear un modulo Peer el cual presentará al exterior las funciones grpc para el manejo de la DHT y las operaciones sobre los archivos del IPFS. 
-Los valores a almacenar en la DHT van a ser los nombres de los archivos dados como strings (posteriormente puede sumarse la durabilidad u otras características).
+### Kademlia - a Distributed Hash Table implementation | Paper Dissection and Deep-dive
+
+[![](https://markdown-videos-api.jorgenkh.no/youtube/_kCHOpINA5g)](https://www.youtube.com/watch?v=_kCHOpINA5g)
+
+@TODO explicar Kademlia en base al vídeo y el siguiente: https://xlattice.sourceforge.net/components/protocol/kademlia/specs.html
+
+
+## Introducción IPFS
+
+[![](https://markdown-videos-api.jorgenkh.no/youtube/-ZC1-M3biyo)](https://youtu.be/-ZC1-M3biyo)
+
+@TODO explicar IPFS en base al vídeo y a los siguientes links: https://www.conquerblocks.com/post/ipfs
+
+https://about.ipfs.io/
+
+
+## Implementación del sistema
+
+Se tiene un modulo Peer el cual presentará al exterior las funciones grpc para el manejo de la DHT y las operaciones sobre los archivos del IPFS. 
+Los valores a almacenar en la DHT van a ser los nombres de los archivos dados como strings.
 Las claves se encriptan mediante SHA256.
-Tanto las funcionalidad de la DHT y del IPFS se implementan en paquetes separados del módulo Peer.
 
 ![Diagrama De Clases Peer](./docs/DiagramaDeClasesPeer.png)
 
-NOTA: El IPFS actualmente no tiene funciones definidas ya que aguardo requerimientos al respecto, sólo esta en el diamgrama para ilustrar su lugar en la arquitectura.
 
 Idea sobre la estructura de los archivos:
 

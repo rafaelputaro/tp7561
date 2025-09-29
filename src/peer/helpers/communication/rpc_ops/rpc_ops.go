@@ -71,9 +71,9 @@ func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue
 			// armo los argumentos
 			shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts)
 			// compartir contacto
-			var response *protopb.ShareContactsReciprocallyResults
+			var response *protopb.ShCtsRecipRes
 			// compartir contacto
-			response, err = client.ShareContactsReciprocally(ctx, shContacOp)
+			response, err = client.ShCtsReciprocally(ctx, shContacOp)
 			if err != nil {
 				common.Log.Infof(MSG_SHARE_CONTACTS_ATTEMPT, retry, err)
 				// esperar
@@ -127,7 +127,7 @@ func SndFindBlock(config helpers.PeerConfig, destContact contacts_queue.Contact,
 			// armo los argumentos
 			operands := protoUtils.CreateFindBlockOperands(config.Id, config.Url, key)
 			// compartir contacto
-			var response *protopb.FindBlockResults
+			var response *protopb.FindBlockRes
 			// compartir contacto
 			response, err = client.FindBlock(ctx, operands)
 			if err != nil {

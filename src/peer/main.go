@@ -21,7 +21,7 @@ func main() {
 	// obtener contactos para la tabla propia en el inicio
 	go func() {
 		helpers.SleepOnStart()
-		peer.SndShareContactsToBootstrap()
+		peer.SndShCtsToBootstrap()
 		helpers.SleepOnStart()
 		helpers.SleepOnStart()
 		//if peer.NodeDHT.IsBootstrapNode() {

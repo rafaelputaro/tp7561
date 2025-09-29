@@ -56,25 +56,25 @@ func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands)
 
 // Intenta agregar los contactos recibidos a la bucket tabler, agregar el contacto fuente a la bucket table y
 // retorna los contactos útiles para el contacto fuente
-func (peer *Peer) ShareContactsReciprocally(ctx context.Context, sourceOperands *protopb.ShareContactsReciprocallyOperands) (*protopb.ShareContactsReciprocallyResults, error) {
+func (peer *Peer) ShCtsReciprocally(ctx context.Context, sourceOperands *protopb.ShCtsRecipOpers) (*protopb.ShCtsRecipRes, error) {
 	// parsear parámetros
 	sourceContact, sourceContactList := protoUtils.ParseShareContactsReciprocallyOperands(sourceOperands)
 	// agregar recomendados por la fuente y obtener recomendados
-	selfContacts := peer.NodeDHT.RcvShareContactsReciprocally(sourceContact, sourceContactList)
+	selfContacts := peer.NodeDHT.RcvShCtsRecip(sourceContact, sourceContactList)
 	// agregar contactos que compartió la fuente
 	return protoUtils.CreateShareContactsReciprocallyResults(selfContacts), nil
 }
 
 // Envía los contactos propios al bootstrap node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
-func (peer *Peer) SndShareContactsToBootstrap() {
-	peer.NodeDHT.SndShareContactsToBootstrap()
+func (peer *Peer) SndShCtsToBootstrap() {
+	peer.NodeDHT.SndShCtsToBootstrap()
 }
 
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
-func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOperands) (*emptypb.Empty, error) {
+func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOpers) (*emptypb.Empty, error) {
 	sourceContact, blockKey, blockName, data := protoUtils.ParseStoreBlockOperands(operands)
 	peer.NodeDHT.RcvStore(*sourceContact, blockKey, blockName, data)
 	return nil, nil
@@ -83,7 +83,7 @@ func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOp
 // Si la target key se encuentra en el nodo retorna el valor de la misma, caso contrario retorna
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
-func (peer *Peer) FindBlock(ctx context.Context, operands *protopb.FindBlockOperands) (*protopb.FindBlockResults, error) {
+func (peer *Peer) FindBlock(ctx context.Context, operands *protopb.FindBlockOpers) (*protopb.FindBlockRes, error) {
 	sourceContact, key := protoUtils.ParseFindBlockOperands(operands)
 	fileName, data, contacts, err := peer.NodeDHT.RcvFindBlock(sourceContact, key)
 	return protoUtils.CreateFindBlockResults(fileName, data, contacts), err

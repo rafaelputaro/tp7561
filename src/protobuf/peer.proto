@@ -10,13 +10,13 @@ service Operations {
     rpc Ping (PingOperands) returns (google.protobuf.Empty);
     
     // Permite compartir contactos recomendados entre dos pares recíprocamente
-    rpc ShareContactsReciprocally (ShareContactsReciprocallyOperands) returns (ShareContactsReciprocallyResults);
+    rpc ShCtsReciprocally (ShCtsRecipOpers) returns (ShCtsRecipRes);
 
     // Permite enviar un bloque a ser guardado en un nodo dado
-    rpc StoreBlock (StoreBlockOperands) returns (google.protobuf.Empty);
+    rpc StoreBlock (StoreBlockOpers) returns (google.protobuf.Empty);
 
     // Permite enviar un bloque a ser guardado en un nodo dado
-    rpc FindBlock (FindBlockOperands) returns (FindBlockResults);
+    rpc FindBlock (FindBlockOpers) returns (FindBlockRes);
 }
 
 // Contiene los datos del contacto que hace el ping
@@ -26,7 +26,7 @@ message PingOperands {
 }
 
 // Contiene los datos del contacto fuente y los contactos recomendados para el par destino
-message ShareContactsReciprocallyOperands {
+message ShCtsRecipOpers {
     required bytes sourceId = 1;
     required string sourceUrl = 2;
     repeated bytes contactsIds = 3;
@@ -34,13 +34,13 @@ message ShareContactsReciprocallyOperands {
 }
 
 // Contiene los contactos recomendados por el nodo destino
-message ShareContactsReciprocallyResults {
+message ShCtsRecipRes {
     repeated bytes contactsIds = 1;
     repeated string contactsUrls = 2;
 }
 
 // Contiene la información sobre un bloque a guardar
-message StoreBlockOperands {
+message StoreBlockOpers {
     required bytes sourceId = 1;
     required string sourceUrl = 2;
     required bytes key = 3;
@@ -49,13 +49,13 @@ message StoreBlockOperands {
 }
 
 // Contiene la información sobre un bloque a buscar
-message FindBlockOperands {
+message FindBlockOpers {
     required bytes sourceId = 1;
     required string sourceUrl = 2;
     required bytes blockKey = 3;
 }
 
-message FindBlockResults {
+message FindBlockRes {
     required string blockName = 1;
     required bytes blockData = 2;
     repeated bytes contactsIds = 3;
