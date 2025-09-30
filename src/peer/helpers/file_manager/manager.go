@@ -57,30 +57,17 @@ func AddFile(fileName string, processBlock ProcessBlockCallBack) error {
 	return err
 }
 
-func GetFile(fileName string) (string, error) {
-	/**
-		@TODO
-		a) En base al nombre del archivo calcular key
-		b) Con la key buscar un nodo que la tenga
-		c) Pedirle bloque al nodo
-		d) Guardar el bloque localmente
-		e) El bloque pedido tendrá la key del siguiente bloque......
-		f) Una vez que tengo todos los bloques reconstruyo el archivo
-	**/
-	return "", nil
-}
-
 // Escribe un bloque en un archivo localmente para ser recuperado en una búqueda. Retorna error
 // si el archivo ya existe o si se presenta algún error de acceso a disco
 func StoreBlock(fileName string, data []byte) error {
-	return blocks.StoreBlock(utils.GenerateIpfsFilePath(fileName), data)
+	return blocks.StoreBlock(utils.GenerateIpfsStorePath(fileName), data)
 }
 
 // Escribe un bloque en un archivo localmente como parte de un archivo a ser recuparado.
 // Retorna error si el archivo ya existe o si se presenta algún error de acceso a disco
 // Retorna verdadero si es el bloque final, falso caso contrario
 func StoreBlockOnDownload(fileName string, data []byte) (bool, error) {
-	err := blocks.StoreBlock(utils.GenerateIpfsDownloadPath(fileName) /*GenertaIpfsRecoverPath(fileName)*/, data)
+	err := blocks.StoreBlock(utils.GenerateIpfsDownloadPath(fileName), data)
 	if err != nil {
 		return false, err
 	}
@@ -89,48 +76,11 @@ func StoreBlockOnDownload(fileName string, data []byte) (bool, error) {
 
 // Obtiene un block completo con su header y datos.
 func GetBlock(fileName string) ([]byte, error) {
-	nBytes, data, err := blocks.ReadBlock(utils.GenerateIpfsFilePath(fileName))
+	nBytes, data, err := blocks.ReadBlock(utils.GenerateIpfsStorePath(fileName))
 	return data[:nBytes], err
 }
 
-// Limpia el store
-func CleanStore() {
-	path := utils.GenerateIpfsFilePath("")
-	if utils.PathExists(path) {
-		err := os.RemoveAll(path)
-		if err != nil {
-			common.Log.Errorf(utils.MSG_ERROR_ON_CLEAN_STORE, path, err)
-			return
-		}
-		common.Log.Infof(utils.MSG_STORE_HAS_BENN_CLEANED)
-	}
-}
-
-// Lee las variables de entorno que establecen la configuración de almacenamiento and clean the store
-func InitStore() {
-	config_fm.LoadConfig()
-	// limpiar archivos viejos
-	CleanStore()
-	// crear carpetas necesarias
-	CreateStoreFolders()
-}
-
-func CreateStoreFolders() {
-	// crear store folder
-	path := utils.GenerateIpfsFilePath("")
-	err := os.Mkdir(path, 0755)
-	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
-	}
-	// crear recover folder dentro de store
-	path = utils.GenerateRecoverFolderPath()
-	err = os.Mkdir(path, 0755)
-	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_CREATING_FOLDER, err)
-
-	}
-}
-
+// Sube los archivos locales a la red de nodos
 func UploadLocalFiles(uploadFile func(fileName string) error) error {
 	// leer archivos del directorio
 	entries, err := os.ReadDir(config_fm.LocalStorageConfig.InputDataFolder)

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"strconv"
 	"sync"
 	"tp/common"
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
+	"tp/peer/helpers/file_manager/utils"
 )
 
 const MESSAGE_START = "Starting node..."
@@ -13,7 +15,7 @@ func main() {
 	common.Log.Info(MESSAGE_START)
 	common.InitLogger()
 	config := helpers.LoadConfig()
-	file_manager.InitStore()
+	utils.InitStore()
 	// crear par
 	peer := NewPeer(*config)
 	wg := new(sync.WaitGroup)
@@ -32,8 +34,11 @@ func main() {
 		//}
 		helpers.SleepOnStart()
 		if peer.NodeDHT.IsBootstrapNode() {
-			peer.GetFile("file-2-1.txt")
-
+			for fileNum := 1; fileNum < 15; fileNum++ {
+				if peer.GetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
+					break
+				}
+			}
 		}
 		wg.Done()
 	}()

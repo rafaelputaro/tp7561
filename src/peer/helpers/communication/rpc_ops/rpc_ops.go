@@ -21,7 +21,7 @@ const MSG_FIND_BLOCK_ATTEMPT = "find block attempt: %v | error: %v"
 const MAX_RETRIES_ON_PING = 20
 const MAX_RETRIES_ON_SHARE_CONTACTS_RECIP = 20
 const MAX_RETRIES_ON_STORE = 20
-const MAX_RETRIES_ON_FIND_BLOCK = 1
+const MAX_RETRIES_ON_FIND_BLOCK = 3
 
 // Ping con retry. En caso de no poder efectuar el ping retorna error
 type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
@@ -122,18 +122,17 @@ func SndFindBlock(config helpers.PeerConfig, destContact contacts_queue.Contact,
 	if err == nil {
 		defer conn.Close()
 		defer cancel()
+		// armo los argumentos
+		operands := protoUtils.CreateFindBlockOperands(config.Id, config.Url, key)
 		// find block con retry
 		for retry := range MAX_RETRIES_ON_FIND_BLOCK {
-			// armo los argumentos
-			operands := protoUtils.CreateFindBlockOperands(config.Id, config.Url, key)
-			// compartir contacto
 			var response *protopb.FindBlockRes
-			// compartir contacto
+			// enviar mensaje
 			response, err = client.FindBlock(ctx, operands)
 			if err != nil {
 				common.Log.Infof(MSG_FIND_BLOCK_ATTEMPT, retry, err)
 				// esperar
-				helpers.SleepBetweenRetries()
+				helpers.SleepBetweenRetriesShort()
 				continue
 			}
 			fileName, nextBlockKey, data, contacts := protoUtils.ParseFindBlockResults(response)

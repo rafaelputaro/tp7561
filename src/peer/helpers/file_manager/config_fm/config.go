@@ -6,8 +6,10 @@ import (
 )
 
 type StorageConfig struct {
-	InputDataFolder string
-	StoreIpfsFolder string
+	InputDataFolder    string
+	StoreIpfsFolder    string
+	DownloadIpfsFolder string
+	RestoreIpfsFolder  string
 }
 
 var LocalStorageConfig StorageConfig
@@ -15,8 +17,10 @@ var LocalStorageConfig StorageConfig
 // Retorna una nueva instancia de la configuración
 func NewStorageConfig(inputDataFolder string, storeIpfsFolder string) *StorageConfig {
 	config := &StorageConfig{
-		InputDataFolder: inputDataFolder,
-		StoreIpfsFolder: storeIpfsFolder,
+		InputDataFolder:    inputDataFolder,
+		StoreIpfsFolder:    storeIpfsFolder,
+		DownloadIpfsFolder: generateDownloadIpfsFolder(storeIpfsFolder),
+		RestoreIpfsFolder:  generateRestoreIpfsFolder(storeIpfsFolder),
 	}
 	return config
 }
@@ -32,8 +36,20 @@ func LoadConfig() {
 
 // Hace un log por debug de la configuración
 func (config *StorageConfig) LogConfig() {
-	common.Log.Debugf("InputDataFolder: %v | StoreIpfsFolder: %v",
+	common.Log.Debugf("InputDataFolder: %v | StoreIpfsFolder: %v | DownloadIpfsFolder: %v | RestoreIpfsFolder: %v",
 		config.InputDataFolder,
 		config.StoreIpfsFolder,
+		config.DownloadIpfsFolder,
+		config.RestoreIpfsFolder,
 	)
+}
+
+// Genera el directorio donde se guardan las descargas
+func generateDownloadIpfsFolder(storeIpfsFolder string) string {
+	return storeIpfsFolder + "/" + DOWLOAD_SUB_DIRECTORY
+}
+
+// Genera el directorio donde se guardan los archivos restaurados
+func generateRestoreIpfsFolder(storeIpfsFolder string) string {
+	return storeIpfsFolder + "/" + RESTORE_SUB_DIRECTORY
 }

@@ -11,11 +11,6 @@ import (
 	"tp/peer/helpers/file_manager/utils"
 )
 
-func SaveBlock() error {
-
-	return nil
-}
-
 // Lee un bloque del espacio local y lo retorna <nro bytes leídos><data><error>.
 // En caso de no encontrar el archivo o que se encuentre mal formateado retorna error
 func ReadBlock(path string) (int, []byte, error) {
@@ -27,10 +22,8 @@ func ReadBlock(path string) (int, []byte, error) {
 	}
 	defer f.Close()
 	fileContent := make([]byte, config_fm.MAX_BLOCK_FILE_SIZE)
-	common.Log.Debugf("MAX_BLOCK_FILE_SIZE: %v", config_fm.MAX_BLOCK_FILE_SIZE) //@Todo borrar luego
 	// leer bloque completo
 	nBytes, err := f.Read(fileContent)
-	common.Log.Debugf("Bytes leídos: %v", nBytes) //@Todo borrar luego
 	if err != nil {
 		if err != io.EOF {
 			common.Log.Errorf(utils.MSG_ERROR_READING_FILE, err)
@@ -81,9 +74,9 @@ func ReadAndDeleteBlock(path string) ([]byte, []byte, []byte, error) {
 
 // Reconstruye un archivo en base a sus partes y lo almacena en la carpeta recovered retornando el
 // el path de dicho archivo
-func RecoverFile(fileName string) (string, error) {
+func RestoreFile(fileName string) (string, error) {
 	// creo archivo de salida
-	outputFile := utils.GenerateRecoverPath(fileName)
+	outputFile := utils.GenerateIpfsRestorePath(fileName)
 	file, err := os.Create(outputFile)
 	if err != nil {
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, err)
@@ -111,6 +104,7 @@ func RecoverFile(fileName string) (string, error) {
 		}
 		blockNumber++
 	}
+	common.Log.Infof(utils.MSG_FILE_RESTORED, outputFile)
 	return outputFile, nil
 }
 
