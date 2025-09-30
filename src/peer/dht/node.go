@@ -23,6 +23,7 @@ const MSG_ERROR_FILE_NOT_FOUND = "the file could not be found: %v"
 const MSG_FILE_FOUND = "the file has been found: %v"
 const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
 const MSG_CONTACTS_ADDED_FOR_SEARCH = "contacts added for search: %v"
+const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -141,14 +142,14 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 	}
 	// Agregar contacto a la bucket_table
 	node.AddContactPreventingLoop(sourceContact)
-	//node.BucketTab.AddContact(sourceContact)
 	// Búsqueda de archivo
 	fileName, data, err := node.KeyValueTab.Get(targetKey)
 	if err == nil {
 		return fileName, data, []contacts_queue.Contact{}, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
-	return key_value_table.EMPTY_VALUE, []byte{}, contactsToReturn, err
+	common.Log.Debugf(MSG_CONTACTS_FOUND_FOR_KEY, len(contactsToReturn), helpers.KeyToHexString(targetKey))
+	return key_value_table.EMPTY_VALUE, []byte{}, contactsToReturn, nil
 }
 
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
@@ -280,17 +281,3 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 		return nil
 	}
 }
-
-/*
-	blockName := blocks.GenerateBlockName(fileName, 1)
-	key := helpers.GetKey(blockName)
-	contacts := node.GetContactsForId(key)
-	if contacts != nil {
-		fileName, data, _, _ := node.SndFindBlock(node.Config, contacts[0], key)
-		file_manager.StoreBlockOnDownload(fileName, data)
-		common.Log.Debugf("Contact: %v", contacts[0].Url)
-		common.Log.Debugf("Primer corrida: %v", fileName)
-	} else {
-		common.Log.Debugf("No hay contactos")
-	}
-*/

@@ -158,6 +158,7 @@ func GetNextBlock(data []byte) []byte {
 	length := len(data)
 	if length < config_fm.HEADER_BLOCK_FILE_SIZE {
 		common.Log.Debugf(utils.MSG_ERROR_HEADER_SIZE, length)
+		return helpers.GetNullKey()
 	}
 	return data[helpers.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 }
