@@ -34,6 +34,7 @@ type Node struct {
 	SndShareContactsRecip rpc_ops.SndShareContactsRecipOp
 	SndPing               rpc_ops.PingOp
 	SndFindBlock          rpc_ops.FindBlockOp
+	PendingContactsToAdd  chan contacts_queue.Contact
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
@@ -51,8 +52,13 @@ func NewNode(
 		SndShareContactsRecip: sndShareContactsRecip,
 		SndPing:               sndPing,
 		SndFindBlock:          sndFindBlock,
+		PendingContactsToAdd:  make(chan contacts_queue.Contact),
 	}
 	return node
+}
+
+func (node *Node) DisposeNode() {
+	close(node.PendingContactsToAdd)
 }
 
 // Retorna verdadero si la instancia es el bootstrap node
@@ -81,6 +87,8 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 // Obtiene los contactos locales recomendados para la fuente, agrega los contactos compartidos por la fuente y
 // retorna los contactos recomendados para la fuente
 func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
+	// agregar contacto origen
+	node.AddContactPreventingLoop(sourceContact)
 	// obtener contactos recomendados
 	selfContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
 	// agregar contactos que compartió la fuente
@@ -93,7 +101,10 @@ func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceCont
 func (node *Node) SndShCtsToBootstrap() {
 	if !node.IsBootstrapNode() {
 		contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
-		node.SndShCts(*contactBoostrapNode)
+		// agregar bootstrap node a contactos
+		if node.SndShCts(*contactBoostrapNode) == nil {
+			node.AddContactPreventingLoop(*contactBoostrapNode)
+		}
 	}
 }
 
@@ -113,7 +124,9 @@ func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
 		return err
 	}
 	// agregar contactos recibidos
-	node.BucketTab.AddContacts(destRcvContacts)
+	//node.AddContactsCheckingState(destRcvContacts)
+	node.addContactsDefferedPing(destRcvContacts)
+	//node.BucketTab.AddContacts(destRcvContacts)
 	return nil
 }
 
@@ -163,7 +176,6 @@ func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fil
 	}
 	// Agregar contacto a la bucket_table
 	node.AddContactPreventingLoop(sourceContact)
-	//node.BucketTab.AddContact(sourceContact)
 	// Almacenar localmente
 	return node.doStoreBlock(key, fileName, data)
 }
@@ -195,12 +207,6 @@ func (node *Node) getContactsForId(id []byte) []contacts_queue.Contact {
 	return node.BucketTab.GetContactsForId(id)
 }
 
-/*
-// Obtiene el valor para una clave. En caso de no disponer la clave retorna error
-func (node *Node) GetValue(key []byte) (string, []byte, error) {
-	return node.KeyValueTab.Get(key)
-}
-*/
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFile(fileName string) error {
 	return file_manager.AddFile(fileName, node.createSndBlockNeighbors())
@@ -218,12 +224,20 @@ func (node *Node) GetFile(fileName string) error {
 		// Si no hay contactos locales se retorna error
 		if len(localContacts) == 0 {
 			msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)
+			common.Log.Debugf("Count contacts %v", node.BucketTab.GetCountContacts())
+			node.BucketTab.LogContacts()
 			common.Log.Errorf(msg)
 			return errors.New(msg)
 		}
 		// creo el storage de contactos y agrego los locales
 		contactStorage := tiered_contact_storage.NewTieredContactStorage(key)
 		contactStorage.PushContacts(localContacts)
+		// buscar bloque localmente
+		if end, nextBlockKey, err := node.findBlockMadly(key); err == nil {
+			key = nextBlockKey
+			endFile = end
+			continue
+		}
 		// Obtener bloque
 		endBlock := false
 		for !endBlock {
@@ -246,7 +260,7 @@ func (node *Node) GetFile(fileName string) error {
 				common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
 				continue
 			}
-			// Agregar contactos encontrados
+			// Agregar contactos encontrados a la búsqueda
 			if neighborContacts != nil {
 				common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
 				contactStorage.PushContacts(neighborContacts)
@@ -259,6 +273,31 @@ func (node *Node) GetFile(fileName string) error {
 		}
 	}
 	return nil
+}
+
+// Find block localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder enviar el mensaje retorna error
+func (node *Node) findBlockMadly(key []byte) (bool, []byte, error) {
+	fileNameFound, data, err := node.KeyValueTab.Get(key)
+	// si no se encuentra retorna error
+	if err != nil {
+		return false, helpers.GetNullKey(), err
+	}
+	// si se encuentra guarda localmente y parsear data
+	endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
+	common.Log.Debugf("Madly: %v", fileNameFound)
+	return endFile, blocks.GetNextBlock(data), nil
+}
+
+// Se encarga de tomar contactos de un canal y hacer un ping a dichos contactos
+func (node *Node) PendingPingsService() {
+	closed := false
+	for !closed {
+		contact, ok := <-node.PendingContactsToAdd
+		if ok {
+			node.SndPing(node.Config, contact)
+		}
+		closed = !ok
+	}
 }
 
 // Retorna una función que intenta enviar la orden de store a los vecinos más cercanos a la clave
@@ -280,4 +319,14 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 		}
 		return nil
 	}
+}
+
+// Agrega contactos al nodo y deja como pendiente el envío de ping's a los mismos
+func (node *Node) addContactsDefferedPing(contacts []contacts_queue.Contact) {
+	// Cargar contactos en el canal para hacer ping
+	for _, contact := range contacts {
+		node.PendingContactsToAdd <- contact
+	}
+	// Agrega contactos
+	node.BucketTab.AddContacts(contacts)
 }

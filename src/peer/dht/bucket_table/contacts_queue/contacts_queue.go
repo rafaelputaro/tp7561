@@ -92,3 +92,8 @@ func (queue *ContactQueue) GetContacs() []Contact {
 func (queue *ContactQueue) hasId(id []byte) bool {
 	return queue.IdsInTheQueue[helpers.KeyToString(id)]
 }
+
+// Retorna la candidad de contactos
+func (queue *ContactQueue) GetCount() int {
+	return len(queue.Entries)
+}

@@ -66,6 +66,7 @@ func (table *KeyValueTable) Remove(key []byte) {
 
 // Obtiene el nombre del archivo junto a sus datos para cierta clave. En caso de no disponer
 // la clave retorna error. Los datos del archivo se retornan con su header completo.
+// <fileName><data><error>
 func (table *KeyValueTable) Get(key []byte) (string, []byte, error) {
 	// obtener nombre del archivo
 	fileName, err := table.getFileName(key)

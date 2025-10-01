@@ -143,8 +143,34 @@ func (table *BucketTable) GetContactsForId(id []byte) []contacts_queue.Contact {
 
 // Obtiene los contactos para un prefijo dado
 func (table *BucketTable) GetContactsForPrefix(prefix string) []contacts_queue.Contact {
-	entries := table.Entries[prefix]
-	return entries.GetContacs()
+	if entries, ok := table.Entries[prefix]; ok {
+		return entries.GetContacs()
+	} else {
+		return []contacts_queue.Contact{}
+	}
+}
+
+// Retorna la cantidad de contactos
+func (table *BucketTable) GetCountContacts() int {
+	count := 0
+	for _, prefix := range table.Prefixes {
+		if contacts, ok := table.Entries[prefix]; ok {
+			count += contacts.GetCount()
+		}
+	}
+	return count
+}
+
+// Imprime por log los contactos de la tabla
+func (table *BucketTable) LogContacts() {
+	common.Log.Debugf("Contact list:")
+	for _, prefix := range table.Prefixes {
+		if contacts, ok := table.Entries[prefix]; ok {
+			for _, contact := range contacts.GetContacs() {
+				common.Log.Debugf(contact.Url)
+			}
+		}
+	}
 }
 
 // Obtiene el prefijo más cercano a una clave dada
