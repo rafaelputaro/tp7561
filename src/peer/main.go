@@ -37,7 +37,7 @@ func main() {
 		helpers.SleepOnStart()
 		helpers.SleepOnStart()
 		if peer.NodeDHT.IsBootstrapNode() {
-			for fileNum := 10; fileNum < 15; fileNum++ {
+			for fileNum := 1; fileNum < 15; fileNum++ {
 				if peer.GetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
 					break
 				}

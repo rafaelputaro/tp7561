@@ -212,6 +212,7 @@ func (node *Node) AddFile(fileName string) error {
 	return file_manager.AddFile(fileName, node.createSndBlockNeighbors())
 }
 
+// Busca el archivo localmente y en la red de nodos
 func (node *Node) GetFile(fileName string) error {
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
@@ -219,25 +220,25 @@ func (node *Node) GetFile(fileName string) error {
 	// Obtener archivo completo
 	endFile := false
 	for !endFile {
+		// Buscar bloque localmente
+		if end, nextBlockKey, err := node.findBlockLocally(key); err == nil {
+			key = nextBlockKey
+			endFile = end
+			continue
+		}
 		// Obtengo contactos locales
 		localContacts := node.getContactsForId(key)
 		// Si no hay contactos locales se retorna error
 		if len(localContacts) == 0 {
 			msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)
-			common.Log.Debugf("Count contacts %v", node.BucketTab.GetCountContacts())
-			node.BucketTab.LogContacts()
+			//common.Log.Debugf("Count contacts %v", node.BucketTab.GetCountContacts())
+			//node.BucketTab.LogContacts()
 			common.Log.Errorf(msg)
 			return errors.New(msg)
 		}
 		// creo el storage de contactos y agrego los locales
 		contactStorage := tiered_contact_storage.NewTieredContactStorage(key)
 		contactStorage.PushContacts(localContacts)
-		// buscar bloque localmente
-		if end, nextBlockKey, err := node.findBlockMadly(key); err == nil {
-			key = nextBlockKey
-			endFile = end
-			continue
-		}
 		// Obtener bloque
 		endBlock := false
 		for !endBlock {
@@ -276,15 +277,17 @@ func (node *Node) GetFile(fileName string) error {
 }
 
 // Find block localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder enviar el mensaje retorna error
-func (node *Node) findBlockMadly(key []byte) (bool, []byte, error) {
+func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
 	fileNameFound, data, err := node.KeyValueTab.Get(key)
 	// si no se encuentra retorna error
 	if err != nil {
+		//	node.KeyValueTab.LogKeysAndValues()
+		//	common.Log.Debugf("Key: %v", helpers.KeyToLogFormatString(key))
 		return false, helpers.GetNullKey(), err
 	}
 	// si se encuentra guarda localmente y parsear data
 	endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
-	common.Log.Debugf("Madly: %v", fileNameFound)
+	//common.Log.Debugf("Locally: %v", fileNameFound)
 	return endFile, blocks.GetNextBlock(data), nil
 }
 

@@ -9,10 +9,11 @@ import (
 	"tp/peer/helpers/file_manager"
 )
 
-const MSG_ERROR_ON_GET_VALUE = "error on get value from key value table"
+const MSG_ERROR_ON_GET_VALUE = "the file associated with the key has not been found"
 const MSG_ERROR_ON_ADD_VALUE = "error on add key value"
 const MSG_ERROR_ON_UPDATE_VALUE = "error on update value from key value table"
 const EMPTY_VALUE = ""
+const MSG_LOG_KEY_VALUE = "key: %v | value: %v"
 
 // Es una table que contiene pares clave valor y permite almacenar localmente bloques
 // asociados a las claves como archivos donde los valores almacenados son los nombres
@@ -37,7 +38,7 @@ func (table *KeyValueTable) Add(key []byte, fileName string, data []byte) error 
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// verificar si existe la clave localmente
-	keyS := helpers.KeyToString(key)
+	keyS := helpers.KeyToLogFormatString(key)
 	_, exists := table.Entries[keyS]
 	if exists {
 		return errors.New(MSG_ERROR_ON_ADD_VALUE)
@@ -61,7 +62,7 @@ func (table *KeyValueTable) Remove(key []byte) {
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// operar
-	delete(table.Entries, helpers.KeyToString(key))
+	delete(table.Entries, helpers.KeyToLogFormatString(key))
 }
 
 // Obtiene el nombre del archivo junto a sus datos para cierta clave. En caso de no disponer
@@ -81,10 +82,10 @@ func (table *KeyValueTable) Get(key []byte) (string, []byte, error) {
 
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
 func (table *KeyValueTable) getFileName(key []byte) (string, error) {
-	if value, ok := table.Entries[helpers.KeyToString(key)]; ok {
+	if value, ok := table.Entries[helpers.KeyToLogFormatString(key)]; ok {
 		return value, nil
 	}
-	common.Log.Errorf(MSG_ERROR_ON_GET_VALUE)
+	common.Log.Infof(MSG_ERROR_ON_GET_VALUE)
 	return EMPTY_VALUE, errors.New(MSG_ERROR_ON_GET_VALUE)
 }
 
@@ -94,8 +95,8 @@ func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// operar
-	if _, ok := table.Entries[helpers.KeyToString(key)]; ok {
-		table.Entries[helpers.KeyToString(key)] = newValue
+	if _, ok := table.Entries[helpers.KeyToLogFormatString(key)]; ok {
+		table.Entries[helpers.KeyToLogFormatString(key)] = newValue
 		return nil
 	}
 	common.Log.Errorf(MSG_ERROR_ON_UPDATE_VALUE)
@@ -106,4 +107,10 @@ func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
 func (table *KeyValueTable) HasKey(key []byte) bool {
 	_, err := table.getFileName(key)
 	return err != nil
+}
+
+func (table *KeyValueTable) LogKeysAndValues() {
+	for key, value := range table.Entries {
+		common.Log.Debugf(MSG_LOG_KEY_VALUE, key, value)
+	}
 }
