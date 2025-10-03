@@ -215,13 +215,7 @@ func (node *Node) AddFile(fileName string) error {
 
 // Busca el archivo localmente y en la red de nodos
 func (node *Node) GetFile(fileName string) error {
-	type processNextContactReturn struct {
-		blockHasBeenFound bool
-		endFileFound      bool
-		nextBlockFound    []byte
-		fileNameFound     string
-		err               error
-	}
+
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
 	key := helpers.GetKey(blockName)
@@ -254,15 +248,17 @@ func (node *Node) GetFile(fileName string) error {
 			defer close(resChan)
 			// Procesar contacto
 			go func() {
-				blockHasBeenFound, endFileFound, nextBlockFound, fileNameFound, err := node.processNextContact(key, blockName, contactStorage)
-				common.Log.Debugf("Sube a canal 1")
-				resChan <- processNextContactReturn{
-					blockHasBeenFound: blockHasBeenFound,
-					endFileFound:      endFileFound,
-					nextBlockFound:    nextBlockFound,
-					fileNameFound:     fileNameFound,
-					err:               err,
-				}
+				node.processNextContact(key, blockName, contactStorage, resChan)
+				//blockHasBeenFound, endFileFound, nextBlockFound, fileNameFound, err := node.processNextContact(key, blockName, contactStorage, resChan)
+				/*
+					common.Log.Debugf("Sube a canal 1")
+					resChan <- processNextContactReturn{
+						blockHasBeenFound: blockHasBeenFound,
+						endFileFound:      endFileFound,
+						nextBlockFound:    nextBlockFound,
+						fileNameFound:     fileNameFound,
+						err:               err,
+					}*/
 				common.Log.Debugf("Sube a canal 2")
 			}()
 			resProc := <-resChan
@@ -287,35 +283,70 @@ func (node *Node) GetFile(fileName string) error {
 	return nil
 }
 
+type processNextContactReturn struct {
+	blockHasBeenFound bool
+	endFileFound      bool
+	nextBlockFound    []byte
+	fileNameFound     string
+	err               error
+}
+
 // <blockHasBeenFound><endFile><nextBlockKey><fileNameFound><error>
-func (node *Node) processNextContact(key []byte, blockName string, contactStorage *tiered_contact_storage.TieredContactStorage) (bool, bool, []byte, string, error) {
+func (node *Node) processNextContact(key []byte, blockName string, contactStorage *tiered_contact_storage.TieredContactStorage, resChan chan processNextContactReturn) {
 	// Si no hay más contactos retornar error
 	if contactStorage.IsEmpty() {
 		msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
 		common.Log.Errorf(msg)
-		return false, false, helpers.GetNullKey(), "", errors.New(msg)
+		resChan <- processNextContactReturn{
+			blockHasBeenFound: false,
+			endFileFound:      false,
+			nextBlockFound:    helpers.GetNullKey(),
+			fileNameFound:     "",
+			err:               errors.New(msg),
+		}
+		return
 	}
 	// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
 	contact, _ := contactStorage.Pop()
-
 	fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
 	// Si hay un error retorna que no se encontró el bloque
 	if err != nil {
-		return false, false, helpers.GetNullKey(), fileNameFound, nil
+		resChan <- processNextContactReturn{
+			blockHasBeenFound: false,
+			endFileFound:      false,
+			nextBlockFound:    helpers.GetNullKey(),
+			fileNameFound:     fileNameFound,
+			err:               nil,
+		}
+		return //false, false, helpers.GetNullKey(), fileNameFound, nil
 	}
 	// Agrego contacto a lista local
 	node.AddContactPreventingLoop(*contact)
 	if len(fileNameFound) > 0 {
 		endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
 		common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
-		return true, endFile, nextBlockKeyFound, fileNameFound, nil
+		resChan <- processNextContactReturn{
+			blockHasBeenFound: true,
+			endFileFound:      endFile,
+			nextBlockFound:    nextBlockKeyFound,
+			fileNameFound:     fileNameFound,
+			err:               nil,
+		}
+		return //true, endFile, nextBlockKeyFound, fileNameFound, nil
 	}
 	// Agregar contactos encontrados a la búsqueda
 	if neighborContacts != nil {
 		common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
 		contactStorage.PushContacts(neighborContacts)
 	}
-	return false, false, helpers.GetNullKey(), "", nil
+	resChan <- processNextContactReturn{
+		blockHasBeenFound: false,
+		endFileFound:      false,
+		nextBlockFound:    helpers.GetNullKey(),
+		fileNameFound:     "",
+		err:               nil,
+	}
+	//return false, false, helpers.GetNullKey(), "", nil
 }
 
 // Find block localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder enviar el mensaje retorna error
