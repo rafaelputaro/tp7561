@@ -49,4 +49,5 @@ func main() {
 	// servir a resto de pares
 	peer.Serve()
 	wg.Wait()
+	peer.DisposePeer()
 }

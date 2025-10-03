@@ -12,6 +12,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// Contiene la funcionalidad de IPFS y DHT
 type Peer struct {
 	Config      helpers.PeerConfig
 	NodeDHT     dht.Node
@@ -31,6 +32,11 @@ func NewPeer(config helpers.PeerConfig) *Peer {
 	}
 	peer.GrpcService = *NewPeerService(&peer)
 	return &peer
+}
+
+// Liberar recursos
+func (peer *Peer) DisposePeer() {
+	peer.NodeDHT.DisposeNode()
 }
 
 // Inicia el servicio de atención de solicitudes rpc

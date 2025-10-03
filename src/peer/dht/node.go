@@ -57,6 +57,7 @@ func NewNode(
 	return node
 }
 
+// Se eliminan recursos asociados
 func (node *Node) DisposeNode() {
 	close(node.PendingContactsToAdd)
 }
@@ -214,6 +215,13 @@ func (node *Node) AddFile(fileName string) error {
 
 // Busca el archivo localmente y en la red de nodos
 func (node *Node) GetFile(fileName string) error {
+	type processNextContactReturn struct {
+		blockHasBeenFound bool
+		endFileFound      bool
+		nextBlockFound    []byte
+		fileNameFound     string
+		err               error
+	}
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
 	key := helpers.GetKey(blockName)
@@ -242,30 +250,33 @@ func (node *Node) GetFile(fileName string) error {
 		// Obtener bloque
 		endBlock := false
 		for !endBlock {
-			// Si no hay más contactos retornar error
-			if contactStorage.IsEmpty() {
-				msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
-				common.Log.Errorf(msg)
-				return errors.New(msg)
-			}
-			// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
-			contact, _ := contactStorage.Pop()
-			fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
-			if err != nil {
+			resChan := make(chan processNextContactReturn)
+			defer close(resChan)
+			// Procesar contacto
+			go func() {
+				blockHasBeenFound, endFileFound, nextBlockFound, fileNameFound, err := node.processNextContact(key, blockName, contactStorage)
+				common.Log.Debugf("Sube a canal 1")
+				resChan <- processNextContactReturn{
+					blockHasBeenFound: blockHasBeenFound,
+					endFileFound:      endFileFound,
+					nextBlockFound:    nextBlockFound,
+					fileNameFound:     fileNameFound,
+					err:               err,
+				}
+				common.Log.Debugf("Sube a canal 2")
+			}()
+			resProc := <-resChan
+			common.Log.Debugf("descarga de canal")
+			if !resProc.blockHasBeenFound {
+				if resProc.err != nil {
+					return resProc.err
+				}
 				continue
 			}
-			if len(fileNameFound) > 0 {
-				endFile, _ = file_manager.StoreBlockOnDownload(fileNameFound, data)
-				endBlock = true
-				key = nextBlockKeyFound
-				common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
-				continue
-			}
-			// Agregar contactos encontrados a la búsqueda
-			if neighborContacts != nil {
-				common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
-				contactStorage.PushContacts(neighborContacts)
-			}
+			endFile = resProc.endFileFound
+			key = resProc.nextBlockFound
+			blockName = resProc.fileNameFound
+			endBlock = true
 		}
 		if endFile {
 			common.Log.Debugf(MSG_FILE_DOWLOADED, fileName)
@@ -274,6 +285,37 @@ func (node *Node) GetFile(fileName string) error {
 		}
 	}
 	return nil
+}
+
+// <blockHasBeenFound><endFile><nextBlockKey><fileNameFound><error>
+func (node *Node) processNextContact(key []byte, blockName string, contactStorage *tiered_contact_storage.TieredContactStorage) (bool, bool, []byte, string, error) {
+	// Si no hay más contactos retornar error
+	if contactStorage.IsEmpty() {
+		msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
+		common.Log.Errorf(msg)
+		return false, false, helpers.GetNullKey(), "", errors.New(msg)
+	}
+	// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
+	contact, _ := contactStorage.Pop()
+
+	fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
+	// Si hay un error retorna que no se encontró el bloque
+	if err != nil {
+		return false, false, helpers.GetNullKey(), fileNameFound, nil
+	}
+	// Agrego contacto a lista local
+	node.AddContactPreventingLoop(*contact)
+	if len(fileNameFound) > 0 {
+		endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
+		common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
+		return true, endFile, nextBlockKeyFound, fileNameFound, nil
+	}
+	// Agregar contactos encontrados a la búsqueda
+	if neighborContacts != nil {
+		common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
+		contactStorage.PushContacts(neighborContacts)
+	}
+	return false, false, helpers.GetNullKey(), "", nil
 }
 
 // Find block localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder enviar el mensaje retorna error
@@ -291,13 +333,16 @@ func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
 	return endFile, blocks.GetNextBlock(data), nil
 }
 
-// Se encarga de tomar contactos de un canal y hacer un ping a dichos contactos
+// Se encarga de tomar contactos de un canal y hacer un ping a dichos contactos para luego
+// agregarlos a la tabla
 func (node *Node) PendingPingsService() {
 	closed := false
 	for !closed {
 		contact, ok := <-node.PendingContactsToAdd
 		if ok {
-			node.SndPing(node.Config, contact)
+			if node.SndPing(node.Config, contact) == nil {
+				node.AddContactPreventingLoop(contact)
+			}
 		}
 		closed = !ok
 	}
@@ -331,5 +376,33 @@ func (node *Node) addContactsDefferedPing(contacts []contacts_queue.Contact) {
 		node.PendingContactsToAdd <- contact
 	}
 	// Agrega contactos
-	node.BucketTab.AddContacts(contacts)
+	//node.BucketTab.AddContacts(contacts)
 }
+
+/*
+	// Si no hay más contactos retornar error
+	if contactStorage.IsEmpty() {
+		msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
+		common.Log.Errorf(msg)
+		return errors.New(msg)
+	}
+	// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
+	contact, _ := contactStorage.Pop()
+	fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
+	if err != nil {
+		continue
+	}
+	// Agrego contacto a lista local
+	node.AddContactPreventingLoop(*contact)
+	if len(fileNameFound) > 0 {
+		endFile, _ = file_manager.StoreBlockOnDownload(fileNameFound, data)
+		endBlock = true
+		key = nextBlockKeyFound
+		common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
+		continue
+	}
+	// Agregar contactos encontrados a la búsqueda
+	if neighborContacts != nil {
+		common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
+		contactStorage.PushContacts(neighborContacts)
+	}*/

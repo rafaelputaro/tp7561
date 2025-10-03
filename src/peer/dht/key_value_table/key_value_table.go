@@ -109,6 +109,8 @@ func (table *KeyValueTable) HasKey(key []byte) bool {
 	return err != nil
 }
 
+// Se loguean las claves contenidas en la tabla junto a los nombres de sus archivos
+// asociados
 func (table *KeyValueTable) LogKeysAndValues() {
 	for key, value := range table.Entries {
 		common.Log.Debugf(MSG_LOG_KEY_VALUE, key, value)
