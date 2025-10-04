@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sync"
 	"tp/common"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/bucket_table/contacts_queue"
@@ -22,8 +23,8 @@ const MSG_MUST_DISCARD_CONTACT = "Contact request should be discarded: %v"
 const MSG_ERROR_FILE_NOT_FOUND = "the file could not be found: %v"
 const MSG_FILE_FOUND = "the file has been found: %v"
 const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
-const MSG_CONTACTS_ADDED_FOR_SEARCH = "contacts added for search: %v"
 const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
+const MAX_CHAN_PENDING_CONTACTS = 100
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -52,7 +53,7 @@ func NewNode(
 		SndShareContactsRecip: sndShareContactsRecip,
 		SndPing:               sndPing,
 		SndFindBlock:          sndFindBlock,
-		PendingContactsToAdd:  make(chan contacts_queue.Contact),
+		PendingContactsToAdd:  make(chan contacts_queue.Contact, MAX_CHAN_PENDING_CONTACTS),
 	}
 	return node
 }
@@ -215,7 +216,6 @@ func (node *Node) AddFile(fileName string) error {
 
 // Busca el archivo localmente y en la red de nodos
 func (node *Node) GetFile(fileName string) error {
-
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
 	key := helpers.GetKey(blockName)
@@ -233,8 +233,6 @@ func (node *Node) GetFile(fileName string) error {
 		// Si no hay contactos locales se retorna error
 		if len(localContacts) == 0 {
 			msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)
-			//common.Log.Debugf("Count contacts %v", node.BucketTab.GetCountContacts())
-			//node.BucketTab.LogContacts()
 			common.Log.Errorf(msg)
 			return errors.New(msg)
 		}
@@ -244,35 +242,36 @@ func (node *Node) GetFile(fileName string) error {
 		// Obtener bloque
 		endBlock := false
 		for !endBlock {
-			resChan := make(chan processNextContactReturn)
+			var errorToReturn error = nil
+			numThreads := 20
+			resChan := make(chan processNextContactReturn, numThreads)
 			defer close(resChan)
+			wg := new(sync.WaitGroup)
 			// Procesar contacto
-			go func() {
-				node.processNextContact(key, blockName, contactStorage, resChan)
-				//blockHasBeenFound, endFileFound, nextBlockFound, fileNameFound, err := node.processNextContact(key, blockName, contactStorage, resChan)
-				/*
-					common.Log.Debugf("Sube a canal 1")
-					resChan <- processNextContactReturn{
-						blockHasBeenFound: blockHasBeenFound,
-						endFileFound:      endFileFound,
-						nextBlockFound:    nextBlockFound,
-						fileNameFound:     fileNameFound,
-						err:               err,
-					}*/
-				common.Log.Debugf("Sube a canal 2")
-			}()
-			resProc := <-resChan
-			common.Log.Debugf("descarga de canal")
-			if !resProc.blockHasBeenFound {
-				if resProc.err != nil {
-					return resProc.err
-				}
-				continue
+			for id := range numThreads {
+				wg.Add(1)
+				go func() {
+					processNextContact(node, key, fileName, contactStorage, resChan, id)
+					wg.Done()
+				}()
 			}
-			endFile = resProc.endFileFound
-			key = resProc.nextBlockFound
-			blockName = resProc.fileNameFound
-			endBlock = true
+			wg.Wait()
+			for range numThreads {
+				resProc := <-resChan
+				if !resProc.blockHasBeenFound {
+					if resProc.err != nil {
+						errorToReturn = resProc.err
+					}
+					continue
+				}
+				endFile = resProc.endFileFound
+				key = resProc.nextBlockFound
+				endBlock = true
+				break
+			}
+			if !endBlock && errorToReturn != nil {
+				return errorToReturn
+			}
 		}
 		if endFile {
 			common.Log.Debugf(MSG_FILE_DOWLOADED, fileName)
@@ -283,84 +282,15 @@ func (node *Node) GetFile(fileName string) error {
 	return nil
 }
 
-type processNextContactReturn struct {
-	blockHasBeenFound bool
-	endFileFound      bool
-	nextBlockFound    []byte
-	fileNameFound     string
-	err               error
-}
-
-// <blockHasBeenFound><endFile><nextBlockKey><fileNameFound><error>
-func (node *Node) processNextContact(key []byte, blockName string, contactStorage *tiered_contact_storage.TieredContactStorage, resChan chan processNextContactReturn) {
-	// Si no hay más contactos retornar error
-	if contactStorage.IsEmpty() {
-		msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
-		common.Log.Errorf(msg)
-		resChan <- processNextContactReturn{
-			blockHasBeenFound: false,
-			endFileFound:      false,
-			nextBlockFound:    helpers.GetNullKey(),
-			fileNameFound:     "",
-			err:               errors.New(msg),
-		}
-		return
-	}
-	// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
-	contact, _ := contactStorage.Pop()
-	fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
-	// Si hay un error retorna que no se encontró el bloque
-	if err != nil {
-		resChan <- processNextContactReturn{
-			blockHasBeenFound: false,
-			endFileFound:      false,
-			nextBlockFound:    helpers.GetNullKey(),
-			fileNameFound:     fileNameFound,
-			err:               nil,
-		}
-		return //false, false, helpers.GetNullKey(), fileNameFound, nil
-	}
-	// Agrego contacto a lista local
-	node.AddContactPreventingLoop(*contact)
-	if len(fileNameFound) > 0 {
-		endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
-		common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
-		resChan <- processNextContactReturn{
-			blockHasBeenFound: true,
-			endFileFound:      endFile,
-			nextBlockFound:    nextBlockKeyFound,
-			fileNameFound:     fileNameFound,
-			err:               nil,
-		}
-		return //true, endFile, nextBlockKeyFound, fileNameFound, nil
-	}
-	// Agregar contactos encontrados a la búsqueda
-	if neighborContacts != nil {
-		common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
-		contactStorage.PushContacts(neighborContacts)
-	}
-	resChan <- processNextContactReturn{
-		blockHasBeenFound: false,
-		endFileFound:      false,
-		nextBlockFound:    helpers.GetNullKey(),
-		fileNameFound:     "",
-		err:               nil,
-	}
-	//return false, false, helpers.GetNullKey(), "", nil
-}
-
 // Find block localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder enviar el mensaje retorna error
 func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
 	fileNameFound, data, err := node.KeyValueTab.Get(key)
 	// si no se encuentra retorna error
 	if err != nil {
-		//	node.KeyValueTab.LogKeysAndValues()
-		//	common.Log.Debugf("Key: %v", helpers.KeyToLogFormatString(key))
 		return false, helpers.GetNullKey(), err
 	}
 	// si se encuentra guarda localmente y parsear data
 	endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
-	//common.Log.Debugf("Locally: %v", fileNameFound)
 	return endFile, blocks.GetNextBlock(data), nil
 }
 

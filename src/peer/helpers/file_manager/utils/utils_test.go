@@ -1,9 +1,7 @@
 package utils
 
 import (
-	"sync"
 	"testing"
-	"time"
 	"tp/peer/helpers/file_manager/config_fm"
 )
 
@@ -23,6 +21,7 @@ func TestFolderConfig(t *testing.T) {
 	t.Logf("Restore: %v", GenerateIpfsRestorePath("file1"))
 }
 
+/*
 func TestGoFunc(t *testing.T) {
 	max := 10
 	wg := new(sync.WaitGroup)
@@ -39,3 +38,4 @@ func TestGoFunc(t *testing.T) {
 	}
 	wg.Wait()
 }
+*/
