@@ -11,6 +11,7 @@ import (
 
 const MSG_CONTACTS_ADDED_FOR_SEARCH = "contacts added for search: %v"
 
+// Representa el resultado de procesar un contacto en la búsqueda de una clave
 type processNextContactReturn struct {
 	blockHasBeenFound bool
 	endFileFound      bool
@@ -19,6 +20,7 @@ type processNextContactReturn struct {
 	err               error
 }
 
+// Retorna una neuva nstancia de processNextContactReturn
 func newProcessNextContactReturn(blockHasBeenFound bool, endFileFound bool, nextBlockFound []byte, fileNameFound string, err error) *processNextContactReturn {
 	return &processNextContactReturn{
 		blockHasBeenFound: blockHasBeenFound,
@@ -29,7 +31,8 @@ func newProcessNextContactReturn(blockHasBeenFound bool, endFileFound bool, next
 	}
 }
 
-// <blockHasBeenFound><endFile><nextBlockKey><fileNameFound><error>
+// Desencola un contacto de contactStorage e intenta consultar acerca de la clave al mismo
+// Coloca en el canal el resultado bajo el siguiente formato processNextContactReturn
 func processNextContact(node *Node, key []byte, fileName string, contactStorage *tiered_contact_storage.TieredContactStorage, resChan chan processNextContactReturn, threadId int) {
 	// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
 	contact, _ := contactStorage.Pop()

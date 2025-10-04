@@ -16,6 +16,7 @@ def main():
         app_folder=default_config["APP_FOLDER"],        
         input_data_folder=default_config["INPUT_DATA_FOLDER"],
         store_folder=default_config["STORE_FOLDER"],       
+        search_workers=int((default_config["SEARCH_WORKERS"])),
     )
     with open("docker-compose-dev.yaml", "w") as f:
         f.write(output)

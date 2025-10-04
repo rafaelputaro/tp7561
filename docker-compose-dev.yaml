@@ -18,6 +18,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -43,6 +45,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -68,6 +72,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -93,6 +99,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -118,6 +126,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -143,6 +153,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -168,6 +180,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -193,6 +207,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -218,6 +234,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -243,6 +261,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -268,6 +288,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -293,6 +315,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -318,6 +342,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -343,6 +369,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 
@@ -368,6 +396,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
     networks:
       - tp_net
 

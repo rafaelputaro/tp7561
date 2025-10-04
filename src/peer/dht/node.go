@@ -243,12 +243,11 @@ func (node *Node) GetFile(fileName string) error {
 		endBlock := false
 		for !endBlock {
 			var errorToReturn error = nil
-			numThreads := 20
-			resChan := make(chan processNextContactReturn, numThreads)
+			resChan := make(chan processNextContactReturn, node.Config.SearchWorkers)
 			defer close(resChan)
 			wg := new(sync.WaitGroup)
 			// Procesar contacto
-			for id := range numThreads {
+			for id := range node.Config.SearchWorkers {
 				wg.Add(1)
 				go func() {
 					processNextContact(node, key, fileName, contactStorage, resChan, id)
@@ -256,7 +255,7 @@ func (node *Node) GetFile(fileName string) error {
 				}()
 			}
 			wg.Wait()
-			for range numThreads {
+			for range node.Config.SearchWorkers {
 				resProc := <-resChan
 				if !resProc.blockHasBeenFound {
 					if resProc.err != nil {
@@ -282,7 +281,8 @@ func (node *Node) GetFile(fileName string) error {
 	return nil
 }
 
-// Find block localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder enviar el mensaje retorna error
+// Busca el bloque localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder
+// enviar el mensaje retorna error
 func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
 	fileNameFound, data, err := node.KeyValueTab.Get(key)
 	// si no se encuentra retorna error

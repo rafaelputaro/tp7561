@@ -18,6 +18,8 @@ services:
       - LOGIN_FORMAT_FOR_KEYS={{ login_format_for_keys }}
       - INPUT_DATA_FOLDER=/tmp{{ input_data_folder }}
       - STORE_IPFS_FOLDER={{ app_folder }}{{ store_folder }}
+      - SEARCH_WORKERS={{ search_workers }}
+      - NUMBER_OF_PAIRS={{ number_of_pairs }}
     networks:
       - tp_net
 {% if i < number_of_pairs %}
