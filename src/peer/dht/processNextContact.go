@@ -49,7 +49,7 @@ func processNextContact(node *Node, key []byte, fileName string, contactStorage 
 		return
 	}
 	// Agrego contacto a lista local
-	node.AddContactPreventingLoop(*contact)
+	node.scheduleAddContactTask(*contact)
 	if len(fileNameFound) > 0 {
 		endFile, err := file_manager.StoreBlockOnDownload(fileNameFound, data)
 		if err == nil {

@@ -9,7 +9,7 @@ import (
 	"tp/peer/helpers/file_manager"
 )
 
-const MSG_ERROR_ON_GET_VALUE = "the file associated with the key has not been found"
+const MSG_ERROR_ON_GET_VALUE = "The file associated with the key was not found in the bucket table"
 const MSG_ERROR_ON_ADD_VALUE = "error on add key value"
 const MSG_ERROR_ON_UPDATE_VALUE = "error on update value from key value table"
 const EMPTY_VALUE = ""

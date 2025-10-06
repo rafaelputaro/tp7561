@@ -1,6 +1,6 @@
 package utils
 
-const MSG_ERROR_FILE_EXIST = "the file exists"
+const MSG_ERROR_FILE_EXIST = "the file exists locally"
 const MSG_ERROR_CREATING_FILE = "Error creating file: %v"
 const MSG_ERROR_WRITING_FILE = "Error writing file: %v"
 const MSG_FILE_ADDED = "File %v added with a total of %v blocks"

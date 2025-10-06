@@ -16,6 +16,7 @@ import (
 	"tp/peer/helpers/communication/rpc_ops"
 	"tp/peer/helpers/file_manager"
 	"tp/peer/helpers/file_manager/blocks"
+	"tp/peer/helpers/task_scheduler"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
@@ -35,7 +36,7 @@ type Node struct {
 	SndShareContactsRecip rpc_ops.SndShareContactsRecipOp
 	SndPing               rpc_ops.PingOp
 	SndFindBlock          rpc_ops.FindBlockOp
-	PendingContactsToAdd  chan contacts_queue.Contact
+	TaskScheduler         task_scheduler.TaskScheduler
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
@@ -53,14 +54,14 @@ func NewNode(
 		SndShareContactsRecip: sndShareContactsRecip,
 		SndPing:               sndPing,
 		SndFindBlock:          sndFindBlock,
-		PendingContactsToAdd:  make(chan contacts_queue.Contact, MAX_CHAN_PENDING_CONTACTS),
+		TaskScheduler:         *task_scheduler.NewTaskScheduler(),
 	}
 	return node
 }
 
 // Se eliminan recursos asociados
 func (node *Node) DisposeNode() {
-	close(node.PendingContactsToAdd)
+	node.TaskScheduler.DisposeTaskScheduler()
 }
 
 // Retorna verdadero si la instancia es el bootstrap node
@@ -126,9 +127,7 @@ func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
 		return err
 	}
 	// agregar contactos recibidos
-	//node.AddContactsCheckingState(destRcvContacts)
-	node.addContactsDefferedPing(destRcvContacts)
-	//node.BucketTab.AddContacts(destRcvContacts)
+	node.schedulePingAndAddContactsTask(destRcvContacts)
 	return nil
 }
 
@@ -294,21 +293,6 @@ func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
 	return endFile, blocks.GetNextBlock(data), nil
 }
 
-// Se encarga de tomar contactos de un canal y hacer un ping a dichos contactos para luego
-// agregarlos a la tabla
-func (node *Node) PendingPingsService() {
-	closed := false
-	for !closed {
-		contact, ok := <-node.PendingContactsToAdd
-		if ok {
-			if node.SndPing(node.Config, contact) == nil {
-				node.AddContactPreventingLoop(contact)
-			}
-		}
-		closed = !ok
-	}
-}
-
 // Retorna una función que intenta enviar la orden de store a los vecinos más cercanos a la clave
 // y en caso de no encontrar alguno almacena el bloque localmente
 func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
@@ -330,40 +314,23 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 	}
 }
 
-// Agrega contactos al nodo y deja como pendiente el envío de ping's a los mismos
-func (node *Node) addContactsDefferedPing(contacts []contacts_queue.Contact) {
-	// Cargar contactos en el canal para hacer ping
-	for _, contact := range contacts {
-		node.PendingContactsToAdd <- contact
-	}
-	// Agrega contactos
-	//node.BucketTab.AddContacts(contacts)
+// Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
+// para evitar posibles retrasos durante la actualización de la bucket table que impliquen
+// enviar pings secundarios a otros contactos
+func (node *Node) scheduleAddContactTask(contact contacts_queue.Contact) {
+	node.TaskScheduler.AddTask(func() {
+		node.AddContactPreventingLoop(contact)
+	})
 }
 
-/*
-	// Si no hay más contactos retornar error
-	if contactStorage.IsEmpty() {
-		msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, blockName)
-		common.Log.Errorf(msg)
-		return errors.New(msg)
+// Agrega la tarea de enviar ping a contactos para ser agregador a la bucket table
+// en caso de encontrarse activos
+func (node *Node) schedulePingAndAddContactsTask(contacts []contacts_queue.Contact) {
+	for _, contact := range contacts {
+		node.TaskScheduler.AddTask(func() {
+			if node.SndPing(node.Config, contact) == nil {
+				node.AddContactPreventingLoop(contact)
+			}
+		})
 	}
-	// Tomar el contacto más cercano y solicitar bloque/contactos cercanos
-	contact, _ := contactStorage.Pop()
-	fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
-	if err != nil {
-		continue
-	}
-	// Agrego contacto a lista local
-	node.AddContactPreventingLoop(*contact)
-	if len(fileNameFound) > 0 {
-		endFile, _ = file_manager.StoreBlockOnDownload(fileNameFound, data)
-		endBlock = true
-		key = nextBlockKeyFound
-		common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
-		continue
-	}
-	// Agregar contactos encontrados a la búsqueda
-	if neighborContacts != nil {
-		common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
-		contactStorage.PushContacts(neighborContacts)
-	}*/
+}

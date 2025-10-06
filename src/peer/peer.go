@@ -41,9 +41,6 @@ func (peer *Peer) DisposePeer() {
 
 // Inicia el servicio de atención de solicitudes rpc
 func (peer *Peer) Serve() {
-	go func() {
-		peer.NodeDHT.PendingPingsService()
-	}()
 	peer.GrpcService.Serve()
 }
 
