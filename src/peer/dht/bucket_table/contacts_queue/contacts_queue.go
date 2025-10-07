@@ -31,7 +31,7 @@ func NewQueue(capacity int) *ContactQueue {
 // En caso de que la entrada se encuentra en la cola retorna falso y error nulo.
 // Si la cosa esta llena retorna falso y un error
 func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
-	if !queue.hasId(entry.ID) {
+	if !queue.HasId(entry.ID) {
 		if queue.Full() {
 			return false, errors.New(MSG_ERROR_FULL_QUEUE)
 		}
@@ -89,7 +89,7 @@ func (queue *ContactQueue) GetContacs() []Contact {
 }
 
 // Retorna verdadero si encuentra el id en el mapa de id's presentes en la cola
-func (queue *ContactQueue) hasId(id []byte) bool {
+func (queue *ContactQueue) HasId(id []byte) bool {
 	return queue.IdsInTheQueue[helpers.KeyToString(id)]
 }
 

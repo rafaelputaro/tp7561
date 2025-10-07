@@ -11,6 +11,7 @@ import (
 	"tp/peer/helpers/communication/rpc_ops"
 )
 
+const MSG_MUST_DISCARD_CONTACT = "attempts to add itself: %v"
 const MSG_ERROR_PREFIX_NOT_FOUND = "error prefix not found"
 const MSG_CONTACT_HAS_NOT_BEEN_ADDED = "The contact has not been added: %v"
 const MSG_ERROR_ON_ENQUEUE_CONTACT = "error on enqueue contact"
@@ -55,11 +56,22 @@ func (table *BucketTable) initEntries(capacity int) {
 
 // Si la tabla no se encuentra llena agrega el contacto
 func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
+	// previene que se agregue a si mismo
+	if table.discardAggregateItself(newContact) {
+		msg := fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, newContact.ToString())
+		common.Log.Debugf(msg)
+		return errors.New(msg)
+	}
 	// tomar lock
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// operar
 	return table.doAddContact(newContact)
+}
+
+// Retorna verdadero si la url propia y la del contacto coinciden
+func (table *BucketTable) discardAggregateItself(contact contacts_queue.Contact) bool {
+	return table.Config.Url == contact.Url
 }
 
 // Si la tabla no se encuentra llena agrega el contacto

@@ -39,7 +39,7 @@ func main() {
 		if peer.NodeDHT.IsBootstrapNode() {
 			for fileNum := 1; fileNum < 15; fileNum++ {
 				if peer.GetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
-					break
+					common.Log.Debugf("No se encontro archivo: %v", fileNum)
 				}
 				helpers.SleepOnStart()
 			}
