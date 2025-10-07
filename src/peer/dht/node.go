@@ -79,7 +79,8 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 // retorna los contactos recomendados para la fuente
 func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
 	// agregar contacto origen
-	node.BucketTab.AddContact(sourceContact)
+	//node.BucketTab.AddContact(sourceContact)
+	node.scheduleAddContactTask(sourceContact)
 	// obtener contactos recomendados
 	newContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
 	// agregar contactos que compartió la fuente
@@ -94,7 +95,8 @@ func (node *Node) SndShCtsToBootstrap() {
 		contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
 		// agregar bootstrap node a contactos
 		if node.SndShCts(*contactBoostrapNode) == nil {
-			node.BucketTab.AddContact(*contactBoostrapNode)
+			node.scheduleAddContactTask(*contactBoostrapNode)
+			//node.BucketTab.AddContact(*contactBoostrapNode)
 		}
 	}
 }
@@ -122,7 +124,8 @@ func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
 func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
-	node.BucketTab.AddContact(sourceContact)
+	//node.BucketTab.AddContact(sourceContact)
+	node.scheduleAddContactTask(sourceContact)
 	// Buscar los contactos
 	return node.BucketTab.GetContactsForId(targetId)
 }
@@ -131,7 +134,8 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
 func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error) {
-	node.BucketTab.AddContact(sourceContact)
+	//node.BucketTab.AddContact(sourceContact)
+	node.scheduleAddContactTask(sourceContact)
 	// Búsqueda de archivo
 	fileName, data, err := node.KeyValueTab.Get(targetKey)
 	if err == nil {
