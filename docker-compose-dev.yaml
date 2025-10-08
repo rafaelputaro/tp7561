@@ -19,7 +19,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -46,7 +46,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -73,7 +73,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -100,7 +100,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -127,7 +127,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -154,7 +154,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -181,7 +181,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -208,7 +208,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -235,7 +235,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -262,7 +262,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -289,7 +289,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -316,7 +316,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -343,7 +343,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -370,7 +370,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -397,7 +397,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -424,7 +424,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -451,7 +451,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -478,7 +478,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -505,7 +505,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -532,7 +532,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -559,7 +559,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -586,7 +586,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -613,7 +613,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -640,7 +640,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 
@@ -667,7 +667,412 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=25
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-26
+
+  peer-26:
+    container_name: peer-26
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50076:50051"
+    volumes:
+      - /tmp/tp/data/peer-26:/tmp/data
+      - /tmp/tp/peer-26:/tmp/peer
+    environment:
+      - PEER_NAME=peer-26
+      - PEER_HOST=peer-26
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-27
+
+  peer-27:
+    container_name: peer-27
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50077:50051"
+    volumes:
+      - /tmp/tp/data/peer-27:/tmp/data
+      - /tmp/tp/peer-27:/tmp/peer
+    environment:
+      - PEER_NAME=peer-27
+      - PEER_HOST=peer-27
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-28
+
+  peer-28:
+    container_name: peer-28
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50078:50051"
+    volumes:
+      - /tmp/tp/data/peer-28:/tmp/data
+      - /tmp/tp/peer-28:/tmp/peer
+    environment:
+      - PEER_NAME=peer-28
+      - PEER_HOST=peer-28
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-29
+
+  peer-29:
+    container_name: peer-29
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50079:50051"
+    volumes:
+      - /tmp/tp/data/peer-29:/tmp/data
+      - /tmp/tp/peer-29:/tmp/peer
+    environment:
+      - PEER_NAME=peer-29
+      - PEER_HOST=peer-29
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-30
+
+  peer-30:
+    container_name: peer-30
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50080:50051"
+    volumes:
+      - /tmp/tp/data/peer-30:/tmp/data
+      - /tmp/tp/peer-30:/tmp/peer
+    environment:
+      - PEER_NAME=peer-30
+      - PEER_HOST=peer-30
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-31
+
+  peer-31:
+    container_name: peer-31
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50081:50051"
+    volumes:
+      - /tmp/tp/data/peer-31:/tmp/data
+      - /tmp/tp/peer-31:/tmp/peer
+    environment:
+      - PEER_NAME=peer-31
+      - PEER_HOST=peer-31
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-32
+
+  peer-32:
+    container_name: peer-32
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50082:50051"
+    volumes:
+      - /tmp/tp/data/peer-32:/tmp/data
+      - /tmp/tp/peer-32:/tmp/peer
+    environment:
+      - PEER_NAME=peer-32
+      - PEER_HOST=peer-32
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-33
+
+  peer-33:
+    container_name: peer-33
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50083:50051"
+    volumes:
+      - /tmp/tp/data/peer-33:/tmp/data
+      - /tmp/tp/peer-33:/tmp/peer
+    environment:
+      - PEER_NAME=peer-33
+      - PEER_HOST=peer-33
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-34
+
+  peer-34:
+    container_name: peer-34
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50084:50051"
+    volumes:
+      - /tmp/tp/data/peer-34:/tmp/data
+      - /tmp/tp/peer-34:/tmp/peer
+    environment:
+      - PEER_NAME=peer-34
+      - PEER_HOST=peer-34
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-35
+
+  peer-35:
+    container_name: peer-35
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50085:50051"
+    volumes:
+      - /tmp/tp/data/peer-35:/tmp/data
+      - /tmp/tp/peer-35:/tmp/peer
+    environment:
+      - PEER_NAME=peer-35
+      - PEER_HOST=peer-35
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-36
+
+  peer-36:
+    container_name: peer-36
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50086:50051"
+    volumes:
+      - /tmp/tp/data/peer-36:/tmp/data
+      - /tmp/tp/peer-36:/tmp/peer
+    environment:
+      - PEER_NAME=peer-36
+      - PEER_HOST=peer-36
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-37
+
+  peer-37:
+    container_name: peer-37
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50087:50051"
+    volumes:
+      - /tmp/tp/data/peer-37:/tmp/data
+      - /tmp/tp/peer-37:/tmp/peer
+    environment:
+      - PEER_NAME=peer-37
+      - PEER_HOST=peer-37
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-38
+
+  peer-38:
+    container_name: peer-38
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50088:50051"
+    volumes:
+      - /tmp/tp/data/peer-38:/tmp/data
+      - /tmp/tp/peer-38:/tmp/peer
+    environment:
+      - PEER_NAME=peer-38
+      - PEER_HOST=peer-38
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-39
+
+  peer-39:
+    container_name: peer-39
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50089:50051"
+    volumes:
+      - /tmp/tp/data/peer-39:/tmp/data
+      - /tmp/tp/peer-39:/tmp/peer
+    environment:
+      - PEER_NAME=peer-39
+      - PEER_HOST=peer-39
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
+    networks:
+      - tp_net
+
+    depends_on:
+
+      - peer-40
+
+  peer-40:
+    container_name: peer-40
+    image: peer:latest
+#    expose:
+#      - "50051"
+    ports:
+      - "50090:50051"
+    volumes:
+      - /tmp/tp/data/peer-40:/tmp/data
+      - /tmp/tp/peer-40:/tmp/peer
+    environment:
+      - PEER_NAME=peer-40
+      - PEER_HOST=peer-40
+      - PEER_PORT=50051
+      - ENTRIES_PER_K_BUCKET=20
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_IPFS_FOLDER=/tmp/peer/store
+      - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=40
     networks:
       - tp_net
 

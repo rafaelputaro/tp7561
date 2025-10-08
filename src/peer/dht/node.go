@@ -96,7 +96,6 @@ func (node *Node) SndShCtsToBootstrap() {
 		// agregar bootstrap node a contactos
 		if node.SndShCts(*contactBoostrapNode) == nil {
 			node.scheduleAddContactTask(*contactBoostrapNode)
-			//node.BucketTab.AddContact(*contactBoostrapNode)
 		}
 	}
 }
@@ -124,7 +123,6 @@ func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
 func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
-	//node.BucketTab.AddContact(sourceContact)
 	node.scheduleAddContactTask(sourceContact)
 	// Buscar los contactos
 	return node.BucketTab.GetContactsForId(targetId)
@@ -134,7 +132,6 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
 func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error) {
-	//node.BucketTab.AddContact(sourceContact)
 	node.scheduleAddContactTask(sourceContact)
 	// Búsqueda de archivo
 	fileName, data, err := node.KeyValueTab.Get(targetKey)
@@ -150,9 +147,11 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
 func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fileName string, data []byte) error {
-	if err := node.BucketTab.AddContact(sourceContact); err != nil {
-		return err
-	}
+	node.scheduleAddContactTask(sourceContact)
+	/*
+		if err := node.BucketTab.AddContact(sourceContact); err != nil {
+			return err
+		}*/
 	// Almacenar localmente
 	return node.doStoreBlock(key, fileName, data)
 }
@@ -168,10 +167,21 @@ func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
 	}
 	// Buscar contactos cercanos a la clave
 	contacts := node.BucketTab.GetContactsForId(key)
-	for index := range contacts {
-		node.SndStore(node.Config, contacts[index], key, fileName, data)
-	}
+	node.scheduleSndStoreTask(key, fileName, data, contacts)
+	/*
+		for index := range contacts {
+			node.SndStore(node.Config, contacts[index], key, fileName, data)
+		}*/
 	return nil
+}
+
+// Agrega la tarea de envío de SndStore a un lote de contactos
+func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte, contacts []contacts_queue.Contact) {
+	for _, contact := range contacts {
+		node.TaskScheduler.AddTask(func() {
+			node.SndStore(node.Config, contact, key, fileName, data)
+		})
+	}
 }
 
 // Retorna los contactos para un id dado

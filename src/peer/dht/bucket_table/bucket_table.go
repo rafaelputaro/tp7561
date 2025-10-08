@@ -63,8 +63,8 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 		return errors.New(msg)
 	}
 	// tomar lock
-	table.mutex.Lock()
-	defer table.mutex.Unlock()
+	//table.mutex.Lock()
+	//defer table.mutex.Unlock()
 	// operar
 	return table.doAddContact(newContact)
 }
@@ -78,7 +78,11 @@ func (table *BucketTable) discardAggregateItself(contact contacts_queue.Contact)
 func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error {
 	prefix, err := table.getPrefix(newContact.ID)
 	if err == nil {
+		// tomar lock
+		table.mutex.Lock()
+		defer table.mutex.Unlock()
 		queue := table.Entries[prefix]
+		// encolar nuevo contacto
 		okEnqueue, err := queue.Enqueue(newContact)
 		if err != nil {
 			headContact, _ := queue.TakeHead()
@@ -104,8 +108,8 @@ func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error 
 // Intenta agregar los contactos según la capacidad actual de la tabla
 func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) error {
 	// tomar lock
-	table.mutex.Lock()
-	defer table.mutex.Unlock()
+	//table.mutex.Lock()
+	//defer table.mutex.Unlock()
 	// operar
 	common.Log.Debugf(MSG_TRY_TO_ADD_CONTACTS, len(newContacts))
 	for _, contact := range newContacts {
@@ -155,6 +159,9 @@ func (table *BucketTable) GetContactsForId(id []byte) []contacts_queue.Contact {
 
 // Obtiene los contactos para un prefijo dado
 func (table *BucketTable) GetContactsForPrefix(prefix string) []contacts_queue.Contact {
+	// tomar lock
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
 	if entries, ok := table.Entries[prefix]; ok {
 		return entries.GetContacs()
 	} else {
@@ -164,6 +171,8 @@ func (table *BucketTable) GetContactsForPrefix(prefix string) []contacts_queue.C
 
 // Retorna la cantidad de contactos
 func (table *BucketTable) GetCountContacts() int {
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
 	count := 0
 	for _, prefix := range table.Prefixes {
 		if contacts, ok := table.Entries[prefix]; ok {

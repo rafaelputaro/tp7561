@@ -9,7 +9,10 @@ const MIN_SLEEP_BETWEEN_RETRIES = 5
 const MAX_OFFSET_SLEEP_BETWEEN_RETRIES = 30
 const MIN_SLEEP_BETWEEN_RETRIES_SHORT = 2
 const MAX_OFFSET_SLEEP_BETWEEN_RETRIES_SHORT = 10
-const SLEEP_ON_START = 15
+const MIN_SLEEP_ON_START = 2
+const MAX_OFFSET_SLEEP_ON_START = 30
+const MIN_SLEEP_SHORT = 1
+const MAX_OFFSET_SLEEP_SHORT = 10
 
 func SleepBetweenRetries() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -25,7 +28,16 @@ func SleepBetweenRetriesShort() {
 	time.Sleep(t)
 }
 
-func SleepOnStart() {
-	t := time.Duration(SLEEP_ON_START) * time.Second
+func SleepOnStart(numberOfPairs int) {
+	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := MIN_SLEEP_ON_START*numberOfPairs/4 + randSource.Intn(MAX_OFFSET_SLEEP_ON_START)
+	t := time.Duration(r) * time.Second
+	time.Sleep(t)
+}
+
+func SleepShort(numberOfPairs int) {
+	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := MIN_SLEEP_SHORT*numberOfPairs/2 + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
+	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }

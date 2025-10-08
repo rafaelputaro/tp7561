@@ -20,28 +20,23 @@ func main() {
 	peer := NewPeer(*config)
 	wg := new(sync.WaitGroup)
 	wg.Add(1)
+	numberOfPairs := peer.Config.NumberOfPairs
 	// obtener contactos para la tabla propia en el inicio
 	go func() {
-		helpers.SleepOnStart()
+		helpers.SleepOnStart(numberOfPairs)
 		peer.SndShCtsToBootstrap()
-		helpers.SleepOnStart()
-		helpers.SleepOnStart()
-		//if peer.NodeDHT.IsBootstrapNode() {
+		helpers.SleepOnStart(numberOfPairs)
 		file_manager.UploadLocalFiles(func(fileName string) error {
 			peer.AddFile(fileName)
 			return nil
 		})
-		//}
-		helpers.SleepOnStart()
-		helpers.SleepOnStart()
-		helpers.SleepOnStart()
-		helpers.SleepOnStart()
+		helpers.SleepShort(numberOfPairs)
 		if peer.NodeDHT.IsBootstrapNode() {
 			for fileNum := 1; fileNum < 15; fileNum++ {
 				if peer.GetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
 					common.Log.Debugf("No se encontro archivo: %v", fileNum)
 				}
-				helpers.SleepOnStart()
+				helpers.SleepShort(numberOfPairs)
 			}
 		}
 		wg.Done()
