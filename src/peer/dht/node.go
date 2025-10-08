@@ -79,12 +79,11 @@ func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
 // retorna los contactos recomendados para la fuente
 func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
 	// agregar contacto origen
-	//node.BucketTab.AddContact(sourceContact)
 	node.scheduleAddContactTask(sourceContact)
 	// obtener contactos recomendados
 	newContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
 	// agregar contactos que compartió la fuente
-	node.scheduleAddContactsTask(newContacts)
+	node.scheduleAddContactsTask(sourceContactList)
 	return newContacts
 }
 
@@ -148,10 +147,6 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 // fuente en la tabla de contactos
 func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fileName string, data []byte) error {
 	node.scheduleAddContactTask(sourceContact)
-	/*
-		if err := node.BucketTab.AddContact(sourceContact); err != nil {
-			return err
-		}*/
 	// Almacenar localmente
 	return node.doStoreBlock(key, fileName, data)
 }
@@ -168,10 +163,6 @@ func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
 	// Buscar contactos cercanos a la clave
 	contacts := node.BucketTab.GetContactsForId(key)
 	node.scheduleSndStoreTask(key, fileName, data, contacts)
-	/*
-		for index := range contacts {
-			node.SndStore(node.Config, contacts[index], key, fileName, data)
-		}*/
 	return nil
 }
 
