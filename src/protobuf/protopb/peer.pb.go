@@ -335,6 +335,7 @@ func (x *FindBlockOpers) GetBlockKey() []byte {
 	return nil
 }
 
+// Contiene la respuesta para la búsqueda de un bloque
 type FindBlockRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	BlockName     *string                `protobuf:"bytes,1,req,name=blockName" json:"blockName,omitempty"`
@@ -403,6 +404,120 @@ func (x *FindBlockRes) GetContactsUrls() []string {
 	return nil
 }
 
+// Contiene la información sobre las partes de un archivo a subir
+type AddFileOpers struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FileName      *string                `protobuf:"bytes,1,req,name=fileName" json:"fileName,omitempty"`
+	Part          *int32                 `protobuf:"varint,2,req,name=part" json:"part,omitempty"` // 0 en adelante
+	Data          []byte                 `protobuf:"bytes,3,req,name=data" json:"data,omitempty"`
+	Endfile       *bool                  `protobuf:"varint,4,req,name=endfile" json:"endfile,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddFileOpers) Reset() {
+	*x = AddFileOpers{}
+	mi := &file_peer_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddFileOpers) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddFileOpers) ProtoMessage() {}
+
+func (x *AddFileOpers) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddFileOpers.ProtoReflect.Descriptor instead.
+func (*AddFileOpers) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AddFileOpers) GetFileName() string {
+	if x != nil && x.FileName != nil {
+		return *x.FileName
+	}
+	return ""
+}
+
+func (x *AddFileOpers) GetPart() int32 {
+	if x != nil && x.Part != nil {
+		return *x.Part
+	}
+	return 0
+}
+
+func (x *AddFileOpers) GetData() []byte {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *AddFileOpers) GetEndfile() bool {
+	if x != nil && x.Endfile != nil {
+		return *x.Endfile
+	}
+	return false
+}
+
+// Contiene la key cuando se sube el archivo completo
+type AddFileRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           []byte                 `protobuf:"bytes,1,opt,name=key" json:"key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddFileRes) Reset() {
+	*x = AddFileRes{}
+	mi := &file_peer_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddFileRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddFileRes) ProtoMessage() {}
+
+func (x *AddFileRes) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddFileRes.ProtoReflect.Descriptor instead.
+func (*AddFileRes) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *AddFileRes) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
 var File_peer_proto protoreflect.FileDescriptor
 
 const file_peer_proto_rawDesc = "" +
@@ -434,14 +549,23 @@ const file_peer_proto_rawDesc = "" +
 	"\tblockName\x18\x01 \x02(\tR\tblockName\x12\x1c\n" +
 	"\tblockData\x18\x02 \x02(\fR\tblockData\x12 \n" +
 	"\vcontactsIds\x18\x03 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls2\xd7\x01\n" +
+	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"l\n" +
+	"\fAddFileOpers\x12\x1a\n" +
+	"\bfileName\x18\x01 \x02(\tR\bfileName\x12\x12\n" +
+	"\x04part\x18\x02 \x02(\x05R\x04part\x12\x12\n" +
+	"\x04data\x18\x03 \x02(\fR\x04data\x12\x18\n" +
+	"\aendfile\x18\x04 \x02(\bR\aendfile\"\x1e\n" +
+	"\n" +
+	"AddFileRes\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\fR\x03key2\xfe\x01\n" +
 	"\n" +
 	"Operations\x12-\n" +
 	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x125\n" +
 	"\x11ShCtsReciprocally\x12\x10.ShCtsRecipOpers\x1a\x0e.ShCtsRecipRes\x126\n" +
 	"\n" +
 	"StoreBlock\x12\x10.StoreBlockOpers\x1a\x16.google.protobuf.Empty\x12+\n" +
-	"\tFindBlock\x12\x0f.FindBlockOpers\x1a\r.FindBlockResB\vZ\t./protopb"
+	"\tFindBlock\x12\x0f.FindBlockOpers\x1a\r.FindBlockRes\x12%\n" +
+	"\aAddFile\x12\r.AddFileOpers\x1a\v.AddFileResB\vZ\t./protopb"
 
 var (
 	file_peer_proto_rawDescOnce sync.Once
@@ -455,7 +579,7 @@ func file_peer_proto_rawDescGZIP() []byte {
 	return file_peer_proto_rawDescData
 }
 
-var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_peer_proto_goTypes = []any{
 	(*PingOperands)(nil),    // 0: PingOperands
 	(*ShCtsRecipOpers)(nil), // 1: ShCtsRecipOpers
@@ -463,19 +587,23 @@ var file_peer_proto_goTypes = []any{
 	(*StoreBlockOpers)(nil), // 3: StoreBlockOpers
 	(*FindBlockOpers)(nil),  // 4: FindBlockOpers
 	(*FindBlockRes)(nil),    // 5: FindBlockRes
-	(*emptypb.Empty)(nil),   // 6: google.protobuf.Empty
+	(*AddFileOpers)(nil),    // 6: AddFileOpers
+	(*AddFileRes)(nil),      // 7: AddFileRes
+	(*emptypb.Empty)(nil),   // 8: google.protobuf.Empty
 }
 var file_peer_proto_depIdxs = []int32{
 	0, // 0: Operations.Ping:input_type -> PingOperands
 	1, // 1: Operations.ShCtsReciprocally:input_type -> ShCtsRecipOpers
 	3, // 2: Operations.StoreBlock:input_type -> StoreBlockOpers
 	4, // 3: Operations.FindBlock:input_type -> FindBlockOpers
-	6, // 4: Operations.Ping:output_type -> google.protobuf.Empty
-	2, // 5: Operations.ShCtsReciprocally:output_type -> ShCtsRecipRes
-	6, // 6: Operations.StoreBlock:output_type -> google.protobuf.Empty
-	5, // 7: Operations.FindBlock:output_type -> FindBlockRes
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
+	6, // 4: Operations.AddFile:input_type -> AddFileOpers
+	8, // 5: Operations.Ping:output_type -> google.protobuf.Empty
+	2, // 6: Operations.ShCtsReciprocally:output_type -> ShCtsRecipRes
+	8, // 7: Operations.StoreBlock:output_type -> google.protobuf.Empty
+	5, // 8: Operations.FindBlock:output_type -> FindBlockRes
+	7, // 9: Operations.AddFile:output_type -> AddFileRes
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -492,7 +620,7 @@ func file_peer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_peer_proto_rawDesc), len(file_peer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

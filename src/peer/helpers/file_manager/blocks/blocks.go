@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"tp/common"
+	"tp/common/files_common"
+	"tp/common/files_common/messages"
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager/config_fm"
 	"tp/peer/helpers/file_manager/utils"
@@ -17,7 +19,7 @@ func ReadBlock(path string) (int, []byte, error) {
 	// abrir archivo
 	f, err := os.Open(path)
 	if err != nil {
-		common.Log.Errorf(utils.MSG_FILE_COULD_NOT_BE_OPONED, err)
+		common.Log.Errorf(messages.MSG_FILE_COULD_NOT_BE_OPONED, err)
 		return 0, nil, err
 	}
 	defer f.Close()
@@ -26,7 +28,7 @@ func ReadBlock(path string) (int, []byte, error) {
 	nBytes, err := f.Read(fileContent)
 	if err != nil {
 		if err != io.EOF {
-			common.Log.Errorf(utils.MSG_ERROR_READING_FILE, err)
+			common.Log.Errorf(messages.MSG_ERROR_READING_FILE, err)
 			return nBytes, nil, err
 		}
 	}
@@ -86,7 +88,7 @@ func RestoreFile(fileName string) (string, error) {
 	// iniciar recuperación
 	blockNumber := 0
 	for {
-		path := utils.GenertaIpfsDownloadPartPath(fileName, blockNumber)
+		path := utils.GenerateIpfsDownloadPartPath(fileName, blockNumber)
 		// leer siguiente bloque
 		_, nextBlockKey, data, err := ReadAndParseBlock(path)
 		if err != nil {
@@ -129,23 +131,26 @@ func GenerateBlockToStore(data []byte, key []byte, nextKey []byte) []byte {
 // Escribe un bloque en un archivo localmente. Retorna error si el archivo ya existe o si se
 // presenta algún error de acceso a disco
 func StoreBlock(filepath string, data []byte) error {
-	// chequear si el archivo ya existe
-	if utils.PathExists(filepath) {
-		common.Log.Debugf(utils.MSG_ERROR_FILE_EXIST)
-		return os.ErrExist
-	}
-	file, err := os.Create(filepath)
-	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, err)
-		return err
-	}
-	defer file.Close()
-	_, err = file.Write(data)
-	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_WRITING_FILE, err)
-		return err
-	}
-	return nil
+	return files_common.StoreFile(filepath, data)
+	/*
+		// chequear si el archivo ya existe
+		if path_exists.PathExists(filepath) {
+			common.Log.Debugf(utils.MSG_ERROR_FILE_EXIST)
+			return os.ErrExist
+		}
+		file, err := os.Create(filepath)
+		if err != nil {
+			common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, err)
+			return err
+		}
+		defer file.Close()
+		_, err = file.Write(data)
+		if err != nil {
+			common.Log.Errorf(utils.MSG_ERROR_WRITING_FILE, err)
+			return err
+		}
+		return nil
+	*/
 }
 
 // Retorna verdadero si el dato contiene el bloque final

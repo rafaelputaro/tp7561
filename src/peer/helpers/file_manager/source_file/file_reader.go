@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"tp/common"
+	"tp/common/files_common/messages"
 	"tp/peer/helpers/file_manager/config_fm"
 	"tp/peer/helpers/file_manager/utils"
 )
@@ -22,7 +23,7 @@ type FileReader struct {
 func NewFileReader(filePath string) (*FileReader, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		common.Log.Errorf(utils.MSG_FILE_COULD_NOT_BE_OPONED, err)
+		common.Log.Errorf(messages.MSG_FILE_COULD_NOT_BE_OPONED, err)
 		return nil, err
 	}
 	r := bufio.NewReader(file)
@@ -59,7 +60,7 @@ func (file *FileReader) Next() ([]byte, int, bool, error) {
 	}
 	// si hay error retorna <nil><-1><false><err>
 	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_READING_FILE, err)
+		common.Log.Errorf(messages.MSG_ERROR_READING_FILE, err)
 		return nil, file.blockNumber, file.eof, err
 	}
 	file.currentBlock = b[0:n]

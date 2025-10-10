@@ -2,11 +2,12 @@ package utils
 
 import (
 	"testing"
+	"tp/common/files_common/path_exists"
 	"tp/peer/helpers/file_manager/config_fm"
 )
 
 func TestKeys(t *testing.T) {
-	ret := PathExists("/tmp")
+	ret := path_exists.PathExists("/tmp")
 	print("Retorno:", ret)
 }
 
@@ -17,7 +18,7 @@ func TestFolderConfig(t *testing.T) {
 	config_fm.LocalStorageConfig.LogConfig()
 	t.Logf("Store: %v", GenerateIpfsStorePath("file1"))
 	t.Logf("Download: %v", GenerateIpfsDownloadPath("file1"))
-	t.Logf("Download Part: %v", GenertaIpfsDownloadPartPath("file1", 1))
+	t.Logf("Download Part: %v", GenerateIpfsDownloadPartPath("file1", 1))
 	t.Logf("Restore: %v", GenerateIpfsRestorePath("file1"))
 }
 

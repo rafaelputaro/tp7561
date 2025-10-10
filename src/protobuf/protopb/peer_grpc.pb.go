@@ -24,6 +24,7 @@ const (
 	Operations_ShCtsReciprocally_FullMethodName = "/Operations/ShCtsReciprocally"
 	Operations_StoreBlock_FullMethodName        = "/Operations/StoreBlock"
 	Operations_FindBlock_FullMethodName         = "/Operations/FindBlock"
+	Operations_AddFile_FullMethodName           = "/Operations/AddFile"
 )
 
 // OperationsClient is the client API for Operations service.
@@ -38,6 +39,8 @@ type OperationsClient interface {
 	StoreBlock(ctx context.Context, in *StoreBlockOpers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
 	FindBlock(ctx context.Context, in *FindBlockOpers, opts ...grpc.CallOption) (*FindBlockRes, error)
+	// Permite subir un nodo de la red y que este último lo suba a la red
+	AddFile(ctx context.Context, in *AddFileOpers, opts ...grpc.CallOption) (*AddFileRes, error)
 }
 
 type operationsClient struct {
@@ -88,6 +91,16 @@ func (c *operationsClient) FindBlock(ctx context.Context, in *FindBlockOpers, op
 	return out, nil
 }
 
+func (c *operationsClient) AddFile(ctx context.Context, in *AddFileOpers, opts ...grpc.CallOption) (*AddFileRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddFileRes)
+	err := c.cc.Invoke(ctx, Operations_AddFile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OperationsServer is the server API for Operations service.
 // All implementations must embed UnimplementedOperationsServer
 // for forward compatibility.
@@ -100,6 +113,8 @@ type OperationsServer interface {
 	StoreBlock(context.Context, *StoreBlockOpers) (*emptypb.Empty, error)
 	// Permite enviar un bloque a ser guardado en un nodo dado
 	FindBlock(context.Context, *FindBlockOpers) (*FindBlockRes, error)
+	// Permite subir un nodo de la red y que este último lo suba a la red
+	AddFile(context.Context, *AddFileOpers) (*AddFileRes, error)
 	mustEmbedUnimplementedOperationsServer()
 }
 
@@ -121,6 +136,9 @@ func (UnimplementedOperationsServer) StoreBlock(context.Context, *StoreBlockOper
 }
 func (UnimplementedOperationsServer) FindBlock(context.Context, *FindBlockOpers) (*FindBlockRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindBlock not implemented")
+}
+func (UnimplementedOperationsServer) AddFile(context.Context, *AddFileOpers) (*AddFileRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddFile not implemented")
 }
 func (UnimplementedOperationsServer) mustEmbedUnimplementedOperationsServer() {}
 func (UnimplementedOperationsServer) testEmbeddedByValue()                    {}
@@ -215,6 +233,24 @@ func _Operations_FindBlock_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Operations_AddFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddFileOpers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OperationsServer).AddFile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Operations_AddFile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OperationsServer).AddFile(ctx, req.(*AddFileOpers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Operations_ServiceDesc is the grpc.ServiceDesc for Operations service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -237,6 +273,10 @@ var Operations_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindBlock",
 			Handler:    _Operations_FindBlock_Handler,
+		},
+		{
+			MethodName: "AddFile",
+			Handler:    _Operations_AddFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

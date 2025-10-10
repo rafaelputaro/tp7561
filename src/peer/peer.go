@@ -6,6 +6,7 @@ import (
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/helpers/communication/rpc_ops"
+	"tp/peer/helpers/file_manager"
 	"tp/protobuf/protoUtils"
 	"tp/protobuf/protopb"
 
@@ -45,8 +46,22 @@ func (peer *Peer) Serve() {
 }
 
 // Agrega un archivo local a la red de nodos del ipfs
-func (peer *Peer) AddFile(fileName string) error {
+func (peer *Peer) DoAddFile(fileName string) error {
 	return peer.NodeDHT.AddFile(fileName)
+}
+
+// Agrega un archivo al peer por rpc
+func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) (*protopb.AddFileRes, error) {
+	fileName, part, data, endFile := protoUtils.ParseAddFileOperands(fileOpers)
+	err := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
+	if err != nil {
+		// retorna error y clave nula
+	}
+	if endFile {
+		// programar DoAddFile y retornar clave
+
+	}
+	return nil, nil
 }
 
 func (peer *Peer) GetFile(fileName string) error {

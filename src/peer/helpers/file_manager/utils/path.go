@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 	"tp/common"
+	"tp/common/files_common/path_exists"
 	"tp/peer/helpers/file_manager/config_fm"
 )
 
@@ -28,10 +29,22 @@ func GenerateIpfsDownloadPath(fileName string) string {
 	return config_fm.LocalStorageConfig.DownloadIpfsFolder + "/" + fileName
 }
 
+// Retorna el path completo de un archivo situado en la carpeta de upload
+// <directory down>/<filename>
+func GenerateIpfsUploadPath(fileName string) string {
+	return config_fm.LocalStorageConfig.DownloadIpfsFolder + "/" + fileName
+}
+
 // Retorna el path completo de una parte de un archivo descargado de la red de nodos
 // <directory down>/<filename>.part<blockNumber>
-func GenertaIpfsDownloadPartPath(fileName string, blockNumber int) string {
+func GenerateIpfsDownloadPartPath(fileName string, blockNumber int) string {
 	return GenerateIpfsDownloadPath(fileName + GeneratePartExtension(blockNumber))
+}
+
+// Retorna el path completo de una parte de un archivo subido desde fuera de la red de nodos
+// <directory upload>/<filename>.part<blockNumber>
+func GenerateIpfsUploadPartPath(fileName string, blockNumber int) string {
+	return GenerateIpfsUploadPath(fileName + GeneratePartExtension(blockNumber))
 }
 
 // Retorna la extensión de la parte de un archivo
@@ -54,7 +67,7 @@ func InitStore() {
 // Limpia el store
 func CleanStore() {
 	path := GenerateIpfsStorePath("")
-	if PathExists(path) {
+	if path_exists.PathExists(path) {
 		err := os.RemoveAll(path)
 		if err != nil {
 			common.Log.Errorf(MSG_ERROR_ON_CLEAN_STORE, path, err)
@@ -79,6 +92,12 @@ func CreateStoreFolders() {
 	}
 	// crear download folder dentro de store
 	path = GenerateIpfsDownloadPath("")
+	err = os.Mkdir(path, 0755)
+	if err != nil {
+		common.Log.Errorf(MSG_ERROR_CREATING_FOLDER, err)
+	}
+	// crear upload folder dentro de store
+	path = GenerateIpfsUploadPath("")
 	err = os.Mkdir(path, 0755)
 	if err != nil {
 		common.Log.Errorf(MSG_ERROR_CREATING_FOLDER, err)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"tp/common"
+	"tp/common/files_common"
 	"tp/peer/helpers"
 
 	"tp/peer/helpers/file_manager/blocks"
@@ -93,6 +94,19 @@ func UploadLocalFiles(uploadFile func(fileName string) error) error {
 		if !entry.IsDir() {
 			uploadFile(entry.Name())
 		}
+	}
+	return nil
+}
+
+// Guarda un archivo en espacio de upload. En caso de ser el último bloque del archivo lo
+// reconstruye para luego borrarlo
+func StoreUploadFilePart(fileName string, part int32, data []byte, endFile bool) error {
+	err := files_common.StoreFile(utils.GenerateIpfsUploadPartPath(fileName, int(part)), data)
+	if err != nil {
+		return err
+	}
+	if endFile {
+		// ensamblar
 	}
 	return nil
 }
