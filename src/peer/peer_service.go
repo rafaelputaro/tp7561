@@ -7,7 +7,6 @@ import (
 	"os/signal"
 	"syscall"
 	"tp/common"
-	"tp/peer/helpers"
 	"tp/protobuf/protopb"
 
 	"google.golang.org/grpc"
@@ -38,7 +37,7 @@ func NewPeerService(peer *Peer) *PeerService {
 		if err == nil {
 			break
 		}
-		helpers.SleepBetweenRetries()
+		common.SleepBetweenRetries()
 		common.Log.Debugf(MSG_RETRY_LISTEN)
 	}
 	if err != nil {

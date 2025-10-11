@@ -32,7 +32,7 @@ func GenerateIpfsDownloadPath(fileName string) string {
 // Retorna el path completo de un archivo situado en la carpeta de upload
 // <directory down>/<filename>
 func GenerateIpfsUploadPath(fileName string) string {
-	return config_fm.LocalStorageConfig.DownloadIpfsFolder + "/" + fileName
+	return config_fm.LocalStorageConfig.UploadIpfsFolder + "/" + fileName
 }
 
 // Retorna el path completo de una parte de un archivo descargado de la red de nodos

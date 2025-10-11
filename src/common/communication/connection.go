@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"tp/common"
-	"tp/peer/helpers"
 	"tp/protobuf/protopb"
 
 	"google.golang.org/grpc"
@@ -27,7 +26,7 @@ func ConnectAsClient(serverUrl string, callbackOnFailConn func(err error)) (*grp
 		if err == nil {
 			break
 		}
-		helpers.SleepBetweenRetries()
+		common.SleepBetweenRetries()
 	}
 	if err != nil {
 		callbackOnFailConn(err)

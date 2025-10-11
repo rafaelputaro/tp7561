@@ -1,4 +1,4 @@
-package helpers
+package common
 
 import (
 	"math/rand"
@@ -28,9 +28,9 @@ func SleepBetweenRetriesShort() {
 	time.Sleep(t)
 }
 
-func SleepOnStart(numberOfPairs int) {
+func SleepOnStart(numberOfParticipants int) {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := MIN_SLEEP_ON_START*numberOfPairs/4 + randSource.Intn(MAX_OFFSET_SLEEP_ON_START)
+	r := MIN_SLEEP_ON_START*numberOfParticipants/4 + randSource.Intn(MAX_OFFSET_SLEEP_ON_START)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }

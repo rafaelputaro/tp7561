@@ -1,17 +1,14 @@
-package files_common
+package uploader
 
 import (
 	"io"
 	"os"
 	"tp/common"
 	"tp/common/files_common/messages"
-	// "tp/peer/helpers"
-	// "tp/peer/helpers/file_manager/utils"
 )
 
-/*
 // Reconstruye un archivo en base a sus partes y lo almacena en el archivo de salida
-func RestoreFile(outputFilePath string, generateNextPartPath func(int) string) error {
+func RestoreFile(outputFilePath string, parts int, generateNextPartPath func(int) string) error {
 	// creo archivo de salida
 	file, err := os.Create(outputFilePath)
 	if err != nil {
@@ -20,8 +17,7 @@ func RestoreFile(outputFilePath string, generateNextPartPath func(int) string) e
 	}
 	defer file.Close()
 	// iniciar recuperación
-	part := 0
-	for {
+	for part := range parts {
 		path := generateNextPartPath(part)
 		// leer siguiente bloque
 		_, data, err := ReadPart(path)
@@ -31,15 +27,15 @@ func RestoreFile(outputFilePath string, generateNextPartPath func(int) string) e
 		}
 		// escribir en archivo de recuperación
 		if _, err := file.Write(data); err != nil {
-			common.Log.Errorf(utils.MSG_ERROR_WRITING_FILE, err)
+			common.Log.Errorf(messages.MSG_ERROR_WRITING_FILE, err)
 			return err
 		}
 		part++
 	}
-	common.Log.Infof(utils.MSG_FILE_RESTORED, outputFile)
+	common.Log.Infof(messages.MSG_FILE_RESTORED, outputFilePath)
 	return nil
 }
-*/
+
 // Lee un archivo completo
 func ReadPart(path string) (int, []byte, error) {
 	// abrir archivo

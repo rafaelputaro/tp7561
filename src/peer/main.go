@@ -23,20 +23,20 @@ func main() {
 	numberOfPairs := peer.Config.NumberOfPairs
 	// obtener contactos para la tabla propia en el inicio
 	go func() {
-		helpers.SleepOnStart(numberOfPairs)
+		common.SleepOnStart(numberOfPairs)
 		peer.SndShCtsToBootstrap()
-		helpers.SleepOnStart(numberOfPairs)
+		common.SleepOnStart(numberOfPairs)
 		file_manager.UploadLocalFiles(func(fileName string) error {
 			peer.DoAddFile(fileName)
 			return nil
 		})
-		helpers.SleepShort(numberOfPairs)
+		common.SleepShort(numberOfPairs)
 		if peer.NodeDHT.IsBootstrapNode() {
 			for fileNum := 1; fileNum < 15; fileNum++ {
 				if peer.GetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
 					common.Log.Debugf("No se encontro archivo: %v", fileNum)
 				}
-				helpers.SleepShort(numberOfPairs)
+				common.SleepShort(numberOfPairs)
 			}
 		}
 		wg.Done()

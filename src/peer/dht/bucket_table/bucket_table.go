@@ -8,7 +8,7 @@ import (
 	"tp/common"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
-	"tp/peer/helpers/communication/rpc_ops"
+	"tp/peer/helpers/rpc_ops"
 )
 
 const MSG_MUST_DISCARD_CONTACT = "attempts to add itself: %v"

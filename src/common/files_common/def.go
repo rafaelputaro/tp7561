@@ -1,3 +1,3 @@
 package files_common
 
-const MAX_PART_SIZE = 256 * 1024 // tamaño máximo de las partes en bytes
+const INVALID_BLOCK_NUMBER = -1

@@ -5,8 +5,8 @@ import (
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
-	"tp/peer/helpers/communication/rpc_ops"
 	"tp/peer/helpers/file_manager"
+	"tp/peer/helpers/rpc_ops"
 	"tp/protobuf/protoUtils"
 	"tp/protobuf/protopb"
 
@@ -50,18 +50,20 @@ func (peer *Peer) DoAddFile(fileName string) error {
 	return peer.NodeDHT.AddFile(fileName)
 }
 
-// Agrega un archivo al peer por rpc
+// Agrega una parte de archivo al peer por rpc. En caso de ser la última parte inicia el proceso
+// de subida a la red
 func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) (*protopb.AddFileRes, error) {
 	fileName, part, data, endFile := protoUtils.ParseAddFileOperands(fileOpers)
-	err := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
-	if err != nil {
-		// retorna error y clave nula
-	}
-	if endFile {
+	restored, err := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
+	var key []byte
+	if restored {
 		// programar DoAddFile y retornar clave
-
+		key = helpers.GetKey(fileName)
+		//peer.DoAddFile(fileName) Modificarlo para que tome desde la carpeta upload
+	} else {
+		key = helpers.GetNullKey()
 	}
-	return nil, nil
+	return protoUtils.CreateAddFileResults(key), err
 }
 
 func (peer *Peer) GetFile(fileName string) error {

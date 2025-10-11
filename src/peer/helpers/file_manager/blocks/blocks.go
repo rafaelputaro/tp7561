@@ -97,7 +97,7 @@ func RestoreFile(fileName string) (string, error) {
 		}
 		// escribir en archivo de recuperación
 		if _, err := file.Write(data); err != nil {
-			common.Log.Errorf(utils.MSG_ERROR_WRITING_FILE, err)
+			common.Log.Errorf(messages.MSG_ERROR_WRITING_FILE, err)
 			return "", err
 		}
 		// si la clave siguiente es nula es el último bloque
@@ -106,7 +106,7 @@ func RestoreFile(fileName string) (string, error) {
 		}
 		blockNumber++
 	}
-	common.Log.Infof(utils.MSG_FILE_RESTORED, outputFile)
+	common.Log.Infof(messages.MSG_FILE_RESTORED, outputFile)
 	return outputFile, nil
 }
 

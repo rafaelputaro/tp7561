@@ -5,6 +5,7 @@ import (
 	"os"
 	"tp/common"
 	"tp/common/files_common"
+	"tp/common/files_common/uploader"
 	"tp/peer/helpers"
 
 	"tp/peer/helpers/file_manager/blocks"
@@ -99,14 +100,18 @@ func UploadLocalFiles(uploadFile func(fileName string) error) error {
 }
 
 // Guarda un archivo en espacio de upload. En caso de ser el último bloque del archivo lo
-// reconstruye para luego borrarlo
-func StoreUploadFilePart(fileName string, part int32, data []byte, endFile bool) error {
+// reconstruye para luego borrar las partes. <restored><error>
+func StoreUploadFilePart(fileName string, part int32, data []byte, endFile bool) (bool, error) {
 	err := files_common.StoreFile(utils.GenerateIpfsUploadPartPath(fileName, int(part)), data)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if endFile {
-		// ensamblar
+		// Restaurar archivo
+		err = uploader.RestoreFile(fileName, int(part)+1, func(fPart int) string {
+			return utils.GenerateIpfsUploadPartPath(fileName, fPart)
+		})
+		return err == nil, err
 	}
-	return nil
+	return false, nil
 }

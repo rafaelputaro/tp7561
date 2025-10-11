@@ -10,6 +10,7 @@ type StorageConfig struct {
 	StoreIpfsFolder    string
 	DownloadIpfsFolder string
 	RestoreIpfsFolder  string
+	UploadIpfsFolder   string
 }
 
 var LocalStorageConfig StorageConfig
@@ -21,6 +22,7 @@ func NewStorageConfig(inputDataFolder string, storeIpfsFolder string) *StorageCo
 		StoreIpfsFolder:    storeIpfsFolder,
 		DownloadIpfsFolder: generateDownloadIpfsFolder(storeIpfsFolder),
 		RestoreIpfsFolder:  generateRestoreIpfsFolder(storeIpfsFolder),
+		UploadIpfsFolder:   generateUploadIpfsFolder(storeIpfsFolder),
 	}
 	return config
 }
@@ -36,11 +38,12 @@ func LoadConfig() {
 
 // Hace un log por debug de la configuración
 func (config *StorageConfig) LogConfig() {
-	common.Log.Debugf("InputDataFolder: %v | StoreIpfsFolder: %v | DownloadIpfsFolder: %v | RestoreIpfsFolder: %v",
+	common.Log.Debugf("InputDataFolder: %v | StoreIpfsFolder: %v | DownloadIpfsFolder: %v | RestoreIpfsFolder: %v | UploadIpfsFolder: %v",
 		config.InputDataFolder,
 		config.StoreIpfsFolder,
 		config.DownloadIpfsFolder,
 		config.RestoreIpfsFolder,
+		config.UploadIpfsFolder,
 	)
 }
 
@@ -52,4 +55,9 @@ func generateDownloadIpfsFolder(storeIpfsFolder string) string {
 // Genera el directorio donde se guardan los archivos restaurados
 func generateRestoreIpfsFolder(storeIpfsFolder string) string {
 	return storeIpfsFolder + "/" + RESTORE_SUB_DIRECTORY
+}
+
+// Genera el directorio donde se guardan los archivos subidos desde el exterior de la red
+func generateUploadIpfsFolder(storeIpfsFolder string) string {
+	return storeIpfsFolder + "/" + UPLOAD_SUB_DIRECTORY
 }

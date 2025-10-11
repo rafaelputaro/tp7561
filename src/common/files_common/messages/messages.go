@@ -6,6 +6,7 @@ const MSG_ERROR_WRITING_FILE = "Error writing file: %v"
 const MSG_FILE_COULD_NOT_BE_OPONED = "the file could not be opened: %v"
 const MSG_ERROR_READING_FILE = "error reading file: %v"
 const MSG_ERROR_READING_PART = "error reading part: %v"
+const MSG_FILE_RESTORED = "the file has been successfully restored: %v"
 
 /*
 const MSG_FILE_ADDED = "File %v added with a total of %v blocks"

@@ -13,9 +13,9 @@ import (
 	"tp/peer/dht/tiered_contact_storage"
 
 	"tp/peer/helpers"
-	"tp/peer/helpers/communication/rpc_ops"
 	"tp/peer/helpers/file_manager"
 	"tp/peer/helpers/file_manager/blocks"
+	"tp/peer/helpers/rpc_ops"
 	"tp/peer/helpers/task_scheduler"
 )
 
