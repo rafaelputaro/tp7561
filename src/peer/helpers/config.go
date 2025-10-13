@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"tp/common"
+	"tp/common/keys"
 )
 
 const DEFAULT_ENTRIES_PER_K_BUCKET = 10
@@ -30,7 +31,7 @@ type PeerConfig struct {
 // Retorna una nueva instancia de la configuración
 func NewNodeConfig(name string, url string, port string, entriesPerKBucket int, searchWorkers int, numberOfPairs int) *PeerConfig {
 	config := &PeerConfig{
-		Id:                GetKey(name),
+		Id:                keys.GetKey(name),
 		Name:              name,
 		Url:               url,
 		Port:              port,
@@ -78,7 +79,7 @@ func (config *PeerConfig) LogConfig() {
 	common.Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v | SearchWorkers: %v | NumberOfPairs: %v",
 		config.Name,
 		config.Url,
-		fmt.Sprintf("%v", KeyToLogFormatString(config.Id)),
+		fmt.Sprintf("%v", keys.KeyToLogFormatString(config.Id)),
 		config.EntriesPerKBucket,
 		config.SearchWorkers,
 		config.NumberOfPairs,

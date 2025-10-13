@@ -2,7 +2,7 @@ package contacts_queue
 
 import (
 	"fmt"
-	"tp/peer/helpers"
+	"tp/common/keys"
 )
 
 // Es un contacto el cual esta dada por un id y una url
@@ -27,5 +27,5 @@ func NewContact(id []byte, url string) *Contact {
 
 // Retorna el estado del contacto como un string del tipo (Id: <id> - Url: <url>)
 func (contact *Contact) ToString() string {
-	return fmt.Sprintf("(Id: %v - Url: %v)", helpers.KeyToLogFormatString(contact.ID), contact.Url)
+	return fmt.Sprintf("(Id: %v - Url: %v)", keys.KeyToLogFormatString(contact.ID), contact.Url)
 }

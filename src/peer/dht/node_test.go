@@ -4,13 +4,14 @@ import (
 	"errors"
 	"testing"
 
+	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 )
 
 func TestKeys(t *testing.T) {
 	id := []byte{128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	helpers.GenerateKeysFromOtherTrees(id)
+	keys.GenerateKeysFromOtherTrees(id)
 
 }
 

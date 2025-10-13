@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 	"tp/common"
-	"tp/peer/helpers"
+	"tp/common/keys"
 	"tp/peer/helpers/file_manager"
 )
 
@@ -38,7 +38,7 @@ func (table *KeyValueTable) Add(key []byte, fileName string, data []byte) error 
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// verificar si existe la clave localmente
-	keyS := helpers.KeyToLogFormatString(key)
+	keyS := keys.KeyToLogFormatString(key)
 	_, exists := table.Entries[keyS]
 	if exists {
 		return errors.New(MSG_ERROR_ON_ADD_VALUE)
@@ -62,7 +62,7 @@ func (table *KeyValueTable) Remove(key []byte) {
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// operar
-	delete(table.Entries, helpers.KeyToLogFormatString(key))
+	delete(table.Entries, keys.KeyToLogFormatString(key))
 }
 
 // Obtiene el nombre del archivo junto a sus datos para cierta clave. En caso de no disponer
@@ -82,7 +82,7 @@ func (table *KeyValueTable) Get(key []byte) (string, []byte, error) {
 
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
 func (table *KeyValueTable) getFileName(key []byte) (string, error) {
-	if value, ok := table.Entries[helpers.KeyToLogFormatString(key)]; ok {
+	if value, ok := table.Entries[keys.KeyToLogFormatString(key)]; ok {
 		return value, nil
 	}
 	common.Log.Infof(MSG_ERROR_ON_GET_VALUE)
@@ -95,8 +95,8 @@ func (table *KeyValueTable) UpdateValue(key []byte, newValue string) error {
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	// operar
-	if _, ok := table.Entries[helpers.KeyToLogFormatString(key)]; ok {
-		table.Entries[helpers.KeyToLogFormatString(key)] = newValue
+	if _, ok := table.Entries[keys.KeyToLogFormatString(key)]; ok {
+		table.Entries[keys.KeyToLogFormatString(key)] = newValue
 		return nil
 	}
 	common.Log.Errorf(MSG_ERROR_ON_UPDATE_VALUE)

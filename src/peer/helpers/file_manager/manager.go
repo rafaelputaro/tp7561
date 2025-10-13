@@ -6,7 +6,7 @@ import (
 	"tp/common"
 	"tp/common/files_common"
 	"tp/common/files_common/uploader"
-	"tp/peer/helpers"
+	"tp/common/keys"
 
 	"tp/peer/helpers/file_manager/blocks"
 	"tp/peer/helpers/file_manager/config_fm"
@@ -31,12 +31,12 @@ func AddFile(fileName string, processBlock ProcessBlockCallBack) error {
 		return err
 	}
 	blkName := blocks.GenerateBlockName(fileName, blkNum)
-	blkKey := helpers.GetKey(blkName)
+	blkKey := keys.GetKey(blkName)
 	end := false
 	for !end {
 		// leer un nuevo bloque
 		nextBlkData, nextBlkNum, nextEof, nextErr := reader.Next()
-		nextName := helpers.NULL_KEY_SOURCE_DATA
+		nextName := keys.NULL_KEY_SOURCE_DATA
 		// si no hay más bloques el nombre del siguiente es nulo
 		if nextEof || nextErr != nil {
 			end = true
@@ -45,7 +45,7 @@ func AddFile(fileName string, processBlock ProcessBlockCallBack) error {
 			blkNum = nextBlkNum
 		}
 		// key del siguiente bloque
-		nextKey := helpers.GetKey(nextName)
+		nextKey := keys.GetKey(nextName)
 		// generar bloque
 		blockToStore := blocks.GenerateBlockToStore(blkData, blkKey, nextKey)
 		// enviar bloque a vecinos

@@ -3,8 +3,6 @@ services:
   peer-1:
     container_name: peer-1
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50051:50051"
     volumes:
@@ -30,8 +28,6 @@ services:
   peer-2:
     container_name: peer-2
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50052:50051"
     volumes:
@@ -57,8 +53,6 @@ services:
   peer-3:
     container_name: peer-3
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50053:50051"
     volumes:
@@ -84,8 +78,6 @@ services:
   peer-4:
     container_name: peer-4
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50054:50051"
     volumes:
@@ -111,8 +103,6 @@ services:
   peer-5:
     container_name: peer-5
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50055:50051"
     volumes:
@@ -138,8 +128,6 @@ services:
   peer-6:
     container_name: peer-6
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50056:50051"
     volumes:
@@ -165,8 +153,6 @@ services:
   peer-7:
     container_name: peer-7
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50057:50051"
     volumes:
@@ -192,8 +178,6 @@ services:
   peer-8:
     container_name: peer-8
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50058:50051"
     volumes:
@@ -219,8 +203,6 @@ services:
   peer-9:
     container_name: peer-9
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50059:50051"
     volumes:
@@ -246,8 +228,6 @@ services:
   peer-10:
     container_name: peer-10
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50060:50051"
     volumes:
@@ -273,8 +253,6 @@ services:
   peer-11:
     container_name: peer-11
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50061:50051"
     volumes:
@@ -300,8 +278,6 @@ services:
   peer-12:
     container_name: peer-12
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50062:50051"
     volumes:
@@ -327,8 +303,6 @@ services:
   peer-13:
     container_name: peer-13
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50063:50051"
     volumes:
@@ -354,8 +328,6 @@ services:
   peer-14:
     container_name: peer-14
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50064:50051"
     volumes:
@@ -381,8 +353,6 @@ services:
   peer-15:
     container_name: peer-15
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "50065:50051"
     volumes:
@@ -397,6 +367,28 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
+      - NUMBER_OF_PAIRS=15
+    networks:
+      - tp_net
+
+
+
+
+  client-1:
+    container_name: client-1
+    image: client:latest
+    ports:
+      - "50051:50051"
+    volumes:
+      - /tmp/tp/data/client-1:/tmp/data
+      - /tmp/tp/client-1:/tmp/client
+    environment:
+      - CLIENT_NAME=client-1
+      - CLIENT_HOST=client-1
+      - CLIENT_PORT=50051
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_FOLDER=/tmp/client/store
       - NUMBER_OF_PAIRS=15
     networks:
       - tp_net

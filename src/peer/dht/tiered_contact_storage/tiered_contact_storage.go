@@ -3,8 +3,8 @@ package tiered_contact_storage
 import (
 	"sort"
 	"sync"
+	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
-	"tp/peer/helpers"
 )
 
 const MSG_ERROR_INVALID_TIER = "invalid tier error"
@@ -27,7 +27,7 @@ type TieredContactStorage struct {
 func NewTieredContactStorage(key []byte) *TieredContactStorage {
 	return &TieredContactStorage{
 		contactTiers: map[int]*ContactStack{},
-		minTier:      helpers.INFINITY_DISTANCE,
+		minTier:      keys.INFINITY_DISTANCE,
 		count:        0,
 		key:          key,
 		presentTiers: map[int]bool{},
@@ -53,7 +53,7 @@ func (storage *TieredContactStorage) PushContacts(contacts []contacts_queue.Cont
 
 // Inserta un nuevo contacto en base a la distancia respecto a la clave inicial
 func (storage *TieredContactStorage) doPush(contact contacts_queue.Contact) bool {
-	tier, _ := helpers.GetLogDistance(contact.ID, storage.key)
+	tier, _ := keys.GetLogDistance(contact.ID, storage.key)
 	_, exists := storage.contactTiers[tier]
 	if !exists {
 		storage.contactTiers[tier] = NewContactStack()
@@ -117,7 +117,7 @@ func (storage *TieredContactStorage) IsEmpty() bool {
 // Chequea que nivel tiene la distancia más chica actualizando el mínimo y removiendo
 // niveles vacíos
 func (storage *TieredContactStorage) checkTiers() {
-	newMinTier := helpers.INFINITY_DISTANCE
+	newMinTier := keys.INFINITY_DISTANCE
 	// obtener lista de distancias ordenada
 	tiers := storage.getSortedTiersList()
 	for _, tier := range tiers {

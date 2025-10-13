@@ -3,8 +3,6 @@ services:
   peer-{{ i }}:
     container_name: peer-{{ i }}
     image: peer:latest
-#    expose:
-#      - "50051"
     ports:
       - "{{ 50050 + i }}:50051"
     volumes:
@@ -26,6 +24,33 @@ services:
     depends_on:
 {% for i in range(i+1, i + 2) %}
       - peer-{{ i }}
+{%- endfor -%}
+{% endif %}
+{% endfor %}
+
+{% for i in range(1, number_of_clients + 1) %}
+  client-{{ i }}:
+    container_name: client-{{ i }}
+    image: client:latest
+    ports:
+      - "{{ 50050 + i }}:50051"
+    volumes:
+      - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
+      - {{ host_folder }}/client-{{ i }}:{{ client_folder }}
+    environment:
+      - CLIENT_NAME=client-{{ i }}
+      - CLIENT_HOST=client-{{ i }}
+      - CLIENT_PORT=50051
+      - LOGIN_FORMAT_FOR_KEYS={{ login_format_for_keys }}
+      - INPUT_DATA_FOLDER=/tmp{{ input_data_folder }}
+      - STORE_FOLDER={{ client_folder }}{{ store_folder }}
+      - NUMBER_OF_PAIRS={{ number_of_pairs }}
+    networks:
+      - tp_net
+{% if i < number_of_clients %}
+    depends_on:
+{% for i in range(i+1, i + 2) %}
+      - client-{{ i }}
 {%- endfor -%}
 {% endif %}
 {% endfor %}

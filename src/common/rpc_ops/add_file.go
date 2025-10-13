@@ -5,7 +5,7 @@ import (
 	"tp/common/communication"
 	"tp/common/files_common"
 	"tp/common/files_common/uploader"
-	"tp/peer/helpers"
+	"tp/common/keys"
 	"tp/protobuf/protoUtils"
 )
 
@@ -13,7 +13,7 @@ import (
 func AddFile(url string, fileName string, path string) ([]byte, error) {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(url, communication.LogFatalOnFailConnect)
-	key := helpers.GetNullKey()
+	key := keys.GetNullKey()
 	if err == nil {
 		defer conn.Close()
 		defer cancel()

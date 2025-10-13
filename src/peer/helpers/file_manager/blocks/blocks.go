@@ -8,7 +8,7 @@ import (
 	"tp/common"
 	"tp/common/files_common"
 	"tp/common/files_common/messages"
-	"tp/peer/helpers"
+	"tp/common/keys"
 	"tp/peer/helpers/file_manager/config_fm"
 	"tp/peer/helpers/file_manager/utils"
 )
@@ -49,8 +49,8 @@ func ReadAndParseBlock(path string) ([]byte, []byte, []byte, error) {
 		return nil, nil, nil, errors.New(msg)
 	}
 	// parseo header
-	blockKey := fileContent[:helpers.LENGTH_KEY_IN_BITS]
-	nextBlockKey := fileContent[helpers.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
+	blockKey := fileContent[:keys.LENGTH_KEY_IN_BITS]
+	nextBlockKey := fileContent[keys.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 	// parseo data
 	data := []byte{}
 	if nBytes-config_fm.HEADER_BLOCK_FILE_SIZE > 0 {
@@ -101,7 +101,7 @@ func RestoreFile(fileName string) (string, error) {
 			return "", err
 		}
 		// si la clave siguiente es nula es el último bloque
-		if helpers.IsNullKey(nextBlockKey) {
+		if keys.IsNullKey(nextBlockKey) {
 			break
 		}
 		blockNumber++
@@ -132,30 +132,11 @@ func GenerateBlockToStore(data []byte, key []byte, nextKey []byte) []byte {
 // presenta algún error de acceso a disco
 func StoreBlock(filepath string, data []byte) error {
 	return files_common.StoreFile(filepath, data)
-	/*
-		// chequear si el archivo ya existe
-		if path_exists.PathExists(filepath) {
-			common.Log.Debugf(utils.MSG_ERROR_FILE_EXIST)
-			return os.ErrExist
-		}
-		file, err := os.Create(filepath)
-		if err != nil {
-			common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, err)
-			return err
-		}
-		defer file.Close()
-		_, err = file.Write(data)
-		if err != nil {
-			common.Log.Errorf(utils.MSG_ERROR_WRITING_FILE, err)
-			return err
-		}
-		return nil
-	*/
 }
 
 // Retorna verdadero si el dato contiene el bloque final
 func IsFinalBlock(data []byte) bool {
-	return helpers.IsNullKey(GetNextBlock(data))
+	return keys.IsNullKey(GetNextBlock(data))
 }
 
 // Obtiene el id del siguiente bloque desde un dato con header
@@ -163,7 +144,7 @@ func GetNextBlock(data []byte) []byte {
 	length := len(data)
 	if length < config_fm.HEADER_BLOCK_FILE_SIZE {
 		common.Log.Debugf(utils.MSG_ERROR_HEADER_SIZE, length)
-		return helpers.GetNullKey()
+		return keys.GetNullKey()
 	}
-	return data[helpers.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
+	return data[keys.LENGTH_KEY_IN_BYTES:config_fm.HEADER_BLOCK_FILE_SIZE]
 }

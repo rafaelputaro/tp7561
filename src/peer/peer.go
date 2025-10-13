@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"tp/common/keys"
 	"tp/peer/dht"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
@@ -58,10 +59,10 @@ func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) 
 	var key []byte
 	if restored {
 		// programar DoAddFile y retornar clave
-		key = helpers.GetKey(fileName)
+		key = keys.GetKey(fileName)
 		//peer.DoAddFile(fileName) Modificarlo para que tome desde la carpeta upload
 	} else {
-		key = helpers.GetNullKey()
+		key = keys.GetNullKey()
 	}
 	return protoUtils.CreateAddFileResults(key), err
 }

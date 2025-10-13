@@ -4,16 +4,16 @@ import (
 	"math/rand"
 	"strconv"
 	"testing"
+	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
-	"tp/peer/helpers"
 )
 
 func TestStorageEasy(t *testing.T) {
-	storage := NewTieredContactStorage(helpers.GetKey(""))
+	storage := NewTieredContactStorage(keys.GetKey(""))
 	if !storage.IsEmpty() {
 		t.Errorf("Must be empty")
 	}
-	contact := contacts_queue.NewContact(helpers.GetKey("1"), "contacto1")
+	contact := contacts_queue.NewContact(keys.GetKey("1"), "contacto1")
 	storage.Push(*contact)
 	if storage.IsEmpty() {
 		t.Errorf("Must not be empty")
@@ -47,11 +47,11 @@ func TestStorageEasy(t *testing.T) {
 }
 
 func TestStorageHard(t *testing.T) {
-	storage := NewTieredContactStorage(helpers.GetKey(""))
+	storage := NewTieredContactStorage(keys.GetKey(""))
 	maxContacts := 10000
 	for i := range maxContacts {
 		contactNumStr := strconv.Itoa(rand.Intn(5000))
-		keyContact := helpers.GetKey(contactNumStr)
+		keyContact := keys.GetKey(contactNumStr)
 		contactStr := "contact" + strconv.Itoa(i) + " " + contactNumStr
 		if !storage.Push(*contacts_queue.NewContact(keyContact, contactStr)) {
 			t.Errorf("The contact could not be added: %v", contactStr)

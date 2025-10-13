@@ -12,11 +12,12 @@ import (
 	"tp/peer/dht/key_value_table"
 	"tp/peer/dht/tiered_contact_storage"
 
+	"tp/common/keys"
+	"tp/common/task_scheduler"
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
 	"tp/peer/helpers/file_manager/blocks"
 	"tp/peer/helpers/rpc_ops"
-	"tp/peer/helpers/task_scheduler"
 )
 
 const MSG_ERROR_OWN_REQUEST = "it is my own request"
@@ -138,7 +139,7 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 		return fileName, data, []contacts_queue.Contact{}, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
-	common.Log.Debugf(MSG_CONTACTS_FOUND_FOR_KEY, len(contactsToReturn), helpers.KeyToHexString(targetKey))
+	common.Log.Debugf(MSG_CONTACTS_FOUND_FOR_KEY, len(contactsToReturn), keys.KeyToHexString(targetKey))
 	return key_value_table.EMPTY_VALUE, []byte{}, contactsToReturn, nil
 }
 
@@ -189,7 +190,7 @@ func (node *Node) AddFile(fileName string) error {
 func (node *Node) GetFile(fileName string) error {
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
-	key := helpers.GetKey(blockName)
+	key := keys.GetKey(blockName)
 	// Obtener archivo completo
 	endFile := false
 	for !endFile {
@@ -258,7 +259,7 @@ func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
 	fileNameFound, data, err := node.KeyValueTab.Get(key)
 	// si no se encuentra retorna error
 	if err != nil {
-		return false, helpers.GetNullKey(), err
+		return false, keys.GetNullKey(), err
 	}
 	// si se encuentra guarda localmente y parsear data
 	endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)

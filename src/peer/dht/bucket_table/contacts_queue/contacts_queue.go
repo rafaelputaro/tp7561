@@ -3,7 +3,7 @@ package contacts_queue
 import (
 	"errors"
 	"tp/common"
-	"tp/peer/helpers"
+	"tp/common/keys"
 )
 
 const MSG_ERROR_EMPTY_QUEUE = "error queue empty"
@@ -36,7 +36,7 @@ func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
 			return false, errors.New(MSG_ERROR_FULL_QUEUE)
 		}
 		queue.Entries = append(queue.Entries, entry)
-		queue.IdsInTheQueue[helpers.KeyToString(entry.ID)] = true
+		queue.IdsInTheQueue[keys.KeyToString(entry.ID)] = true
 		return true, nil
 	}
 	common.Log.Debugf(MSG_CONTACT_ALREADY_ADDED, entry.ToString())
@@ -58,7 +58,7 @@ func (queue *ContactQueue) Dequeue() (Contact, error) {
 	}
 	temp := queue.Entries[0]
 	queue.Entries = queue.Entries[1:]
-	delete(queue.IdsInTheQueue, helpers.KeyToString(temp.ID))
+	delete(queue.IdsInTheQueue, keys.KeyToString(temp.ID))
 	return temp, nil
 }
 
@@ -69,7 +69,7 @@ func (queue *ContactQueue) TakeHead() (Contact, error) {
 	}
 	toReturn := queue.Entries[len(queue.Entries)-1]
 	queue.Entries = queue.Entries[:len(queue.Entries)-1]
-	delete(queue.IdsInTheQueue, helpers.KeyToString(toReturn.ID))
+	delete(queue.IdsInTheQueue, keys.KeyToString(toReturn.ID))
 	return toReturn, nil
 }
 
@@ -90,7 +90,7 @@ func (queue *ContactQueue) GetContacs() []Contact {
 
 // Retorna verdadero si encuentra el id en el mapa de id's presentes en la cola
 func (queue *ContactQueue) HasId(id []byte) bool {
-	return queue.IdsInTheQueue[helpers.KeyToString(id)]
+	return queue.IdsInTheQueue[keys.KeyToString(id)]
 }
 
 // Retorna la candidad de contactos

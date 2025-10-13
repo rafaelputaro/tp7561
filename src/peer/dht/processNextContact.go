@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"tp/common"
+	"tp/common/keys"
 	"tp/peer/dht/tiered_contact_storage"
-	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
 )
 
@@ -39,13 +39,13 @@ func processNextContact(node *Node, key []byte, fileName string, contactStorage 
 	// Si no hay más contactos retornar error
 	if contact == nil {
 		msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)
-		resChan <- *newProcessNextContactReturn(false, false, helpers.GetNullKey(), "", errors.New(msg))
+		resChan <- *newProcessNextContactReturn(false, false, keys.GetNullKey(), "", errors.New(msg))
 		return
 	}
 	fileNameFound, nextBlockKeyFound, data, neighborContacts, err := node.SndFindBlock(node.Config, *contact, key)
 	// Si hay un error retorna que no se encontró el bloque
 	if err != nil {
-		resChan <- *newProcessNextContactReturn(false, false, helpers.GetNullKey(), fileNameFound, nil)
+		resChan <- *newProcessNextContactReturn(false, false, keys.GetNullKey(), fileNameFound, nil)
 		return
 	}
 	// Agrego contacto a lista local
@@ -56,7 +56,7 @@ func processNextContact(node *Node, key []byte, fileName string, contactStorage 
 			common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
 			resChan <- *newProcessNextContactReturn(true, endFile, nextBlockKeyFound, fileNameFound, nil)
 		} else {
-			resChan <- *newProcessNextContactReturn(false, false, helpers.GetNullKey(), "", err)
+			resChan <- *newProcessNextContactReturn(false, false, keys.GetNullKey(), "", err)
 		}
 		return
 	}
@@ -65,5 +65,5 @@ func processNextContact(node *Node, key []byte, fileName string, contactStorage 
 		common.Log.Debugf(MSG_CONTACTS_ADDED_FOR_SEARCH, len(neighborContacts))
 		contactStorage.PushContacts(neighborContacts)
 	}
-	resChan <- *newProcessNextContactReturn(false, false, helpers.GetNullKey(), "", nil)
+	resChan <- *newProcessNextContactReturn(false, false, keys.GetNullKey(), "", nil)
 }

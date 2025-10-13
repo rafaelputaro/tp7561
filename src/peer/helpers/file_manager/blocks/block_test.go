@@ -2,12 +2,12 @@ package blocks
 
 import (
 	"testing"
-	"tp/peer/helpers"
+	"tp/common/keys"
 )
 
 func TestBlock(t *testing.T) {
-	keyBlock := helpers.GetKey("bloque1")
-	keyEnd := helpers.GetNullKey()
+	keyBlock := keys.GetKey("bloque1")
+	keyEnd := keys.GetNullKey()
 	block := GenerateBlockToStore([]byte{}, keyBlock, keyEnd)
 	if !IsFinalBlock(block) {
 		t.Errorf("Must be end")

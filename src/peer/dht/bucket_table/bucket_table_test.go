@@ -3,14 +3,14 @@ package bucket_table
 import (
 	"fmt"
 	"testing"
-	"tp/peer/helpers"
+	"tp/common/keys"
 )
 
 func TestBucketTable(t *testing.T) {
 	//key := helpers.GetKey("")
 	key := []byte{}
 	key = append(key, 4)
-	prefixes := helpers.GeneratePrefixesOtherTreesAsStrings(key)
+	prefixes := keys.GeneratePrefixesOtherTreesAsStrings(key)
 	fmt.Println(prefixes)
 	//arrayBool := helpers.ConvertToBoolArray(key)
 	//print("%v", fmt.Sprintf("%v", arrayBool))

@@ -10,9 +10,11 @@ def main():
     template = env.get_template("docker-compose-dev.yaml.jinja")
     output = template.render(
         number_of_pairs=int(default_config["NUMBER_OF_PAIRS"]),
+        number_of_clients=int((default_config["NUMBER_OF_CLIENTS"])),
         entries_per_k_bucket=int(default_config["ENTRIES_PER_K_BUCKET"]),
         login_format_for_keys=default_config["LOGIN_FORMAT_FOR_KEYS"],
         host_folder=default_config["HOST_FOLDER"],
+        client_folder=default_config["CLIENT_FOLDER"],
         app_folder=default_config["APP_FOLDER"],        
         input_data_folder=default_config["INPUT_DATA_FOLDER"],
         store_folder=default_config["STORE_FOLDER"],       

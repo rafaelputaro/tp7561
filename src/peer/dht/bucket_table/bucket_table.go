@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sync"
 	"tp/common"
+	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/helpers/rpc_ops"
@@ -44,7 +45,7 @@ func NewBucketTable(config helpers.PeerConfig, ping rpc_ops.PingOp) *BucketTable
 
 // Inicializa la lista de prefijos para un id dado
 func (table *BucketTable) initPrefixes(id []byte) {
-	table.Prefixes = helpers.GeneratePrefixesOtherTreesAsStrings(id)
+	table.Prefixes = keys.GeneratePrefixesOtherTreesAsStrings(id)
 }
 
 // Inicializa las colas correspondientes a cada uno de los prefijos
@@ -130,13 +131,13 @@ func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) 
 // Selecciona de la tabla de contactos propias una serie de contactos recomendados para que
 // el nodo con el id parámetro pueda armar su tabla de contactos
 func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queue.Contact {
-	prefixes := helpers.GenerateKeysFromOtherTrees(id)
+	prefixes := keys.GenerateKeysFromOtherTrees(id)
 	toReturn := []contacts_queue.Contact{}
 	idsMap := map[string]bool{}
 	for i := range prefixes {
 		contactsPref := table.GetContactsForId(prefixes[i])
 		for _, contact := range contactsPref {
-			idStr := helpers.KeyToString(contact.ID)
+			idStr := keys.KeyToString(contact.ID)
 			if idsMap[idStr] {
 				continue
 			}
@@ -197,7 +198,7 @@ func (table *BucketTable) LogContacts() {
 // Obtiene el prefijo más cercano a una clave dada
 func (table *BucketTable) getPrefix(key []byte) (string, error) {
 	// generar prefijos para la clave
-	prefixes := helpers.GeneratePrefixes(key)
+	prefixes := keys.GeneratePrefixes(key)
 	// buscar en mi lista de prefijos
 	for iPref := range prefixes {
 		prefix := prefixes[iPref]
@@ -205,5 +206,5 @@ func (table *BucketTable) getPrefix(key []byte) (string, error) {
 			return prefix, nil
 		}
 	}
-	return helpers.EMPTY_KEY, errors.New(MSG_ERROR_PREFIX_NOT_FOUND)
+	return keys.EMPTY_KEY, errors.New(MSG_ERROR_PREFIX_NOT_FOUND)
 }
