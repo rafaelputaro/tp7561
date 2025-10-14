@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"tp/common/contact"
 	"tp/common/keys"
 	"tp/peer/dht"
-	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
+	proto_utils_peer "tp/peer/helpers/proto_utils"
 	"tp/peer/helpers/rpc_ops"
 	"tp/protobuf/protoUtils"
 	"tp/protobuf/protopb"
@@ -74,7 +75,7 @@ func (peer *Peer) GetFile(fileName string) error {
 // Hace el procesamiento de la recepción de un ping desde el contacto parámetro e intenta agregarlo
 // a la tabla de contactos.
 func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands) (*emptypb.Empty, error) {
-	peer.NodeDHT.RcvPing(*contacts_queue.NewContact(sourceContact.GetSourceId(), sourceContact.GetSourceUrl()))
+	peer.NodeDHT.RcvPing(*contact.NewContact(sourceContact.GetSourceId(), sourceContact.GetSourceUrl()))
 	return nil, nil
 }
 
@@ -108,7 +109,7 @@ func (peer *Peer) StoreBlock(ctx context.Context, operands *protopb.StoreBlockOp
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
 func (peer *Peer) FindBlock(ctx context.Context, operands *protopb.FindBlockOpers) (*protopb.FindBlockRes, error) {
-	sourceContact, key := protoUtils.ParseFindBlockOperands(operands)
+	sourceContact, key := proto_utils_peer.ParseFindBlockOperands(operands)
 	fileName, data, contacts, err := peer.NodeDHT.RcvFindBlock(sourceContact, key)
-	return protoUtils.CreateFindBlockResults(fileName, data, contacts), err
+	return proto_utils_peer.CreateFindBlockResults(fileName, data, contacts), err
 }

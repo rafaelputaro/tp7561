@@ -6,7 +6,6 @@ import (
 	"os"
 	"tp/common"
 	"tp/common/files_common/messages"
-	"tp/peer/helpers/file_manager/utils"
 )
 
 // Permite leer un archivo de a bloques
@@ -41,7 +40,7 @@ func NewFileReader(filePath string, blockSize int) (*FileReader, error) {
 // Cierra el archivo asociado
 func (file *FileReader) Close() {
 	if err := file.fd.Close(); err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_CLOSING_FILE, err)
+		common.Log.Errorf(messages.MSG_ERROR_CLOSING_FILE, err)
 	}
 }
 

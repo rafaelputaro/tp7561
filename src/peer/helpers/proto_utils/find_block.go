@@ -1,8 +1,9 @@
-package protoUtils
+package proto_utils_peer
 
 import (
-	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/common/contact"
 	"tp/peer/helpers/file_manager/blocks"
+	"tp/protobuf/protoUtils"
 	"tp/protobuf/protopb"
 
 	"google.golang.org/protobuf/proto"
@@ -18,8 +19,8 @@ func CreateFindBlockOperands(sourceId []byte, sourceUrl string, key []byte) *pro
 }
 
 // Retorna el resultado de la operación find block
-func CreateFindBlockResults(blockName string, data []byte, contacts []contacts_queue.Contact) *protopb.FindBlockRes {
-	contacstIds, contactsUrls := contactsToArrays(contacts)
+func CreateFindBlockResults(blockName string, data []byte, contacts []contact.Contact) *protopb.FindBlockRes {
+	contacstIds, contactsUrls := protoUtils.ContactsToArrays(contacts)
 	return &protopb.FindBlockRes{
 		BlockName:    &blockName,
 		BlockData:    data,
@@ -29,12 +30,12 @@ func CreateFindBlockResults(blockName string, data []byte, contacts []contacts_q
 }
 
 // Realiza el parseo de los operando recibidos en una operación de encontrar bloque
-func ParseFindBlockOperands(operands *protopb.FindBlockOpers) (contacts_queue.Contact, []byte) {
-	contactSource := contacts_queue.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
+func ParseFindBlockOperands(operands *protopb.FindBlockOpers) (contact.Contact, []byte) {
+	contactSource := contact.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
 	return *contactSource, operands.GetBlockKey()
 }
 
 // Pasea los resultados de una operación de encontrar bloque <fileName>,<next block key>,<data>,<contacts>
-func ParseFindBlockResults(result *protopb.FindBlockRes) (string, []byte, []byte, []contacts_queue.Contact) {
-	return result.GetBlockName(), blocks.GetNextBlock(result.BlockData), result.GetBlockData(), contactsFromArrays(result.ContactsIds, result.ContactsUrls)
+func ParseFindBlockResults(result *protopb.FindBlockRes) (string, []byte, []byte, []contact.Contact) {
+	return result.GetBlockName(), blocks.GetNextBlock(result.BlockData), result.GetBlockData(), protoUtils.ContactsFromArrays(result.ContactsIds, result.ContactsUrls)
 }

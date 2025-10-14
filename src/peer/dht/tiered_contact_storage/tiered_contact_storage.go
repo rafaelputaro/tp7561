@@ -3,8 +3,8 @@ package tiered_contact_storage
 import (
 	"sort"
 	"sync"
+	"tp/common/contact"
 	"tp/common/keys"
-	"tp/peer/dht/bucket_table/contacts_queue"
 )
 
 const MSG_ERROR_INVALID_TIER = "invalid tier error"
@@ -36,14 +36,14 @@ func NewTieredContactStorage(key []byte) *TieredContactStorage {
 }
 
 // Inserta un nuevo contacto en base a la distancia respecto a la clave inicial
-func (storage *TieredContactStorage) Push(contact contacts_queue.Contact) bool {
+func (storage *TieredContactStorage) Push(contact contact.Contact) bool {
 	storage.mutex.Lock()
 	defer storage.mutex.Unlock()
 	return storage.doPush(contact)
 }
 
 // Inserta un nuevo contacto en base a la distancia respecto a la clave inicial
-func (storage *TieredContactStorage) PushContacts(contacts []contacts_queue.Contact) {
+func (storage *TieredContactStorage) PushContacts(contacts []contact.Contact) {
 	storage.mutex.Lock()
 	defer storage.mutex.Unlock()
 	for _, contact := range contacts {
@@ -52,7 +52,7 @@ func (storage *TieredContactStorage) PushContacts(contacts []contacts_queue.Cont
 }
 
 // Inserta un nuevo contacto en base a la distancia respecto a la clave inicial
-func (storage *TieredContactStorage) doPush(contact contacts_queue.Contact) bool {
+func (storage *TieredContactStorage) doPush(contact contact.Contact) bool {
 	tier, _ := keys.GetLogDistance(contact.ID, storage.key)
 	_, exists := storage.contactTiers[tier]
 	if !exists {
@@ -96,7 +96,7 @@ func (storage *TieredContactStorage) getSortedTiersList() []int {
 }
 
 // Obtener el contacto con la distancia más chica a la clave
-func (storage *TieredContactStorage) Pop() (*contacts_queue.Contact, int) {
+func (storage *TieredContactStorage) Pop() (*contact.Contact, int) {
 	storage.mutex.Lock()
 	defer storage.mutex.Unlock()
 	if storage.IsEmpty() {

@@ -1,4 +1,4 @@
-package contacts_queue
+package contact
 
 import (
 	"fmt"

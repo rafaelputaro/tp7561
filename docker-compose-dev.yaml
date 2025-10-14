@@ -378,7 +378,7 @@ services:
     container_name: client-1
     image: client:latest
     ports:
-      - "50051:50051"
+      - "50066:50051"
     volumes:
       - /tmp/tp/data/client-1:/tmp/data
       - /tmp/tp/client-1:/tmp/client
@@ -390,9 +390,11 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_FOLDER=/tmp/client/store
       - NUMBER_OF_PAIRS=15
+      - NUMBER_OF_CLIENTS=1
     networks:
       - tp_net
-
+    depends_on:
+      - peer-15
 
 
 networks:

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	"tp/common/contact"
 	"tp/common/keys"
-	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
 )
 
@@ -64,18 +64,18 @@ func TestNode(t *testing.T) {
 
 //}*/
 
-func PingOpWithError(config helpers.PeerConfig, contact contacts_queue.Contact) error {
+func PingOpWithError(config helpers.PeerConfig, contact contact.Contact) error {
 	return errors.New("Error")
 }
 
-func PingOpWithoutError(config helpers.PeerConfig, contact contacts_queue.Contact) error {
+func PingOpWithoutError(config helpers.PeerConfig, contact contact.Contact) error {
 	return nil
 }
 
-func StoreOpWithError(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error {
+func StoreOpWithError(config helpers.PeerConfig, contact contact.Contact, key []byte, value string) error {
 	return errors.New("Error")
 }
 
-func StoreOpWithoutError(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string) error {
+func StoreOpWithoutError(config helpers.PeerConfig, contact contact.Contact, key []byte, value string) error {
 	return errors.New("Error")
 }

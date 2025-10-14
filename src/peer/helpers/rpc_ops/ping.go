@@ -3,16 +3,16 @@ package rpc_ops
 import (
 	"tp/common"
 	"tp/common/communication"
-	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/common/contact"
 	"tp/peer/helpers"
 	"tp/protobuf/protoUtils"
 )
 
 // Ping con retry. En caso de no poder efectuar el ping retorna error
-type PingOp func(config helpers.PeerConfig, contact contacts_queue.Contact) error
+type PingOp func(config helpers.PeerConfig, contact contact.Contact) error
 
 // Ping con retry. En caso de no poder efectuar el ping retorna error
-func SndPing(config helpers.PeerConfig, contact contacts_queue.Contact) error {
+func SndPing(config helpers.PeerConfig, contact contact.Contact) error {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(contact.Url, communication.LogFatalOnFailConnect)
 	if err == nil {

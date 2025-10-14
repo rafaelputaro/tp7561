@@ -7,11 +7,12 @@ import (
 	"os"
 	"sync"
 	"tp/common"
+	"tp/common/contact"
 	"tp/peer/dht/bucket_table"
-	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/dht/key_value_table"
 	"tp/peer/dht/tiered_contact_storage"
 
+	"tp/common/communication/url"
 	"tp/common/keys"
 	"tp/common/task_scheduler"
 	"tp/peer/helpers"
@@ -67,18 +68,18 @@ func (node *Node) DisposeNode() {
 
 // Retorna verdadero si la instancia es el bootstrap node
 func (node *Node) IsBootstrapNode() bool {
-	return bytes.Equal(node.Config.Id, helpers.BootstrapNodeID)
+	return bytes.Equal(node.Config.Id, url.BootstrapNodeID)
 }
 
 // Representa la recepción de un ping el cuál consiste en intentar agregar el contacto a la tabla de
 // contactos
-func (node *Node) RcvPing(sourceContact contacts_queue.Contact) bool {
+func (node *Node) RcvPing(sourceContact contact.Contact) bool {
 	return node.BucketTab.AddContact(sourceContact) == nil
 }
 
 // Obtiene los contactos locales recomendados para la fuente, agrega los contactos compartidos por la fuente y
 // retorna los contactos recomendados para la fuente
-func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceContactList []contacts_queue.Contact) []contacts_queue.Contact {
+func (node *Node) RcvShCtsRecip(sourceContact contact.Contact, sourceContactList []contact.Contact) []contact.Contact {
 	// agregar contacto origen
 	node.scheduleAddContactTask(sourceContact)
 	// obtener contactos recomendados
@@ -92,7 +93,7 @@ func (node *Node) RcvShCtsRecip(sourceContact contacts_queue.Contact, sourceCont
 // para la clave del presente nodo
 func (node *Node) SndShCtsToBootstrap() {
 	if !node.IsBootstrapNode() {
-		contactBoostrapNode := contacts_queue.NewContact(helpers.BootstrapNodeID, helpers.BootstrapNodeUrl)
+		contactBoostrapNode := contact.NewContact(url.BootstrapNodeID, url.BootstrapNodeUrl)
 		// agregar bootstrap node a contactos
 		if node.SndShCts(*contactBoostrapNode) == nil {
 			node.scheduleAddContactTask(*contactBoostrapNode)
@@ -102,7 +103,7 @@ func (node *Node) SndShCtsToBootstrap() {
 
 // Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
-func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
+func (node *Node) SndShCts(destContact contact.Contact) error {
 	// ¿Esta vivo el nodo?
 	err := node.SndPing(node.Config, destContact)
 	if err != nil {
@@ -122,7 +123,7 @@ func (node *Node) SndShCts(destContact contacts_queue.Contact) error {
 
 // Retorna los contactos de los nodos más cercanos a un targetId. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
-func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []byte) []contacts_queue.Contact {
+func (node *Node) RcvFindNode(sourceContact contact.Contact, targetId []byte) []contact.Contact {
 	node.scheduleAddContactTask(sourceContact)
 	// Buscar los contactos
 	return node.BucketTab.GetContactsForId(targetId)
@@ -131,12 +132,12 @@ func (node *Node) RcvFindNode(sourceContact contacts_queue.Contact, targetId []b
 // Si la target key se encuentra en el nodo retorna el archivo asociado a la misma, caso contrario retorna
 // un error y la lista de los contactos más cercanos a la misma. Además hace el intento de
 // agregar el contacto solicitante a la bucket_table
-func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey []byte) (string, []byte, []contacts_queue.Contact, error) {
+func (node *Node) RcvFindBlock(sourceContact contact.Contact, targetKey []byte) (string, []byte, []contact.Contact, error) {
 	node.scheduleAddContactTask(sourceContact)
 	// Búsqueda de archivo
 	fileName, data, err := node.KeyValueTab.Get(targetKey)
 	if err == nil {
-		return fileName, data, []contacts_queue.Contact{}, nil
+		return fileName, data, []contact.Contact{}, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
 	common.Log.Debugf(MSG_CONTACTS_FOUND_FOR_KEY, len(contactsToReturn), keys.KeyToHexString(targetKey))
@@ -146,7 +147,7 @@ func (node *Node) RcvFindBlock(sourceContact contacts_queue.Contact, targetKey [
 // Almacena la clave valor localmente y envía el menseja de store a los contactos más cercanos a la tabla.
 // En caso de que la clave ya existía localmente retorna error. Por otro lado intenta agregar el contacto
 // fuente en la tabla de contactos
-func (node *Node) RcvStore(sourceContact contacts_queue.Contact, key []byte, fileName string, data []byte) error {
+func (node *Node) RcvStore(sourceContact contact.Contact, key []byte, fileName string, data []byte) error {
 	node.scheduleAddContactTask(sourceContact)
 	// Almacenar localmente
 	return node.doStoreBlock(key, fileName, data)
@@ -168,7 +169,7 @@ func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
 }
 
 // Agrega la tarea de envío de SndStore a un lote de contactos
-func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte, contacts []contacts_queue.Contact) {
+func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte, contacts []contact.Contact) {
 	for _, contact := range contacts {
 		node.TaskScheduler.AddTask(func() {
 			node.SndStore(node.Config, contact, key, fileName, data)
@@ -177,7 +178,7 @@ func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte,
 }
 
 // Retorna los contactos para un id dado
-func (node *Node) getContactsForId(id []byte) []contacts_queue.Contact {
+func (node *Node) getContactsForId(id []byte) []contact.Contact {
 	return node.BucketTab.GetContactsForId(id)
 }
 
@@ -290,7 +291,7 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 // Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
 // para evitar posibles retrasos durante la actualización de la bucket table que impliquen
 // enviar pings secundarios a otros contactos
-func (node *Node) scheduleAddContactTask(contact contacts_queue.Contact) {
+func (node *Node) scheduleAddContactTask(contact contact.Contact) {
 	node.TaskScheduler.AddTask(func() {
 		node.BucketTab.AddContact(contact)
 	})
@@ -299,7 +300,7 @@ func (node *Node) scheduleAddContactTask(contact contacts_queue.Contact) {
 // Agrega la tarea de agregar varios contactos a la bucket table. Se recomienda utilizarla
 // para evitar posibles retrasos durante la actualización de la bucket table que impliquen
 // enviar pings secundarios a otros contactos
-func (node *Node) scheduleAddContactsTask(contacts []contacts_queue.Contact) {
+func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
 	node.TaskScheduler.AddTask(func() {
 		node.BucketTab.AddContacts(contacts)
 	})
@@ -307,7 +308,7 @@ func (node *Node) scheduleAddContactsTask(contacts []contacts_queue.Contact) {
 
 // Agrega la tarea de enviar ping a contactos para ser agregador a la bucket table
 // en caso de encontrarse activos
-func (node *Node) schedulePingAndAddContactsTask(contacts []contacts_queue.Contact) {
+func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 	for _, contact := range contacts {
 		node.TaskScheduler.AddTask(func() {
 			if node.SndPing(node.Config, contact) == nil {

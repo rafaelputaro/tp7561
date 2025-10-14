@@ -15,6 +15,7 @@ docker-compose-dev.yaml:
 docker-image: deps
 	protoc -I=./src/protobuf --go_out=./src/protobuf --go-grpc_out=./src/protobuf ./src/protobuf/*.proto
 	docker build -f ./src/peer/Dockerfile -t "peer:latest" .
+	docker build -f ./src/client/Dockerfile -t "client:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-compose-dev.yaml docker-image

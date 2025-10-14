@@ -1,19 +1,17 @@
 package tiered_contact_storage
 
-import (
-	"tp/peer/dht/bucket_table/contacts_queue"
-)
+import "tp/common/contact"
 
 // Es una pila de contactos con control de repetidos
 type ContactStack struct {
-	contactList []contacts_queue.Contact
+	contactList []contact.Contact
 	presentList map[string]bool
 }
 
 // Retorna una instancia lista para ser utilizada
 func NewContactStack() *ContactStack {
 	return &ContactStack{
-		contactList: []contacts_queue.Contact{},
+		contactList: []contact.Contact{},
 		presentList: map[string]bool{},
 	}
 }
@@ -24,7 +22,7 @@ func (stack *ContactStack) IsEmpty() bool {
 }
 
 // Apila un elemento en la pila. Retorna verdadero si pudo agregarse
-func (stack *ContactStack) Push(contact contacts_queue.Contact) bool {
+func (stack *ContactStack) Push(contact contact.Contact) bool {
 	if _, ok := stack.presentList[contact.Url]; !ok {
 		stack.presentList[contact.Url] = true
 		stack.contactList = append(stack.contactList, contact)
@@ -34,7 +32,7 @@ func (stack *ContactStack) Push(contact contacts_queue.Contact) bool {
 }
 
 // Desapila el último elemento de la pila. Retorna nulo si no hay elementos en la pila
-func (stack *ContactStack) Pop() *contacts_queue.Contact {
+func (stack *ContactStack) Pop() *contact.Contact {
 	if stack.IsEmpty() {
 		return nil
 	}

@@ -33,7 +33,7 @@ services:
     container_name: client-{{ i }}
     image: client:latest
     ports:
-      - "{{ 50050 + i }}:50051"
+      - "{{ 50050 + i + number_of_pairs }}:50051"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/client-{{ i }}:{{ client_folder }}
@@ -45,14 +45,11 @@ services:
       - INPUT_DATA_FOLDER=/tmp{{ input_data_folder }}
       - STORE_FOLDER={{ client_folder }}{{ store_folder }}
       - NUMBER_OF_PAIRS={{ number_of_pairs }}
+      - NUMBER_OF_CLIENTS={{ number_of_clients }}
     networks:
       - tp_net
-{% if i < number_of_clients %}
     depends_on:
-{% for i in range(i+1, i + 2) %}
-      - client-{{ i }}
-{%- endfor -%}
-{% endif %}
+      - peer-{{ number_of_pairs }}
 {% endfor %}
 
 networks:

@@ -1,7 +1,7 @@
 package protoUtils
 
 import (
-	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/common/contact"
 	"tp/protobuf/protopb"
 
 	"google.golang.org/protobuf/proto"
@@ -19,8 +19,8 @@ func CreateStoreBlockOperands(sourceId []byte, sourceUrl string, key []byte, blo
 }
 
 // Parsea los operandos de la operación store block a <source contact><block key><block name><data>
-func ParseStoreBlockOperands(operands *protopb.StoreBlockOpers) (*contacts_queue.Contact, []byte, string, []byte) {
-	sourceContact := contacts_queue.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
+func ParseStoreBlockOperands(operands *protopb.StoreBlockOpers) (*contact.Contact, []byte, string, []byte) {
+	sourceContact := contact.NewContact(operands.GetSourceId(), operands.GetSourceUrl())
 	blockKey := operands.GetKey()
 	blockName := operands.GetBlockName()
 	data := operands.GetData()

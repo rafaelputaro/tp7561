@@ -1,20 +1,28 @@
-package client
+package main
 
 import (
-
-	//"strconv"
-	//"sync"
+	"tp/client/helpers"
 	"tp/common"
+	"tp/common/communication/url"
+	rpc_ops_common "tp/common/rpc_ops"
 )
 
-const MESSAGE_START = "Starting node..."
+const MESSAGE_START = "Starting client..."
 
 func main() {
 	common.Log.Info(MESSAGE_START)
 	common.InitLogger()
-
+	config := helpers.LoadConfig()
+	helpers.InitStore(*config)
+	urlPeer := url.GenerateURLPeer(1)
+	common.Log.Errorf("Url Peer: %v ", urlPeer)
+	key, err := rpc_ops_common.AddFile(urlPeer, "filec-1-1.txt", helpers.GenerateInputFilePath(*config, "filec-1-1.txt"))
+	if err != nil {
+		common.Log.Errorf("Error: %v %v", urlPeer, err)
+	} else {
+		common.Log.Debugf("Key: %v", key)
+	}
 	/*
-		config := helpers.LoadConfig()
 		utils.InitStore()
 		// crear par
 		peer := NewPeer(*config)

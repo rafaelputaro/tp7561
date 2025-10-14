@@ -3,25 +3,25 @@ package rpc_ops
 import (
 	"tp/common"
 	"tp/common/communication"
-	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/common/contact"
 	"tp/peer/helpers"
+	proto_utils_peer "tp/peer/helpers/proto_utils"
 
-	"tp/protobuf/protoUtils"
 	"tp/protobuf/protopb"
 )
 
 // Find block con retry. Retorna <fileName><nextBlockKey><data con header><contacts><error> . En caso de no poder enviar el mensaje retorna error
-type FindBlockOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, key []byte) (string, []byte, []byte, []contacts_queue.Contact, error)
+type FindBlockOp func(config helpers.PeerConfig, destContact contact.Contact, key []byte) (string, []byte, []byte, []contact.Contact, error)
 
 // Find block con retry. Retorna <fileName><nextBlockKey><data con header><contacts><error> . En caso de no poder enviar el mensaje retorna error
-func SndFindBlock(config helpers.PeerConfig, destContact contacts_queue.Contact, key []byte) (string, []byte, []byte, []contacts_queue.Contact, error) {
+func SndFindBlock(config helpers.PeerConfig, destContact contact.Contact, key []byte) (string, []byte, []byte, []contact.Contact, error) {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()
 		// armo los argumentos
-		operands := protoUtils.CreateFindBlockOperands(config.Id, config.Url, key)
+		operands := proto_utils_peer.CreateFindBlockOperands(config.Id, config.Url, key)
 		// find block con retry
 		for retry := range MAX_RETRIES_ON_FIND_BLOCK {
 			var response *protopb.FindBlockRes
@@ -33,7 +33,7 @@ func SndFindBlock(config helpers.PeerConfig, destContact contacts_queue.Contact,
 				common.SleepBetweenRetriesShort()
 				continue
 			}
-			fileName, nextBlockKey, data, contacts := protoUtils.ParseFindBlockResults(response)
+			fileName, nextBlockKey, data, contacts := proto_utils_peer.ParseFindBlockResults(response)
 			return fileName, nextBlockKey, data, contacts, nil
 		}
 		return "", nil, nil, nil, err

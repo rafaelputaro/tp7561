@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"strconv"
 	"testing"
+	"tp/common/contact"
 	"tp/common/keys"
-	"tp/peer/dht/bucket_table/contacts_queue"
 )
 
 func TestStorageEasy(t *testing.T) {
@@ -13,7 +13,7 @@ func TestStorageEasy(t *testing.T) {
 	if !storage.IsEmpty() {
 		t.Errorf("Must be empty")
 	}
-	contact := contacts_queue.NewContact(keys.GetKey("1"), "contacto1")
+	contact := contact.NewContact(keys.GetKey("1"), "contacto1")
 	storage.Push(*contact)
 	if storage.IsEmpty() {
 		t.Errorf("Must not be empty")
@@ -53,10 +53,10 @@ func TestStorageHard(t *testing.T) {
 		contactNumStr := strconv.Itoa(rand.Intn(5000))
 		keyContact := keys.GetKey(contactNumStr)
 		contactStr := "contact" + strconv.Itoa(i) + " " + contactNumStr
-		if !storage.Push(*contacts_queue.NewContact(keyContact, contactStr)) {
+		if !storage.Push(*contact.NewContact(keyContact, contactStr)) {
 			t.Errorf("The contact could not be added: %v", contactStr)
 		}
-		if storage.Push(*contacts_queue.NewContact(keyContact, contactStr)) {
+		if storage.Push(*contact.NewContact(keyContact, contactStr)) {
 			t.Errorf("The contact was added twice: %v", contactStr)
 		}
 	}

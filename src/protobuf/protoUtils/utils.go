@@ -1,11 +1,9 @@
 package protoUtils
 
-import (
-	"tp/peer/dht/bucket_table/contacts_queue"
-)
+import "tp/common/contact"
 
 // Convierte una lista de contactos en sendas listas de ids y de url
-func contactsToArrays(contacts []contacts_queue.Contact) ([][]byte, []string) {
+func ContactsToArrays(contacts []contact.Contact) ([][]byte, []string) {
 	contacstIds := [][]byte{}
 	contactsUrls := []string{}
 	for i := range contacts {
@@ -16,10 +14,10 @@ func contactsToArrays(contacts []contacts_queue.Contact) ([][]byte, []string) {
 }
 
 // Crea una lista de contactos en base a sendas listas de ids y urls
-func contactsFromArrays(ids [][]byte, urls []string) []contacts_queue.Contact {
-	contacts := []contacts_queue.Contact{}
+func ContactsFromArrays(ids [][]byte, urls []string) []contact.Contact {
+	contacts := []contact.Contact{}
 	for i := range ids {
-		contacts = append(contacts, *contacts_queue.NewContact(ids[i], urls[i]))
+		contacts = append(contacts, *contact.NewContact(ids[i], urls[i]))
 	}
 	return contacts
 }

@@ -3,16 +3,16 @@ package rpc_ops
 import (
 	"tp/common"
 	"tp/common/communication"
-	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/common/contact"
 	"tp/peer/helpers"
 	"tp/protobuf/protoUtils"
 )
 
 // Envío de store a un contacto con reintentos. Retorna <error>
-type StoreOp func(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, value string, data []byte) error
+type StoreOp func(config helpers.PeerConfig, contact contact.Contact, key []byte, value string, data []byte) error
 
 // Envío de store a un contacto con reintentos. Retorna <error>
-func SndStore(config helpers.PeerConfig, contact contacts_queue.Contact, key []byte, blockName string, data []byte) error {
+func SndStore(config helpers.PeerConfig, contact contact.Contact, key []byte, blockName string, data []byte) error {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(contact.Url, communication.LogFatalOnFailConnect)
 	if err == nil {

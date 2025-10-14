@@ -3,17 +3,17 @@ package rpc_ops
 import (
 	"tp/common"
 	"tp/common/communication"
-	"tp/peer/dht/bucket_table/contacts_queue"
+	"tp/common/contact"
 	"tp/peer/helpers"
 	"tp/protobuf/protoUtils"
 	"tp/protobuf/protopb"
 )
 
 // Share contact con retry. Retorna  <contacts><error>.En caso de no poder enviar el mensaje retorna error
-type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error)
+type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contact.Contact, contacts []contact.Contact) ([]contact.Contact, error)
 
 // Share contact con retry. Retorna  <contacts><error>.En caso de no poder enviar el mensaje retorna error
-func SndShareContactsRecip(config helpers.PeerConfig, destContact contacts_queue.Contact, contacts []contacts_queue.Contact) ([]contacts_queue.Contact, error) {
+func SndShareContactsRecip(config helpers.PeerConfig, destContact contact.Contact, contacts []contact.Contact) ([]contact.Contact, error) {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
 	if err == nil {

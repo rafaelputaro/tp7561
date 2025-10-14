@@ -3,6 +3,7 @@ package contacts_queue
 import (
 	"errors"
 	"tp/common"
+	"tp/common/contact"
 	"tp/common/keys"
 )
 
@@ -12,7 +13,7 @@ const MSG_CONTACT_ALREADY_ADDED = "The contact has already been added previously
 
 // Representa una cola de contactos tipo FIFO que no permite id's repetidos
 type ContactQueue struct {
-	Entries       []Contact
+	Entries       []contact.Contact
 	IdsInTheQueue map[string]bool
 	Capacity      int
 }
@@ -20,7 +21,7 @@ type ContactQueue struct {
 // Retorna una instancia de cola de entradas lista para ser utilizada
 func NewQueue(capacity int) *ContactQueue {
 	queue := ContactQueue{
-		Entries:       []Contact{},
+		Entries:       []contact.Contact{},
 		Capacity:      capacity,
 		IdsInTheQueue: map[string]bool{},
 	}
@@ -30,7 +31,7 @@ func NewQueue(capacity int) *ContactQueue {
 // Encola una entrada si la misma no se encuentra en la cola retornando error nulo.
 // En caso de que la entrada se encuentra en la cola retorna falso y error nulo.
 // Si la cosa esta llena retorna falso y un error
-func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
+func (queue *ContactQueue) Enqueue(entry contact.Contact) (bool, error) {
 	if !queue.HasId(entry.ID) {
 		if queue.Full() {
 			return false, errors.New(MSG_ERROR_FULL_QUEUE)
@@ -44,17 +45,17 @@ func (queue *ContactQueue) Enqueue(entry Contact) (bool, error) {
 }
 
 // Obtiene el top de la cola
-func (queue *ContactQueue) Top() (Contact, error) {
+func (queue *ContactQueue) Top() (contact.Contact, error) {
 	if queue.Empty() {
-		return *CreateInvalidContact(), errors.New(MSG_ERROR_EMPTY_QUEUE)
+		return *contact.CreateInvalidContact(), errors.New(MSG_ERROR_EMPTY_QUEUE)
 	}
 	return queue.Entries[0], nil
 }
 
 // Desencola el elemento top de la cola
-func (queue *ContactQueue) Dequeue() (Contact, error) {
+func (queue *ContactQueue) Dequeue() (contact.Contact, error) {
 	if queue.Empty() {
-		return *CreateInvalidContact(), errors.New(MSG_ERROR_EMPTY_QUEUE)
+		return *contact.CreateInvalidContact(), errors.New(MSG_ERROR_EMPTY_QUEUE)
 	}
 	temp := queue.Entries[0]
 	queue.Entries = queue.Entries[1:]
@@ -63,9 +64,9 @@ func (queue *ContactQueue) Dequeue() (Contact, error) {
 }
 
 // Quita de la cola el último elemento encolado y lo retorna
-func (queue *ContactQueue) TakeHead() (Contact, error) {
+func (queue *ContactQueue) TakeHead() (contact.Contact, error) {
 	if queue.Empty() {
-		return *CreateInvalidContact(), errors.New(MSG_ERROR_EMPTY_QUEUE)
+		return *contact.CreateInvalidContact(), errors.New(MSG_ERROR_EMPTY_QUEUE)
 	}
 	toReturn := queue.Entries[len(queue.Entries)-1]
 	queue.Entries = queue.Entries[:len(queue.Entries)-1]
@@ -84,7 +85,7 @@ func (queue *ContactQueue) Full() bool {
 }
 
 // Retorna todas las entradas de la cola
-func (queue *ContactQueue) GetContacs() []Contact {
+func (queue *ContactQueue) GetContacs() []contact.Contact {
 	return queue.Entries
 }
 

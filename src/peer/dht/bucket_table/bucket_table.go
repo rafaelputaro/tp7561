@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sync"
 	"tp/common"
+	"tp/common/contact"
 	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
@@ -56,7 +57,7 @@ func (table *BucketTable) initEntries(capacity int) {
 }
 
 // Si la tabla no se encuentra llena agrega el contacto
-func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
+func (table *BucketTable) AddContact(newContact contact.Contact) error {
 	// previene que se agregue a si mismo
 	if table.discardAggregateItself(newContact) {
 		msg := fmt.Sprintf(MSG_MUST_DISCARD_CONTACT, newContact.ToString())
@@ -71,12 +72,12 @@ func (table *BucketTable) AddContact(newContact contacts_queue.Contact) error {
 }
 
 // Retorna verdadero si la url propia y la del contacto coinciden
-func (table *BucketTable) discardAggregateItself(contact contacts_queue.Contact) bool {
+func (table *BucketTable) discardAggregateItself(contact contact.Contact) bool {
 	return table.Config.Url == contact.Url
 }
 
 // Si la tabla no se encuentra llena agrega el contacto
-func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error {
+func (table *BucketTable) doAddContact(newContact contact.Contact) error {
 	prefix, err := table.getPrefix(newContact.ID)
 	if err == nil {
 		// tomar lock
@@ -107,7 +108,7 @@ func (table *BucketTable) doAddContact(newContact contacts_queue.Contact) error 
 }
 
 // Intenta agregar los contactos según la capacidad actual de la tabla
-func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) error {
+func (table *BucketTable) AddContacts(newContacts []contact.Contact) error {
 	// tomar lock
 	//table.mutex.Lock()
 	//defer table.mutex.Unlock()
@@ -123,16 +124,16 @@ func (table *BucketTable) AddContacts(newContacts []contacts_queue.Contact) erro
 }
 
 // Retorna verdadero si el contacto no se encuentra resposivo
-func (table *BucketTable) isUnresponsiveContact(contact contacts_queue.Contact) bool {
+func (table *BucketTable) isUnresponsiveContact(contact contact.Contact) bool {
 	err := table.Ping(table.Config, contact)
 	return err != nil
 }
 
 // Selecciona de la tabla de contactos propias una serie de contactos recomendados para que
 // el nodo con el id parámetro pueda armar su tabla de contactos
-func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queue.Contact {
+func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contact.Contact {
 	prefixes := keys.GenerateKeysFromOtherTrees(id)
-	toReturn := []contacts_queue.Contact{}
+	toReturn := []contact.Contact{}
 	idsMap := map[string]bool{}
 	for i := range prefixes {
 		contactsPref := table.GetContactsForId(prefixes[i])
@@ -149,24 +150,24 @@ func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contacts_queu
 }
 
 // Obtiene todos los contactos cercanos a un id dado
-func (table *BucketTable) GetContactsForId(id []byte) []contacts_queue.Contact {
+func (table *BucketTable) GetContactsForId(id []byte) []contact.Contact {
 	prefix, error := table.getPrefix(id)
 	if error != nil {
-		return []contacts_queue.Contact{}
+		return []contact.Contact{}
 	}
 	toReturn := table.GetContactsForPrefix(prefix)
 	return toReturn
 }
 
 // Obtiene los contactos para un prefijo dado
-func (table *BucketTable) GetContactsForPrefix(prefix string) []contacts_queue.Contact {
+func (table *BucketTable) GetContactsForPrefix(prefix string) []contact.Contact {
 	// tomar lock
 	table.mutex.Lock()
 	defer table.mutex.Unlock()
 	if entries, ok := table.Entries[prefix]; ok {
 		return entries.GetContacs()
 	} else {
-		return []contacts_queue.Contact{}
+		return []contact.Contact{}
 	}
 }
 

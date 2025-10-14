@@ -73,7 +73,7 @@ func CleanStore() {
 			common.Log.Errorf(MSG_ERROR_ON_CLEAN_STORE, path, err)
 			return
 		}
-		common.Log.Infof(MSG_STORE_HAS_BENN_CLEANED)
+		common.Log.Infof(MSG_STORE_HAS_BEEN_CLEANED)
 	}
 }
 

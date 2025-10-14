@@ -9,7 +9,7 @@ import (
 	"tp/protobuf/protoUtils"
 )
 
-// Envío de store a un contacto con reintentos. Retorna <key><error>
+// Envío de add a un contacto con reintentos. Retorna <key><error>
 func AddFile(url string, fileName string, path string) ([]byte, error) {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClient(url, communication.LogFatalOnFailConnect)

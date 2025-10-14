@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"tp/common"
+	"tp/common/communication/url"
 	"tp/common/keys"
 )
 
@@ -42,10 +43,9 @@ func NewNodeConfig(name string, url string, port string, entriesPerKBucket int, 
 	return config
 }
 
-func GenerateURL(host string, port string) string {
-	return host + ":" + port
-}
+/*
 
+ */
 // Lee las variables de entorno que establecen la configuración del par
 func LoadConfig() *PeerConfig {
 	name := os.Getenv("PEER_NAME")
@@ -69,7 +69,7 @@ func LoadConfig() *PeerConfig {
 		search_workers = DEFAULT_NUMBER_OF_PAIRS
 		common.Log.Debugf(MSG_ERROR_ON_LOAD_NUMBER_OF_PAIRS)
 	}
-	var config = NewNodeConfig(name, GenerateURL(host, port), port, entries_per_k_bucket, search_workers, number_of_pairs)
+	var config = NewNodeConfig(name, url.GenerateURL(host, port), port, entries_per_k_bucket, search_workers, number_of_pairs)
 	config.LogConfig()
 	return config
 }
