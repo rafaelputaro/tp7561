@@ -114,7 +114,7 @@ func RestoreFile(fileName string) (string, error) {
 func GenerateBlockName(fileName string, blockNumber int) string {
 	toReturn := fileName
 	if blockNumber != 0 {
-		toReturn += utils.GeneratePartExtension(blockNumber)
+		toReturn += utils.GenerateBlockExtension(blockNumber)
 	}
 	return toReturn
 }

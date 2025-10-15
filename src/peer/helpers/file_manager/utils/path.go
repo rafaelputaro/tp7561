@@ -38,7 +38,7 @@ func GenerateIpfsUploadPath(fileName string) string {
 // Retorna el path completo de una parte de un archivo descargado de la red de nodos
 // <directory down>/<filename>.part<blockNumber>
 func GenerateIpfsDownloadPartPath(fileName string, blockNumber int) string {
-	return GenerateIpfsDownloadPath(fileName + GeneratePartExtension(blockNumber))
+	return GenerateIpfsDownloadPath(fileName + GenerateBlockExtension(blockNumber))
 }
 
 // Retorna el path completo de una parte de un archivo subido desde fuera de la red de nodos
@@ -49,6 +49,11 @@ func GenerateIpfsUploadPartPath(fileName string, blockNumber int) string {
 
 // Retorna la extensión de la parte de un archivo
 func GeneratePartExtension(blockNumber int) string {
+	return ".part" + strconv.Itoa(blockNumber)
+}
+
+// Retorna la extensión de un bloque de un archivo
+func GenerateBlockExtension(blockNumber int) string {
 	if blockNumber > 0 {
 		return ".part" + strconv.Itoa(blockNumber)
 	}

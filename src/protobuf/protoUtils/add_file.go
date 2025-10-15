@@ -8,11 +8,14 @@ import (
 
 // Retorna el operando para la operación find block
 func CreateAddFileOperands(fileName string, part int32, data []byte, endFile bool) *protopb.AddFileOpers {
-
+	dataToSet := []byte{}
+	if data != nil {
+		dataToSet = data
+	}
 	return &protopb.AddFileOpers{
 		FileName: proto.String(fileName),
 		Part:     proto.Int32(part),
-		Data:     data,
+		Data:     dataToSet,
 		Endfile:  proto.Bool(endFile),
 	}
 }

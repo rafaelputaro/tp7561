@@ -38,7 +38,7 @@ func AddFile(url string, fileName string, path string) ([]byte, error) {
 				// enviar add file message
 				response, errAf := client.AddFile(ctx, operands)
 				if errAf != nil {
-					common.Log.Infof(MSG_ADD_FILE_ATTEMPT, retry, errAf)
+					common.Log.Infof(MSG_ADD_FILE_ATTEMPT, fileName, partNum, retry, errAf)
 					// esperar
 					common.SleepBetweenRetries()
 					continue

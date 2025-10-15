@@ -8,7 +8,7 @@ import (
 )
 
 // Reconstruye un archivo en base a sus partes y lo almacena en el archivo de salida
-func RestoreFile(outputFilePath string, parts int, generateNextPartPath func(int) string) error {
+func RestoreFile(outputFilePath string, generateNextPartPath func(int) string) error {
 	// creo archivo de salida
 	file, err := os.Create(outputFilePath)
 	if err != nil {
@@ -17,13 +17,17 @@ func RestoreFile(outputFilePath string, parts int, generateNextPartPath func(int
 	}
 	defer file.Close()
 	// iniciar recuperación
-	for part := range parts {
+	part := 0
+	for {
 		path := generateNextPartPath(part)
 		// leer siguiente bloque
-		_, data, err := ReadPart(path)
+		numBytes, data, err := ReadPart(path)
 		if err != nil {
 			common.Log.Errorf(messages.MSG_ERROR_READING_PART, err)
 			return err
+		}
+		if numBytes <= 0 {
+			break
 		}
 		// escribir en archivo de recuperación
 		if _, err := file.Write(data); err != nil {
@@ -54,5 +58,5 @@ func ReadPart(path string) (int, []byte, error) {
 			return nBytes, nil, err
 		}
 	}
-	return nBytes, fileContent, nil
+	return nBytes, fileContent[0:nBytes], nil
 }

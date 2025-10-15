@@ -102,15 +102,20 @@ func UploadLocalFiles(uploadFile func(fileName string) error) error {
 // Guarda un archivo en espacio de upload. En caso de ser el último bloque del archivo lo
 // reconstruye para luego borrar las partes. <restored><error>
 func StoreUploadFilePart(fileName string, part int32, data []byte, endFile bool) (bool, error) {
-	err := files_common.StoreFile(utils.GenerateIpfsUploadPartPath(fileName, int(part)), data)
+	var err error = nil
+	if part >= 0 {
+		err = files_common.StoreFile(utils.GenerateIpfsUploadPartPath(fileName, int(part)), data)
+	}
 	if err != nil {
 		return false, err
 	}
 	if endFile {
 		// Restaurar archivo
-		err = uploader.RestoreFile(fileName, int(part)+1, func(fPart int) string {
+		common.Log.Debugf("Restaurando archivo")
+		err = uploader.RestoreFile(utils.GenerateIpfsUploadPath(fileName), func(fPart int) string {
 			return utils.GenerateIpfsUploadPartPath(fileName, fPart)
 		})
+		// @TODO activar esto
 		return err == nil, err
 	}
 	return false, nil
