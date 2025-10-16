@@ -4,6 +4,7 @@ import (
 	"tp/client/helpers"
 	"tp/common"
 	"tp/common/communication/url"
+	"tp/common/keys"
 	rpc_ops_common "tp/common/rpc_ops"
 )
 
@@ -20,7 +21,13 @@ func main() {
 	if err != nil {
 		common.Log.Errorf("Error: %v %v", urlPeer, err)
 	} else {
-		common.Log.Debugf("Key: %v", key)
+		common.Log.Debugf("Key: %v", keys.KeyToLogFormatString(key))
+	}
+	key, err = rpc_ops_common.AddFile(urlPeer, "filec-1-1.txt", helpers.GenerateInputFilePath(*config, "filec-1-1.txt"))
+	if err != nil {
+		common.Log.Errorf("Error: %v %v", urlPeer, err)
+	} else {
+		common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
 	}
 	/*
 		utils.InitStore()

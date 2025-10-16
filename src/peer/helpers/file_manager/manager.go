@@ -5,6 +5,7 @@ import (
 	"os"
 	"tp/common"
 	"tp/common/files_common"
+	"tp/common/files_common/path_exists"
 	"tp/common/files_common/uploader"
 	"tp/common/keys"
 
@@ -119,4 +120,10 @@ func StoreUploadFilePart(fileName string, part int32, data []byte, endFile bool)
 		return err == nil, err
 	}
 	return false, nil
+}
+
+// Retorna verdadero si existe el archivo en directorio upload
+func FileExistInUpload(fileName string) bool {
+	path := utils.GenerateIpfsUploadPath(fileName)
+	return path_exists.PathExists(path)
 }

@@ -80,6 +80,16 @@ func (table *KeyValueTable) Get(key []byte) (string, []byte, error) {
 	return fileName, data, err
 }
 
+// Verifica si un archivo existe en la KeyValueKey local
+func (table *KeyValueTable) FileExistLocally(fileName string) bool {
+	key := keys.GetKey(fileName)
+	fileNameFound, err := table.getFileName(key)
+	if err != nil {
+		return false
+	}
+	return fileNameFound == fileName
+}
+
 // Obtiene el valor para una clave. En caso de no disponer la clave retorna error
 func (table *KeyValueTable) getFileName(key []byte) (string, error) {
 	if value, ok := table.Entries[keys.KeyToLogFormatString(key)]; ok {

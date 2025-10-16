@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"tp/common"
 	"tp/common/contact"
+	"tp/common/files_common/messages"
 	"tp/common/keys"
 	"tp/peer/dht"
 	"tp/peer/helpers"
@@ -56,20 +59,35 @@ func (peer *Peer) DoAddFile(fileName string) error {
 // de subida a la red
 func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) (*protopb.AddFileRes, error) {
 	fileName, part, data, endFile := protoUtils.ParseAddFileOperands(fileOpers)
-	restored, err := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
-	var key []byte
-	if restored {
-		// programar DoAddFile y retornar clave
-		key = keys.GetKey(fileName)
-		//peer.DoAddFile(fileName) Modificarlo para que tome desde la carpeta upload
+	var key []byte = keys.GetNullKey()
+	var err error = nil
+	// Si no existe la key en la tabla se procede a guardar las partes
+	if !peer.existKeyOrFileExistInUploadDir(fileName) {
+		restored, errSt := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
+		if restored {
+			// programar DoAddFile y retornar clave
+			key = keys.GetKey(fileName)
+			//peer.DoAddFile(fileName) Modificarlo para que tome desde la carpeta upload
+		}
+		err = errSt
 	} else {
-		key = keys.GetNullKey()
+		common.Log.Debugf(fmt.Sprintf("%v: %v", messages.MSG_ERROR_FILE_EXIST, fileName))
+		key = keys.GetKey(fileName)
 	}
 	return protoUtils.CreateAddFileResults(key), err
 }
 
 func (peer *Peer) GetFile(fileName string) error {
 	return peer.NodeDHT.GetFile(fileName)
+}
+
+func (peer *Peer) existKeyOrFileExistInUploadDir(fileName string) bool {
+	// Busca en la bucket table
+	if peer.NodeDHT.ExistsFileLocally(fileName) {
+		return true
+	}
+	// Busca en el directorio upload
+	return file_manager.FileExistInUpload(fileName)
 }
 
 // Hace el procesamiento de la recepción de un ping desde el contacto parámetro e intenta agregarlo

@@ -23,6 +23,9 @@ func RestoreFile(outputFilePath string, generateNextPartPath func(int) string) e
 		// leer siguiente bloque
 		numBytes, data, err := ReadPart(path)
 		if err != nil {
+			if numBytes < 0 {
+				break
+			}
 			common.Log.Errorf(messages.MSG_ERROR_READING_PART, err)
 			return err
 		}
@@ -36,6 +39,7 @@ func RestoreFile(outputFilePath string, generateNextPartPath func(int) string) e
 		}
 		part++
 	}
+	CleanParts(generateNextPartPath)
 	common.Log.Infof(messages.MSG_FILE_RESTORED, outputFilePath)
 	return nil
 }
@@ -46,7 +50,7 @@ func ReadPart(path string) (int, []byte, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		common.Log.Errorf(messages.MSG_FILE_COULD_NOT_BE_OPONED, err)
-		return 0, nil, err
+		return -1, nil, err
 	}
 	defer f.Close()
 	fileContent := make([]byte, MAX_PART_SIZE)
@@ -59,4 +63,17 @@ func ReadPart(path string) (int, []byte, error) {
 		}
 	}
 	return nBytes, fileContent[0:nBytes], nil
+}
+
+// Limpia las partes de un archivo
+func CleanParts(generateNextPartPath func(int) string) {
+	part := 0
+	for {
+		path := generateNextPartPath(part)
+		err := os.Remove(path)
+		if err != nil {
+			return
+		}
+		part++
+	}
 }

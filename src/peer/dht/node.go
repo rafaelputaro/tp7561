@@ -317,3 +317,8 @@ func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 		})
 	}
 }
+
+// Retorna verdadero si el archivo se encuentra en la bucket table local
+func (node *Node) ExistsFileLocally(fileName string) bool {
+	return node.KeyValueTab.FileExistLocally(fileName)
+}

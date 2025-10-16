@@ -46,6 +46,10 @@ func AddFile(url string, fileName string, path string) ([]byte, error) {
 				key = protoUtils.ParseAddFileResults(response)
 				break
 			}
+			// si la key no es nula significa que el par ya tiene el archivo
+			if !keys.IsNullKey(key) {
+				break
+			}
 		}
 		return key, err
 	}
