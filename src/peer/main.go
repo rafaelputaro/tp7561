@@ -27,7 +27,7 @@ func main() {
 		peer.SndShCtsToBootstrap()
 		common.SleepOnStart(numberOfPairs)
 		file_manager.UploadLocalFiles(func(fileName string) error {
-			peer.DoAddFile(fileName)
+			peer.AddFileFromInputDir(fileName)
 			return nil
 		})
 		common.SleepShort(numberOfPairs)

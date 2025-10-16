@@ -28,6 +28,8 @@ const MSG_FILE_FOUND = "the file has been found: %v"
 const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
 const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
 const MAX_CHAN_PENDING_CONTACTS = 100
+const PREFIX_ADD_FILE = "up-"
+const PREFIX_DOWNLOAD = "dow-"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -183,8 +185,27 @@ func (node *Node) getContactsForId(id []byte) []contact.Contact {
 }
 
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
-func (node *Node) AddFile(fileName string) error {
-	return file_manager.AddFile(fileName, node.createSndBlockNeighbors())
+func (node *Node) AddFileFromInputDir(fileName string) error {
+	tag := generateAddFileTag(fileName)
+	err := node.TaskScheduler.AddTaggedTask(func() {
+		file_manager.AddFileFromInputDir(fileName, node.createSndBlockNeighbors())
+		node.TaskScheduler.RemoveTaggedTask(tag)
+	}, tag)
+	return err
+}
+
+// Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
+func (node *Node) AddFileFromUploadDir(fileName string) error {
+	tag := generateAddFileTag(fileName)
+	err := node.TaskScheduler.AddTaggedTask(func() {
+		file_manager.AddFileFromUploadDir(fileName, node.createSndBlockNeighbors())
+		node.TaskScheduler.RemoveTaggedTask(tag)
+	}, tag)
+	return err
+}
+
+func generateAddFileTag(fileName string) string {
+	return PREFIX_ADD_FILE + fileName
 }
 
 // Busca el archivo localmente y en la red de nodos

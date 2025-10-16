@@ -17,10 +17,27 @@ import (
 
 type ProcessBlockCallBack func(key []byte, fileName string, data []byte) error
 
-// Leer un archivo por bloques y enviando los mismos como bloques con el formato
-// <blockKey><nextBlockKey><data> los cuales son procesados con el callback parámetro
-func AddFile(fileName string, processBlock ProcessBlockCallBack) error {
-	reader, err := source_file.NewFileReader(utils.GenerateInputFilePath(fileName))
+// Leer un archivo por bloques desde el directorio input y enviando los mismos como
+// bloques con el formato <blockKey><nextBlockKey><data> los cuales son procesados con
+// el callback parámetro
+func AddFileFromInputDir(fileName string, processBlock ProcessBlockCallBack) error {
+	filePath := utils.GenerateInputFilePath(fileName)
+	return AddFile(fileName, filePath, processBlock)
+}
+
+// Leer un archivo por bloques desde el directorio input y enviando los mismos como
+// bloques con el formato <blockKey><nextBlockKey><data> los cuales son procesados con
+// el callback parámetro
+func AddFileFromUploadDir(fileName string, processBlock ProcessBlockCallBack) error {
+	filePath := utils.GenerateIpfsUploadPath(fileName)
+	return AddFile(fileName, filePath, processBlock)
+}
+
+// Leer un archivo por bloques desde el path parámetro y enviando los mismos como
+// bloques con el formato <blockKey><nextBlockKey><data> los cuales son procesados con
+// el callback parámetro
+func AddFile(fileName string, filePath string, processBlock ProcessBlockCallBack) error {
+	reader, err := source_file.NewFileReader(filePath)
 	if err != nil {
 		return err
 	}
@@ -112,11 +129,9 @@ func StoreUploadFilePart(fileName string, part int32, data []byte, endFile bool)
 	}
 	if endFile {
 		// Restaurar archivo
-		common.Log.Debugf("Restaurando archivo")
 		err = uploader.RestoreFile(utils.GenerateIpfsUploadPath(fileName), func(fPart int) string {
 			return utils.GenerateIpfsUploadPartPath(fileName, fPart)
 		})
-		// @TODO activar esto
 		return err == nil, err
 	}
 	return false, nil

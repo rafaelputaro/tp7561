@@ -51,8 +51,13 @@ func (peer *Peer) Serve() {
 }
 
 // Agrega un archivo local a la red de nodos del ipfs
-func (peer *Peer) DoAddFile(fileName string) error {
-	return peer.NodeDHT.AddFile(fileName)
+func (peer *Peer) AddFileFromInputDir(fileName string) error {
+	return peer.NodeDHT.AddFileFromInputDir(fileName)
+}
+
+// Agrega un archivo local a la red de nodos del ipfs
+func (peer *Peer) AddFileFromUploadDir(fileName string) error {
+	return peer.NodeDHT.AddFileFromUploadDir(fileName)
 }
 
 // Agrega una parte de archivo al peer por rpc. En caso de ser la última parte inicia el proceso
@@ -65,9 +70,9 @@ func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) 
 	if !peer.existKeyOrFileExistInUploadDir(fileName) {
 		restored, errSt := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
 		if restored {
-			// programar DoAddFile y retornar clave
+			// agregar archivo a la red de nodos
+			peer.AddFileFromUploadDir(fileName)
 			key = keys.GetKey(fileName)
-			//peer.DoAddFile(fileName) Modificarlo para que tome desde la carpeta upload
 		}
 		err = errSt
 	} else {
