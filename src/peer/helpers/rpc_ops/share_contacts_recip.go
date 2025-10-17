@@ -15,7 +15,7 @@ type SndShareContactsRecipOp func(config helpers.PeerConfig, destContact contact
 // Share contact con retry. Retorna  <contacts><error>.En caso de no poder enviar el mensaje retorna error
 func SndShareContactsRecip(config helpers.PeerConfig, destContact contact.Contact, contacts []contact.Contact) ([]contact.Contact, error) {
 	// conexión
-	conn, client, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
+	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(destContact.Url, communication.LogFatalOnFailConnectGRPC)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()

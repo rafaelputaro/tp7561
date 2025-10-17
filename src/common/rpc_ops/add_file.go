@@ -12,7 +12,7 @@ import (
 // Envío de add a un contacto con reintentos. Retorna <key><error>
 func AddFile(url string, fileName string, path string) ([]byte, error) {
 	// conexión
-	conn, client, ctx, cancel, err := communication.ConnectAsClient(url, communication.LogFatalOnFailConnect)
+	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(url, communication.LogFatalOnFailConnectGRPC)
 	key := keys.GetNullKey()
 	if err == nil {
 		defer conn.Close()

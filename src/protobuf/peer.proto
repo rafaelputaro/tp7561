@@ -20,6 +20,10 @@ service Operations {
 
     // Permite subir un nodo de la red y que este último lo suba a la red
     rpc AddFile (AddFileOpers) returns (AddFileRes);
+
+    // Permite solicitar la descarga de un archivo desde la red de nodos bajo
+    // el patrón request replay
+    rpc GetFile (GetFileOpers) returns (GetFileRes);
 }
 
 // Contiene los datos del contacto que hace el ping
@@ -79,3 +83,18 @@ message AddFileRes {
     optional bytes key = 1;
 }
 
+// Contiene la clave del archivo que se espera descargar y la url
+// a la cual se debe remitir el archivo
+message GetFileOpers {
+    required bytes key = 1;
+    required string url = 2;
+}
+
+// Contiene la aceptación o no de la solicitud de descargar un archivo
+// Si el archivo fue solicitado previamente retorna si se encuentra pendiente si aún no
+// se termino de descargar de la red de nodos o accepted en caso de que ocurrió
+// un error y se intenta descargar de nuevo
+message GetFileRes {
+    required bool accepted = 1;
+    required bool pending = 2;
+}

@@ -82,10 +82,19 @@ func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) 
 	return protoUtils.CreateAddFileResults(key), err
 }
 
-func (peer *Peer) GetFile(fileName string) error {
+func (peer *Peer) DoGetFile(fileName string) error {
 	return peer.NodeDHT.GetFile(fileName)
 }
 
+func (peer *Peer) GetFile(ctx context.Context, getFileOpers *protopb.GetFileOpers) (*protopb.GetFileRes, error) {
+	key, url := protoUtils.ParseGetFileOperands(getFileOpers)
+	common.Log.Debugf("Get file: %v | %v", key, url)
+	toReturn := protoUtils.CreateGetFileResults(true, true)
+
+	return toReturn, nil
+}
+
+// Retorna verdadero si existe un archivo en la bucketTable o en el directorio upload
 func (peer *Peer) existKeyOrFileExistInUploadDir(fileName string) bool {
 	// Busca en la bucket table
 	if peer.NodeDHT.ExistsFileLocally(fileName) {

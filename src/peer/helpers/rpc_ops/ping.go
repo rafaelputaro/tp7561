@@ -14,7 +14,7 @@ type PingOp func(config helpers.PeerConfig, contact contact.Contact) error
 // Ping con retry. En caso de no poder efectuar el ping retorna error
 func SndPing(config helpers.PeerConfig, contact contact.Contact) error {
 	// conexión
-	conn, client, ctx, cancel, err := communication.ConnectAsClient(contact.Url, communication.LogFatalOnFailConnect)
+	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(contact.Url, communication.LogFatalOnFailConnectGRPC)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()

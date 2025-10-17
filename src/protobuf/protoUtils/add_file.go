@@ -6,7 +6,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// Retorna el operando para la operación find block
+// Retorna el operando para la operación add file
 func CreateAddFileOperands(fileName string, part int32, data []byte, endFile bool) *protopb.AddFileOpers {
 	dataToSet := []byte{}
 	if data != nil {
@@ -20,7 +20,7 @@ func CreateAddFileOperands(fileName string, part int32, data []byte, endFile boo
 	}
 }
 
-// Retorna el resultado de la operación find block
+// Retorna el resultado de la operación add file
 func CreateAddFileResults(key []byte) *protopb.AddFileRes {
 	return &protopb.AddFileRes{
 		Key: key,

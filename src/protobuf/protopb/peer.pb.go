@@ -518,6 +518,116 @@ func (x *AddFileRes) GetKey() []byte {
 	return nil
 }
 
+// Contiene la clave del archivo que se espera descargar y la url
+// a la cual se debe remitir el archivo
+type GetFileOpers struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           []byte                 `protobuf:"bytes,1,req,name=key" json:"key,omitempty"`
+	Url           *string                `protobuf:"bytes,2,req,name=url" json:"url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFileOpers) Reset() {
+	*x = GetFileOpers{}
+	mi := &file_peer_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFileOpers) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileOpers) ProtoMessage() {}
+
+func (x *GetFileOpers) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileOpers.ProtoReflect.Descriptor instead.
+func (*GetFileOpers) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetFileOpers) GetKey() []byte {
+	if x != nil {
+		return x.Key
+	}
+	return nil
+}
+
+func (x *GetFileOpers) GetUrl() string {
+	if x != nil && x.Url != nil {
+		return *x.Url
+	}
+	return ""
+}
+
+// Contiene la aceptación o no de la solicitud de descargar un archivo
+// Si el archivo fue solicitado previamente retorna si se encuentra pendiente si aún no
+// se termino de descargar de la red de nodos o accepted en caso de que ocurrió
+// un error y se intenta descargar de nuevo
+type GetFileRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Accepted      *bool                  `protobuf:"varint,1,req,name=accepted" json:"accepted,omitempty"`
+	Pending       *bool                  `protobuf:"varint,2,req,name=pending" json:"pending,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFileRes) Reset() {
+	*x = GetFileRes{}
+	mi := &file_peer_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFileRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFileRes) ProtoMessage() {}
+
+func (x *GetFileRes) ProtoReflect() protoreflect.Message {
+	mi := &file_peer_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFileRes.ProtoReflect.Descriptor instead.
+func (*GetFileRes) Descriptor() ([]byte, []int) {
+	return file_peer_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetFileRes) GetAccepted() bool {
+	if x != nil && x.Accepted != nil {
+		return *x.Accepted
+	}
+	return false
+}
+
+func (x *GetFileRes) GetPending() bool {
+	if x != nil && x.Pending != nil {
+		return *x.Pending
+	}
+	return false
+}
+
 var File_peer_proto protoreflect.FileDescriptor
 
 const file_peer_proto_rawDesc = "" +
@@ -557,7 +667,14 @@ const file_peer_proto_rawDesc = "" +
 	"\aendfile\x18\x04 \x02(\bR\aendfile\"\x1e\n" +
 	"\n" +
 	"AddFileRes\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\fR\x03key2\xfe\x01\n" +
+	"\x03key\x18\x01 \x01(\fR\x03key\"2\n" +
+	"\fGetFileOpers\x12\x10\n" +
+	"\x03key\x18\x01 \x02(\fR\x03key\x12\x10\n" +
+	"\x03url\x18\x02 \x02(\tR\x03url\"B\n" +
+	"\n" +
+	"GetFileRes\x12\x1a\n" +
+	"\baccepted\x18\x01 \x02(\bR\baccepted\x12\x18\n" +
+	"\apending\x18\x02 \x02(\bR\apending2\xa5\x02\n" +
 	"\n" +
 	"Operations\x12-\n" +
 	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x125\n" +
@@ -565,7 +682,8 @@ const file_peer_proto_rawDesc = "" +
 	"\n" +
 	"StoreBlock\x12\x10.StoreBlockOpers\x1a\x16.google.protobuf.Empty\x12+\n" +
 	"\tFindBlock\x12\x0f.FindBlockOpers\x1a\r.FindBlockRes\x12%\n" +
-	"\aAddFile\x12\r.AddFileOpers\x1a\v.AddFileResB\vZ\t./protopb"
+	"\aAddFile\x12\r.AddFileOpers\x1a\v.AddFileRes\x12%\n" +
+	"\aGetFile\x12\r.GetFileOpers\x1a\v.GetFileResB\vZ\t./protopb"
 
 var (
 	file_peer_proto_rawDescOnce sync.Once
@@ -579,7 +697,7 @@ func file_peer_proto_rawDescGZIP() []byte {
 	return file_peer_proto_rawDescData
 }
 
-var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_peer_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_peer_proto_goTypes = []any{
 	(*PingOperands)(nil),    // 0: PingOperands
 	(*ShCtsRecipOpers)(nil), // 1: ShCtsRecipOpers
@@ -589,24 +707,28 @@ var file_peer_proto_goTypes = []any{
 	(*FindBlockRes)(nil),    // 5: FindBlockRes
 	(*AddFileOpers)(nil),    // 6: AddFileOpers
 	(*AddFileRes)(nil),      // 7: AddFileRes
-	(*emptypb.Empty)(nil),   // 8: google.protobuf.Empty
+	(*GetFileOpers)(nil),    // 8: GetFileOpers
+	(*GetFileRes)(nil),      // 9: GetFileRes
+	(*emptypb.Empty)(nil),   // 10: google.protobuf.Empty
 }
 var file_peer_proto_depIdxs = []int32{
-	0, // 0: Operations.Ping:input_type -> PingOperands
-	1, // 1: Operations.ShCtsReciprocally:input_type -> ShCtsRecipOpers
-	3, // 2: Operations.StoreBlock:input_type -> StoreBlockOpers
-	4, // 3: Operations.FindBlock:input_type -> FindBlockOpers
-	6, // 4: Operations.AddFile:input_type -> AddFileOpers
-	8, // 5: Operations.Ping:output_type -> google.protobuf.Empty
-	2, // 6: Operations.ShCtsReciprocally:output_type -> ShCtsRecipRes
-	8, // 7: Operations.StoreBlock:output_type -> google.protobuf.Empty
-	5, // 8: Operations.FindBlock:output_type -> FindBlockRes
-	7, // 9: Operations.AddFile:output_type -> AddFileRes
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: Operations.Ping:input_type -> PingOperands
+	1,  // 1: Operations.ShCtsReciprocally:input_type -> ShCtsRecipOpers
+	3,  // 2: Operations.StoreBlock:input_type -> StoreBlockOpers
+	4,  // 3: Operations.FindBlock:input_type -> FindBlockOpers
+	6,  // 4: Operations.AddFile:input_type -> AddFileOpers
+	8,  // 5: Operations.GetFile:input_type -> GetFileOpers
+	10, // 6: Operations.Ping:output_type -> google.protobuf.Empty
+	2,  // 7: Operations.ShCtsReciprocally:output_type -> ShCtsRecipRes
+	10, // 8: Operations.StoreBlock:output_type -> google.protobuf.Empty
+	5,  // 9: Operations.FindBlock:output_type -> FindBlockRes
+	7,  // 10: Operations.AddFile:output_type -> AddFileRes
+	9,  // 11: Operations.GetFile:output_type -> GetFileRes
+	6,  // [6:12] is the sub-list for method output_type
+	0,  // [0:6] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_peer_proto_init() }
@@ -620,7 +742,7 @@ func file_peer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_peer_proto_rawDesc), len(file_peer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

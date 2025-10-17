@@ -16,7 +16,7 @@ type FindBlockOp func(config helpers.PeerConfig, destContact contact.Contact, ke
 // Find block con retry. Retorna <fileName><nextBlockKey><data con header><contacts><error> . En caso de no poder enviar el mensaje retorna error
 func SndFindBlock(config helpers.PeerConfig, destContact contact.Contact, key []byte) (string, []byte, []byte, []contact.Contact, error) {
 	// conexión
-	conn, client, ctx, cancel, err := communication.ConnectAsClient(destContact.Url, communication.LogFatalOnFailConnect)
+	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(destContact.Url, communication.LogFatalOnFailConnectGRPC)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()

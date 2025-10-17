@@ -204,8 +204,9 @@ func (node *Node) AddFileFromUploadDir(fileName string) error {
 	return err
 }
 
+// Genera el tag para una tarea de subida de archivo a la red de nodos
 func generateAddFileTag(fileName string) string {
-	return PREFIX_ADD_FILE + fileName
+	return PREFIX_ADD_FILE + keys.KeyToHexString(keys.GetKey(fileName))
 }
 
 // Busca el archivo localmente y en la red de nodos

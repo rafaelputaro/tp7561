@@ -33,7 +33,7 @@ func main() {
 		common.SleepShort(numberOfPairs)
 		if peer.NodeDHT.IsBootstrapNode() {
 			for fileNum := 1; fileNum < 15; fileNum++ {
-				if peer.GetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
+				if peer.DoGetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
 					common.Log.Debugf("No se encontro archivo: %v", fileNum)
 				}
 				common.SleepShort(numberOfPairs)

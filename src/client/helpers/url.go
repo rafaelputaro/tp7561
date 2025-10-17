@@ -6,7 +6,7 @@ import (
 )
 
 const CLIENT_HOST_PREFIX = "client-"
-const BASE_PORT = 5051
+const BASE_PORT = 50051
 
 // Retorna la url de un cliente
 func GenerateURLClient(config Config, num int) string {

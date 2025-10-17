@@ -29,6 +29,8 @@ func main() {
 	} else {
 		common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
 	}
+	rpc_ops_common.GetFile(config.Url, urlPeer, key)
+
 	/*
 		utils.InitStore()
 		// crear par

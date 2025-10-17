@@ -14,7 +14,7 @@ type StoreOp func(config helpers.PeerConfig, contact contact.Contact, key []byte
 // Envío de store a un contacto con reintentos. Retorna <error>
 func SndStore(config helpers.PeerConfig, contact contact.Contact, key []byte, blockName string, data []byte) error {
 	// conexión
-	conn, client, ctx, cancel, err := communication.ConnectAsClient(contact.Url, communication.LogFatalOnFailConnect)
+	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(contact.Url, communication.LogFatalOnFailConnectGRPC)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()
