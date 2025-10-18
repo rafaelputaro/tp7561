@@ -7,6 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 	"tp/common"
+	filetransfer "tp/common/file_transfer"
+	"tp/peer/helpers/file_manager/utils"
 	"tp/protobuf/protopb"
 
 	"google.golang.org/grpc"
@@ -24,12 +26,14 @@ const MAX_RETRY_SERVE = 10
 
 // Implementa la funcionalidad de grpc server para el par
 type PeerService struct {
-	Listener net.Listener
-	Server   *grpc.Server
+	Listener   net.Listener
+	ServerGRPC *grpc.Server
+	Receiver   *filetransfer.Receiver
 }
 
 // Retorna una nueva instancia de Peer Service lista para ser utilizada
 func NewPeerService(peer *Peer) *PeerService {
+	// GRPC service
 	var lis net.Listener
 	var err error = nil
 	for range MAX_RETRY_LISTEN {
@@ -48,13 +52,23 @@ func NewPeerService(peer *Peer) *PeerService {
 	protopb.RegisterOperationsServer(server, peer)
 	// Registrar el servicio de reflexión en el servidor gRPC.
 	reflection.Register(server)
-	// Detener el servidor gRPC cuando llega la señal SIGINT
+	// Escuchar llegada de archivos
+	receiver, err := filetransfer.NewReceiver(
+		peer.Config.UrlTCP,
+		utils.GenerateIpfsUploadPath,
+		receiveCallback(peer),
+	)
+	if err != nil {
+		common.Log.Fatalf(MSG_FAILED_TO_LISTEN, err)
+	}
+	// Detener el servidor cuando llega la señal SIGINT
 	handleSigintSignal(server)
 	// Servidor inicializado
 	common.Log.Infof(MSG_SERVER_GRPC_STARTING)
 	return &PeerService{
-		Listener: lis,
-		Server:   server,
+		Listener:   lis,
+		ServerGRPC: server,
+		Receiver:   receiver,
 	}
 }
 
@@ -73,7 +87,7 @@ func handleSigintSignal(server *grpc.Server) {
 func (service *PeerService) Serve() {
 	var err error = nil
 	for range MAX_RETRY_SERVE {
-		if err = service.Server.Serve(service.Listener); err != nil {
+		if err = service.ServerGRPC.Serve(service.Listener); err != nil {
 			common.Log.Debugf(MSG_FAILED_TO_SERVE, err)
 		}
 	}
@@ -83,4 +97,12 @@ func (service *PeerService) Serve() {
 		}
 	}
 	common.Log.Infof(MSG_SERVER_STOPPED)
+}
+
+// Callback ejecutado al recibir un archivo
+func receiveCallback(peer *Peer) filetransfer.ReceiveCallback {
+	return func(key []byte, fileName string) {
+		// agregar archivo a la red de nodos
+		peer.AddFileFromUploadDir(fileName)
+	}
 }

@@ -9,14 +9,18 @@ import (
 	"tp/common/keys"
 )
 
+type ReceiveCallback func(key []byte, fileName string)
+
 // Es una entidad que administra la recepción de archivos
 type Receiver struct {
 	keyAndNameReceivedFiles map[string]string
 	generatePath            func(string) string
+	callback                ReceiveCallback
 }
 
-// Retorna un nuevo recpetor listo para ser utilizado
-func NewReceiver(selfUrl string, generatePath func(string) string) (*Receiver, error) {
+// Retorna un nuevo recpetor listo para ser utilizado.
+// callback(<key>, <fileName>)
+func NewReceiver(selfUrl string, generatePath func(string) string, callback ReceiveCallback) (*Receiver, error) {
 	listener, err := net.Listen("tcp", selfUrl)
 	if err != nil {
 		common.Log.Debugf(MSG_ERROR_ON_STARTING_LISTENING, selfUrl, err)
@@ -25,6 +29,7 @@ func NewReceiver(selfUrl string, generatePath func(string) string) (*Receiver, e
 	receiver := Receiver{
 		keyAndNameReceivedFiles: map[string]string{},
 		generatePath:            generatePath,
+		callback:                callback,
 	}
 	common.Log.Debugf(MSG_LISTENING_ON, selfUrl)
 	go func() {
@@ -51,7 +56,7 @@ func (receiver *Receiver) handleConnection(conn net.Conn) {
 		common.Log.Errorf(MSG_ERROR_READING_FILE_NAME, err)
 		return
 	}
-	key, filename := parseKeyAndName(buffer[:n])
+	key, keyS, filename := parseKeyAndName(buffer[:n])
 	// Crear archivo
 	file, err := os.Create(receiver.generatePath(filename))
 	if err != nil {
@@ -64,11 +69,14 @@ func (receiver *Receiver) handleConnection(conn net.Conn) {
 	io.Copy(file, conn)
 	common.Log.Debugf(MSG_FILE_RECEIVED_SUCCESSFULLY, filename)
 	// Registro que el archivo ha sido recibido
-	receiver.keyAndNameReceivedFiles[key] = filename
+	receiver.keyAndNameReceivedFiles[keyS] = filename
+	receiver.callback(key, filename)
 }
 
 // obtiene la clave y el nombre del archivo <key><filename>
-func parseKeyAndName(data []byte) (string, string) {
+func parseKeyAndName(data []byte) ([]byte, string, string) {
 	dataS := string(data)
-	return keys.KeyToHexString(keys.GetKey(dataS)), dataS
+	key := keys.GetKey(dataS)
+	keyS := keys.KeyToHexString(key)
+	return key, keyS, dataS
 }

@@ -20,9 +20,9 @@ import (
 
 // Contiene la funcionalidad de IPFS y DHT
 type Peer struct {
-	Config      helpers.PeerConfig
-	NodeDHT     dht.Node
-	GrpcService PeerService
+	Config     helpers.PeerConfig
+	NodeDHT    dht.Node
+	ComService PeerService
 	protopb.UnimplementedOperationsServer
 }
 
@@ -36,7 +36,7 @@ func NewPeer(config helpers.PeerConfig) *Peer {
 			rpc_ops.SndShareContactsRecip,
 			rpc_ops.SndFindBlock),
 	}
-	peer.GrpcService = *NewPeerService(&peer)
+	peer.ComService = *NewPeerService(&peer)
 	return &peer
 }
 
@@ -47,7 +47,7 @@ func (peer *Peer) DisposePeer() {
 
 // Inicia el servicio de atención de solicitudes rpc
 func (peer *Peer) Serve() {
-	peer.GrpcService.Serve()
+	peer.ComService.Serve()
 }
 
 // Agrega un archivo local a la red de nodos del ipfs

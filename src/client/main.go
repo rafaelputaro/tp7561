@@ -32,9 +32,13 @@ func main() {
 			common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
 		}*/
 
-	_, errFt := filetransfer.NewReceiver(config.Url, func(fileName string) string {
-		return helpers.GenerateDownloadPath(*config, fileName)
-	})
+	_, errFt := filetransfer.NewReceiver(
+		config.Url,
+		func(fileName string) string {
+			return helpers.GenerateDownloadPath(*config, fileName)
+		},
+		func([]byte, string) {},
+	)
 	common.SleepBetweenRetries()
 	common.SleepBetweenRetries()
 	rpc_ops_common.GetFile(config.Url, urlPeer, key)
