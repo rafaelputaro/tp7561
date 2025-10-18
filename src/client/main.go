@@ -24,17 +24,20 @@ func main() {
 	} else {
 		common.Log.Debugf("Key: %v", keys.KeyToLogFormatString(key))
 	}
-	key, err = rpc_ops_common.AddFile(urlPeer, "filec-1-1.txt", helpers.GenerateInputFilePath(*config, "filec-1-1.txt"))
-	if err != nil {
-		common.Log.Errorf("Error: %v %v", urlPeer, err)
-	} else {
-		common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
-	}
-	rpc_ops_common.GetFile(config.Url, urlPeer, key)
+	/*
+		key, err = rpc_ops_common.AddFile(urlPeer, "filec-1-1.txt", helpers.GenerateInputFilePath(*config, "filec-1-1.txt"))
+		if err != nil {
+			common.Log.Errorf("Error: %v %v", urlPeer, err)
+		} else {
+			common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
+		}*/
 
 	_, errFt := filetransfer.NewReceiver(config.Url, func(fileName string) string {
 		return helpers.GenerateDownloadPath(*config, fileName)
 	})
+	common.SleepBetweenRetries()
+	common.SleepBetweenRetries()
+	rpc_ops_common.GetFile(config.Url, urlPeer, key)
 	if errFt == nil {
 		for {
 			common.Log.Debugf("Listen")

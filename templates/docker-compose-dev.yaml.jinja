@@ -5,13 +5,15 @@ services:
     image: peer:latest
     ports:
       - "{{ 50050 + i }}:50051"
+      - "{{ 8080 + i }}:8080"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/peer-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/peer-{{ i }}:{{ app_folder }}
     environment:
       - PEER_NAME=peer-{{ i }}
       - PEER_HOST=peer-{{ i }}
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET={{ entries_per_k_bucket }}
       - LOGIN_FORMAT_FOR_KEYS={{ login_format_for_keys }}
       - INPUT_DATA_FOLDER=/tmp{{ input_data_folder }}
@@ -33,14 +35,14 @@ services:
     container_name: client-{{ i }}
     image: client:latest
     ports:
-      - "{{ 50050 + i + number_of_pairs }}:50051"
+      - "{{ 8080 + i + number_of_pairs }}:8080"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/client-{{ i }}:{{ client_folder }}
     environment:
       - CLIENT_NAME=client-{{ i }}
       - CLIENT_HOST=client-{{ i }}
-      - CLIENT_PORT=50051
+      - CLIENT_PORT=8080
       - LOGIN_FORMAT_FOR_KEYS={{ login_format_for_keys }}
       - INPUT_DATA_FOLDER=/tmp{{ input_data_folder }}
       - STORE_FOLDER={{ client_folder }}{{ store_folder }}

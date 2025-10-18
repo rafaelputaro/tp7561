@@ -5,13 +5,15 @@ services:
     image: peer:latest
     ports:
       - "50051:50051"
+      - "8081:8080"
     volumes:
       - /tmp/tp/data/peer-1:/tmp/data
       - /tmp/tp/peer-1:/tmp/peer
     environment:
       - PEER_NAME=peer-1
       - PEER_HOST=peer-1
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -30,13 +32,15 @@ services:
     image: peer:latest
     ports:
       - "50052:50051"
+      - "8082:8080"
     volumes:
       - /tmp/tp/data/peer-2:/tmp/data
       - /tmp/tp/peer-2:/tmp/peer
     environment:
       - PEER_NAME=peer-2
       - PEER_HOST=peer-2
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -55,13 +59,15 @@ services:
     image: peer:latest
     ports:
       - "50053:50051"
+      - "8083:8080"
     volumes:
       - /tmp/tp/data/peer-3:/tmp/data
       - /tmp/tp/peer-3:/tmp/peer
     environment:
       - PEER_NAME=peer-3
       - PEER_HOST=peer-3
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -80,13 +86,15 @@ services:
     image: peer:latest
     ports:
       - "50054:50051"
+      - "8084:8080"
     volumes:
       - /tmp/tp/data/peer-4:/tmp/data
       - /tmp/tp/peer-4:/tmp/peer
     environment:
       - PEER_NAME=peer-4
       - PEER_HOST=peer-4
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -105,13 +113,15 @@ services:
     image: peer:latest
     ports:
       - "50055:50051"
+      - "8085:8080"
     volumes:
       - /tmp/tp/data/peer-5:/tmp/data
       - /tmp/tp/peer-5:/tmp/peer
     environment:
       - PEER_NAME=peer-5
       - PEER_HOST=peer-5
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -130,13 +140,15 @@ services:
     image: peer:latest
     ports:
       - "50056:50051"
+      - "8086:8080"
     volumes:
       - /tmp/tp/data/peer-6:/tmp/data
       - /tmp/tp/peer-6:/tmp/peer
     environment:
       - PEER_NAME=peer-6
       - PEER_HOST=peer-6
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -155,13 +167,15 @@ services:
     image: peer:latest
     ports:
       - "50057:50051"
+      - "8087:8080"
     volumes:
       - /tmp/tp/data/peer-7:/tmp/data
       - /tmp/tp/peer-7:/tmp/peer
     environment:
       - PEER_NAME=peer-7
       - PEER_HOST=peer-7
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -180,13 +194,15 @@ services:
     image: peer:latest
     ports:
       - "50058:50051"
+      - "8088:8080"
     volumes:
       - /tmp/tp/data/peer-8:/tmp/data
       - /tmp/tp/peer-8:/tmp/peer
     environment:
       - PEER_NAME=peer-8
       - PEER_HOST=peer-8
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -205,13 +221,15 @@ services:
     image: peer:latest
     ports:
       - "50059:50051"
+      - "8089:8080"
     volumes:
       - /tmp/tp/data/peer-9:/tmp/data
       - /tmp/tp/peer-9:/tmp/peer
     environment:
       - PEER_NAME=peer-9
       - PEER_HOST=peer-9
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -230,13 +248,15 @@ services:
     image: peer:latest
     ports:
       - "50060:50051"
+      - "8090:8080"
     volumes:
       - /tmp/tp/data/peer-10:/tmp/data
       - /tmp/tp/peer-10:/tmp/peer
     environment:
       - PEER_NAME=peer-10
       - PEER_HOST=peer-10
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -255,13 +275,15 @@ services:
     image: peer:latest
     ports:
       - "50061:50051"
+      - "8091:8080"
     volumes:
       - /tmp/tp/data/peer-11:/tmp/data
       - /tmp/tp/peer-11:/tmp/peer
     environment:
       - PEER_NAME=peer-11
       - PEER_HOST=peer-11
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -280,13 +302,15 @@ services:
     image: peer:latest
     ports:
       - "50062:50051"
+      - "8092:8080"
     volumes:
       - /tmp/tp/data/peer-12:/tmp/data
       - /tmp/tp/peer-12:/tmp/peer
     environment:
       - PEER_NAME=peer-12
       - PEER_HOST=peer-12
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -305,13 +329,15 @@ services:
     image: peer:latest
     ports:
       - "50063:50051"
+      - "8093:8080"
     volumes:
       - /tmp/tp/data/peer-13:/tmp/data
       - /tmp/tp/peer-13:/tmp/peer
     environment:
       - PEER_NAME=peer-13
       - PEER_HOST=peer-13
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -330,13 +356,15 @@ services:
     image: peer:latest
     ports:
       - "50064:50051"
+      - "8094:8080"
     volumes:
       - /tmp/tp/data/peer-14:/tmp/data
       - /tmp/tp/peer-14:/tmp/peer
     environment:
       - PEER_NAME=peer-14
       - PEER_HOST=peer-14
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -355,13 +383,15 @@ services:
     image: peer:latest
     ports:
       - "50065:50051"
+      - "8095:8080"
     volumes:
       - /tmp/tp/data/peer-15:/tmp/data
       - /tmp/tp/peer-15:/tmp/peer
     environment:
       - PEER_NAME=peer-15
       - PEER_HOST=peer-15
-      - PEER_PORT=50051
+      - PEER_PORT_GRPC=50051
+      - PEER_PORT_TCP=8080
       - ENTRIES_PER_K_BUCKET=20
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
@@ -378,14 +408,14 @@ services:
     container_name: client-1
     image: client:latest
     ports:
-      - "50066:50051"
+      - "8096:8080"
     volumes:
       - /tmp/tp/data/client-1:/tmp/data
       - /tmp/tp/client-1:/tmp/client
     environment:
       - CLIENT_NAME=client-1
       - CLIENT_HOST=client-1
-      - CLIENT_PORT=50051
+      - CLIENT_PORT=8080
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_FOLDER=/tmp/client/store

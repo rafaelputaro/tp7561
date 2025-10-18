@@ -20,7 +20,7 @@ func SndPing(config helpers.PeerConfig, contact contact.Contact) error {
 		defer cancel()
 		// ping con retry
 		for retry := range MAX_RETRIES_ON_PING {
-			_, err = client.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.Url))
+			_, err = client.Ping(ctx, protoUtils.CreatePingOperands(config.Id, config.UrlGRPC))
 			if err != nil {
 				common.Log.Infof(MSG_PING_ATTEMPT, retry, err)
 				// esperar

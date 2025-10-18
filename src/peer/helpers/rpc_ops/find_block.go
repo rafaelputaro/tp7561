@@ -21,7 +21,7 @@ func SndFindBlock(config helpers.PeerConfig, destContact contact.Contact, key []
 		defer conn.Close()
 		defer cancel()
 		// armo los argumentos
-		operands := proto_utils_peer.CreateFindBlockOperands(config.Id, config.Url, key)
+		operands := proto_utils_peer.CreateFindBlockOperands(config.Id, config.UrlGRPC, key)
 		// find block con retry
 		for retry := range MAX_RETRIES_ON_FIND_BLOCK {
 			var response *protopb.FindBlockRes

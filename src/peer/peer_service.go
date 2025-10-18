@@ -33,7 +33,7 @@ func NewPeerService(peer *Peer) *PeerService {
 	var lis net.Listener
 	var err error = nil
 	for range MAX_RETRY_LISTEN {
-		lis, err = net.Listen("tcp", peer.Config.Url)
+		lis, err = net.Listen("tcp", peer.Config.UrlGRPC)
 		if err == nil {
 			break
 		}

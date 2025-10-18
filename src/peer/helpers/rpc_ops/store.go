@@ -21,7 +21,7 @@ func SndStore(config helpers.PeerConfig, contact contact.Contact, key []byte, bl
 		// send store
 		for retry := range MAX_RETRIES_ON_STORE {
 			// armo los argumentos
-			operands := protoUtils.CreateStoreBlockOperands(config.Id, config.Url, key, blockName, data)
+			operands := protoUtils.CreateStoreBlockOperands(config.Id, config.UrlGRPC, key, blockName, data)
 			// enviar store message
 			_, err = client.StoreBlock(ctx, operands)
 			if err != nil {

@@ -73,7 +73,7 @@ func (table *BucketTable) AddContact(newContact contact.Contact) error {
 
 // Retorna verdadero si la url propia y la del contacto coinciden
 func (table *BucketTable) discardAggregateItself(contact contact.Contact) bool {
-	return table.Config.Url == contact.Url
+	return table.Config.UrlGRPC == contact.Url
 }
 
 // Si la tabla no se encuentra llena agrega el contacto

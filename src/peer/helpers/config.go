@@ -22,20 +22,24 @@ const RECOVERED_FOLDER = "recovered"
 type PeerConfig struct {
 	Id                []byte
 	Name              string
-	Url               string
-	Port              string
+	UrlGRPC           string
+	UrlTCP            string
+	PortGRPC          string
+	PortTCP           string
 	EntriesPerKBucket int
 	SearchWorkers     int
 	NumberOfPairs     int
 }
 
 // Retorna una nueva instancia de la configuración
-func NewNodeConfig(name string, url string, port string, entriesPerKBucket int, searchWorkers int, numberOfPairs int) *PeerConfig {
+func NewNodeConfig(name string, urlGRPC string, portGRPC string, urlTCP string, portTCP string, entriesPerKBucket int, searchWorkers int, numberOfPairs int) *PeerConfig {
 	config := &PeerConfig{
 		Id:                keys.GetKey(name),
 		Name:              name,
-		Url:               url,
-		Port:              port,
+		UrlGRPC:           urlGRPC,
+		UrlTCP:            urlTCP,
+		PortGRPC:          portGRPC,
+		PortTCP:           portTCP,
 		EntriesPerKBucket: entriesPerKBucket,
 		SearchWorkers:     searchWorkers,
 		NumberOfPairs:     numberOfPairs,
@@ -49,7 +53,8 @@ func NewNodeConfig(name string, url string, port string, entriesPerKBucket int, 
 // Lee las variables de entorno que establecen la configuración del par
 func LoadConfig() *PeerConfig {
 	name := os.Getenv("PEER_NAME")
-	port := os.Getenv("PEER_PORT")
+	portGRPC := os.Getenv("PEER_PORT_GRPC")
+	portTCP := os.Getenv("PEER_PORT_TCP")
 	host := os.Getenv("PEER_HOST")
 	entries_per_k_bucket_s := os.Getenv("ENTRIES_PER_K_BUCKET")
 	search_workers_s := os.Getenv("SEARCH_WORKERS")
@@ -69,16 +74,17 @@ func LoadConfig() *PeerConfig {
 		search_workers = DEFAULT_NUMBER_OF_PAIRS
 		common.Log.Debugf(MSG_ERROR_ON_LOAD_NUMBER_OF_PAIRS)
 	}
-	var config = NewNodeConfig(name, url.GenerateURL(host, port), port, entries_per_k_bucket, search_workers, number_of_pairs)
+	var config = NewNodeConfig(name, url.GenerateURL(host, portGRPC), portGRPC, url.GenerateURL(host, portTCP), portTCP, entries_per_k_bucket, search_workers, number_of_pairs)
 	config.LogConfig()
 	return config
 }
 
 // Hace un log por debug de la configuración
 func (config *PeerConfig) LogConfig() {
-	common.Log.Debugf("Name: %v | Url: %v | Id: %v | EntriesPerKBucket: %v | SearchWorkers: %v | NumberOfPairs: %v",
+	common.Log.Debugf("Name: %v | UrlGRCP: %v | UrlTCP: %v | Id: %v | EntriesPerKBucket: %v | SearchWorkers: %v | NumberOfPairs: %v",
 		config.Name,
-		config.Url,
+		config.UrlGRPC,
+		config.UrlTCP,
 		fmt.Sprintf("%v", keys.KeyToLogFormatString(config.Id)),
 		config.EntriesPerKBucket,
 		config.SearchWorkers,
