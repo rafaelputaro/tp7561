@@ -6,4 +6,6 @@ const MSG_ERROR_ACCEPTING_CONNECTION = "error accepting connection: %v"
 const MSG_ERROR_READING_FILE_NAME = "error reading file name: %v"
 const MSG_RECEIVING_FILE = "receiving file: %v"
 const MSG_FILE_RECEIVED_SUCCESSFULLY = "file %v received successfully"
+const MSG_ERROR_SENDING_FILE = "error sending file: %v"
+const MSG_FILE_SENT_SUCCESSFULLY = "file sent successfully: %v"
 const BUFFER_SIZE = 1024

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"tp/common"
 	"tp/common/contact"
+	filetransfer "tp/common/file_transfer"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/key_value_table"
 	"tp/peer/dht/tiered_contact_storage"
@@ -18,6 +19,7 @@ import (
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
 	"tp/peer/helpers/file_manager/blocks"
+	"tp/peer/helpers/file_manager/utils"
 	"tp/peer/helpers/rpc_ops"
 )
 
@@ -210,25 +212,46 @@ func generateAddFileTag(fileName string) string {
 }
 
 // Busca el archivo localmente y en la red de nodos
-func (node *Node) GetFile(fileName string) error {
+func (node *Node) GetFile(destUrl string, key []byte) error {
+	errT := node.TaskScheduler.AddTask(func() {
+		fileName, err := node.DoGetFileByKey(key)
+		if err == nil {
+			filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName))
+		}
+	})
+	return errT
+}
+
+// Busca el archivo localmente y en la red de nodos. Retorna el nombre del archivo encontrado
+func (node *Node) DoGetFileByName(fileName string) (string, error) {
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
 	key := keys.GetKey(blockName)
+	return node.DoGetFileByKey(key)
+}
+
+// Busca el archivo localmente y en la red de nodos. Retorna el nombre del archivo
+// asociado a la clave
+func (node *Node) DoGetFileByKey(key []byte) (string, error) {
 	// Obtener archivo completo
 	endFile := false
+	rootFileName := ""
 	for !endFile {
 		// Buscar bloque localmente
-		if end, nextBlockKey, err := node.findBlockLocally(key); err == nil {
+		if fileNameFound, end, nextBlockKey, err := node.findBlockLocally(key); err == nil {
 			key = nextBlockKey
 			endFile = end
+			if rootFileName == "" {
+				rootFileName = fileNameFound
+			}
 		} else {
 			// Obtengo contactos locales
 			localContacts := node.getContactsForId(key)
 			// Si no hay contactos locales se retorna error
 			if len(localContacts) == 0 {
-				msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, fileName)
+				msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, keys.KeyToLogFormatString(key))
 				common.Log.Errorf(msg)
-				return errors.New(msg)
+				return rootFileName, errors.New(msg)
 			}
 			// creo el storage de contactos y agrego los locales
 			contactStorage := tiered_contact_storage.NewTieredContactStorage(key)
@@ -244,7 +267,10 @@ func (node *Node) GetFile(fileName string) error {
 				for id := range node.Config.SearchWorkers {
 					wg.Add(1)
 					go func() {
-						processNextContact(node, key, fileName, contactStorage, resChan, id)
+						fileNameFound := processNextContact(node, key, rootFileName, contactStorage, resChan, id)
+						if rootFileName == "" {
+							rootFileName = fileNameFound
+						}
 						wg.Done()
 					}()
 				}
@@ -263,30 +289,30 @@ func (node *Node) GetFile(fileName string) error {
 					break
 				}
 				if !endBlock && errorToReturn != nil {
-					return errorToReturn
+					return rootFileName, errorToReturn
 				}
 			}
 		}
 		if endFile {
-			common.Log.Debugf(MSG_FILE_DOWLOADED, fileName)
+			common.Log.Debugf(MSG_FILE_DOWLOADED, rootFileName)
 			// Juntar todas las partes del archivo
-			blocks.RestoreFile(fileName)
+			blocks.RestoreFile(rootFileName)
 		}
 	}
-	return nil
+	return rootFileName, nil
 }
 
 // Busca el bloque localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder
 // enviar el mensaje retorna error
-func (node *Node) findBlockLocally(key []byte) (bool, []byte, error) {
+func (node *Node) findBlockLocally(key []byte) (string, bool, []byte, error) {
 	fileNameFound, data, err := node.KeyValueTab.Get(key)
 	// si no se encuentra retorna error
 	if err != nil {
-		return false, keys.GetNullKey(), err
+		return fileNameFound, false, keys.GetNullKey(), err
 	}
 	// si se encuentra guarda localmente y parsear data
 	endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
-	return endFile, blocks.GetNextBlock(data), nil
+	return fileNameFound, endFile, blocks.GetNextBlock(data), nil
 }
 
 // Retorna una función que intenta enviar la orden de store a los vecinos más cercanos a la clave

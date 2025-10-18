@@ -1,89 +1,41 @@
 package filetransfer
 
 import (
+	"fmt"
+	"io"
 	"os"
 	"tp/common"
 	"tp/common/communication"
 	"tp/common/files_common/messages"
 )
 
-func SendFile(destUrl string, fileName string, filepath string) error {
-	file, err := os.Open(filepath)
+// Enviar archivo a una url dada
+func SendFile(destUrl string, fileName string, filePath string) error {
+	// Abrir archivo
+	file, err := os.Open(filePath)
 	if err != nil {
 		common.Log.Errorf(messages.MSG_ERROR_OPENING_FILE, err)
+		return err
 	}
 	defer file.Close()
+	// Conectarse como cliente
 	conn, err := communication.ConnectAsClient(destUrl)
 	if err != nil {
 		return err
 	}
 	defer conn.Close()
 	// Enviar nombre del archivo
-	_, err = conn.Write([]byte(filepath))
+	fileNameToSend := fmt.Sprintf("%v\n", fileName)
+	_, err = conn.Write([]byte(fileNameToSend))
 	if err != nil {
 		common.Log.Errorf(messages.MSG_ERROR_SENDING_FILE_NAME, err)
 	}
-	/*
-		// Enviar contenido del archivo
-		_, err = io.Copy(conn, file)
-
-			if err != nil {
-				log.Fatal("Error al enviar archivo: ", err)
-			}
-
-		fmt.Println("Archivo enviado correctamente.")
-	*/
-	return nil
-}
-
-/*
-
-// cliente.go
-package main
-
-import (
-	"fmt"
-	"io"
-	"log"
-	"net"
-	"os"
-	"path/filepath"
-)
-
-const BUFFER_SIZE = 1024
-
-func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("Uso: cliente <ruta-del-archivo>")
-		return
-	}
-
-	filepath := os.Args
-	file, err := os.Open(filepath)
-	if err != nil {
-		log.Fatal("Error al abrir archivo: ", err)
-	}
-	defer file.Close()
-
-	conn, err := net.Dial("tcp", "localhost:8080")
-	if err != nil {
-		log.Fatal("Error al conectar al servidor: ", err)
-	}
-	defer conn.Close()
-
-	// Enviar nombre del archivo
-	_, err = conn.Write([]byte(filepath.Base(filepath)))
-	if err != nil {
-		log.Fatal("Error al enviar nombre del archivo: ", err)
-	}
-
 	// Enviar contenido del archivo
 	_, err = io.Copy(conn, file)
 	if err != nil {
-		log.Fatal("Error al enviar archivo: ", err)
+		common.Log.Errorf(MSG_ERROR_SENDING_FILE, err)
+		return err
 	}
-
-	fmt.Println("Archivo enviado correctamente.")
+	common.Log.Debugf(MSG_FILE_SENT_SUCCESSFULLY, fileName)
+	return nil
 }
-
-*/

@@ -83,14 +83,15 @@ func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) 
 }
 
 func (peer *Peer) DoGetFile(fileName string) error {
-	return peer.NodeDHT.GetFile(fileName)
+	_, err := peer.NodeDHT.DoGetFileByName(fileName)
+	return err
 }
 
 func (peer *Peer) GetFile(ctx context.Context, getFileOpers *protopb.GetFileOpers) (*protopb.GetFileRes, error) {
 	key, url := protoUtils.ParseGetFileOperands(getFileOpers)
 	common.Log.Debugf("Get file: %v | %v", key, url)
 	toReturn := protoUtils.CreateGetFileResults(true, true)
-
+	peer.NodeDHT.GetFile(url, key)
 	return toReturn, nil
 }
 

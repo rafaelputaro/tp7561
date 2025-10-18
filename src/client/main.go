@@ -4,6 +4,7 @@ import (
 	"tp/client/helpers"
 	"tp/common"
 	"tp/common/communication/url"
+	filetransfer "tp/common/file_transfer"
 	"tp/common/keys"
 	rpc_ops_common "tp/common/rpc_ops"
 )
@@ -30,6 +31,17 @@ func main() {
 		common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
 	}
 	rpc_ops_common.GetFile(config.Url, urlPeer, key)
+
+	_, errFt := filetransfer.NewReceiver(config.Url, func(fileName string) string {
+		return helpers.GenerateDownloadPath(*config, fileName)
+	})
+	if errFt == nil {
+		for {
+			common.Log.Debugf("Listen")
+			common.SleepBetweenRetries()
+			common.SleepBetweenRetries()
+		}
+	}
 
 	/*
 		utils.InitStore()
