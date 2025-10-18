@@ -3,8 +3,7 @@ package rpc_ops_common
 import (
 	"tp/common"
 	"tp/common/communication"
-	"tp/common/files_common"
-	"tp/common/files_common/uploader"
+	filetransfer "tp/common/file_transfer"
 	"tp/common/keys"
 	"tp/protobuf/protoUtils"
 )
@@ -14,44 +13,32 @@ func AddFile(url string, fileName string, path string) ([]byte, error) {
 	// conexión
 	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(url, communication.LogFatalOnFailConnectGRPC)
 	key := keys.GetNullKey()
+	urlDest := ""
 	if err == nil {
 		defer conn.Close()
 		defer cancel()
-		// crear un file reader
-		reader, err := files_common.NewFileReader(path, uploader.MAX_PART_SIZE)
-		if err != nil {
+		// armo los argumentos
+		operands := protoUtils.CreateAddFileOperands(fileName)
+		for retry := range MAX_RETRIES_ON_ADD_FILE {
+			// enviar add file message
+			response, errAf := client.AddFile(ctx, operands)
+			if errAf != nil {
+				common.Log.Infof(MSG_ADD_FILE_ATTEMPT, fileName, retry, errAf)
+				// esperar
+				common.SleepBetweenRetries()
+				continue
+			}
+			key, urlDest = protoUtils.ParseAddFileResults(response)
+			break
+		}
+		// si la urlDest es nula significa que el archivo no puede ser subido
+		if urlDest == "" {
+			common.Log.Debugf(MSG_ERROR_FILE_EXIST, fileName)
 			return key, err
 		}
-		// leer y enviar file parts
-		eof := false
-		for !eof {
-			// leer siguiente bloque
-			dataR, partNum, eofR, errR := reader.Next()
-			if errR != nil {
-				return key, err
-			}
-			eof = eofR
-			// envío con reintentos
-			for retry := range MAX_RETRIES_ON_ADD_FILE {
-				// armo los argumentos
-				operands := protoUtils.CreateAddFileOperands(fileName, int32(partNum), dataR, eofR)
-				// enviar add file message
-				response, errAf := client.AddFile(ctx, operands)
-				if errAf != nil {
-					common.Log.Infof(MSG_ADD_FILE_ATTEMPT, fileName, partNum, retry, errAf)
-					// esperar
-					common.SleepBetweenRetries()
-					continue
-				}
-				key = protoUtils.ParseAddFileResults(response)
-				break
-			}
-			// si la key no es nula significa que el par ya tiene el archivo
-			if !keys.IsNullKey(key) {
-				break
-			}
+		if err = filetransfer.SendFile(urlDest, fileName, path); err == nil {
+			return key, err
 		}
-		return key, err
 	}
 	common.Log.Errorf(MSG_FAIL_ON_SEND_ADD_FILE, err)
 	return key, err

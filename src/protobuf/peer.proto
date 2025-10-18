@@ -73,14 +73,12 @@ message FindBlockRes {
 // Contiene la información sobre las partes de un archivo a subir
 message AddFileOpers {
     required string fileName = 1;
-    required int32 part = 2; // 0 en adelante
-    required bytes data = 3;
-    required bool endfile = 4;
 }
 
-// Contiene la key cuando se sube el archivo completo
+// Contiene la key y la url donde se debe subir el archivo completo
 message AddFileRes {
     optional bytes key = 1;
+    optional string url = 2;
 }
 
 // Contiene la clave del archivo que se espera descargar y la url

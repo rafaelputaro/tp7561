@@ -408,9 +408,6 @@ func (x *FindBlockRes) GetContactsUrls() []string {
 type AddFileOpers struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	FileName      *string                `protobuf:"bytes,1,req,name=fileName" json:"fileName,omitempty"`
-	Part          *int32                 `protobuf:"varint,2,req,name=part" json:"part,omitempty"` // 0 en adelante
-	Data          []byte                 `protobuf:"bytes,3,req,name=data" json:"data,omitempty"`
-	Endfile       *bool                  `protobuf:"varint,4,req,name=endfile" json:"endfile,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -452,31 +449,11 @@ func (x *AddFileOpers) GetFileName() string {
 	return ""
 }
 
-func (x *AddFileOpers) GetPart() int32 {
-	if x != nil && x.Part != nil {
-		return *x.Part
-	}
-	return 0
-}
-
-func (x *AddFileOpers) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-func (x *AddFileOpers) GetEndfile() bool {
-	if x != nil && x.Endfile != nil {
-		return *x.Endfile
-	}
-	return false
-}
-
-// Contiene la key cuando se sube el archivo completo
+// Contiene la key y la url donde se debe subir el archivo completo
 type AddFileRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Key           []byte                 `protobuf:"bytes,1,opt,name=key" json:"key,omitempty"`
+	Url           *string                `protobuf:"bytes,2,opt,name=url" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -516,6 +493,13 @@ func (x *AddFileRes) GetKey() []byte {
 		return x.Key
 	}
 	return nil
+}
+
+func (x *AddFileRes) GetUrl() string {
+	if x != nil && x.Url != nil {
+		return *x.Url
+	}
+	return ""
 }
 
 // Contiene la clave del archivo que se espera descargar y la url
@@ -659,15 +643,13 @@ const file_peer_proto_rawDesc = "" +
 	"\tblockName\x18\x01 \x02(\tR\tblockName\x12\x1c\n" +
 	"\tblockData\x18\x02 \x02(\fR\tblockData\x12 \n" +
 	"\vcontactsIds\x18\x03 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"l\n" +
+	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"*\n" +
 	"\fAddFileOpers\x12\x1a\n" +
-	"\bfileName\x18\x01 \x02(\tR\bfileName\x12\x12\n" +
-	"\x04part\x18\x02 \x02(\x05R\x04part\x12\x12\n" +
-	"\x04data\x18\x03 \x02(\fR\x04data\x12\x18\n" +
-	"\aendfile\x18\x04 \x02(\bR\aendfile\"\x1e\n" +
+	"\bfileName\x18\x01 \x02(\tR\bfileName\"0\n" +
 	"\n" +
 	"AddFileRes\x12\x10\n" +
-	"\x03key\x18\x01 \x01(\fR\x03key\"2\n" +
+	"\x03key\x18\x01 \x01(\fR\x03key\x12\x10\n" +
+	"\x03url\x18\x02 \x01(\tR\x03url\"2\n" +
 	"\fGetFileOpers\x12\x10\n" +
 	"\x03key\x18\x01 \x02(\fR\x03key\x12\x10\n" +
 	"\x03url\x18\x02 \x02(\tR\x03url\"B\n" +

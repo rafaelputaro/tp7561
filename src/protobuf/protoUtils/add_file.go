@@ -7,33 +7,27 @@ import (
 )
 
 // Retorna el operando para la operación add file
-func CreateAddFileOperands(fileName string, part int32, data []byte, endFile bool) *protopb.AddFileOpers {
-	dataToSet := []byte{}
-	if data != nil {
-		dataToSet = data
-	}
+func CreateAddFileOperands(fileName string) *protopb.AddFileOpers {
 	return &protopb.AddFileOpers{
 		FileName: proto.String(fileName),
-		Part:     proto.Int32(part),
-		Data:     dataToSet,
-		Endfile:  proto.Bool(endFile),
 	}
 }
 
 // Retorna el resultado de la operación add file
-func CreateAddFileResults(key []byte) *protopb.AddFileRes {
+func CreateAddFileResults(key []byte, url string) *protopb.AddFileRes {
 	return &protopb.AddFileRes{
 		Key: key,
+		Url: proto.String(url),
 	}
 }
 
 // Realiza el parseo de los operando recibidos en una operación de agregar archivo
 // <fileName><part><data><endFile>
-func ParseAddFileOperands(operands *protopb.AddFileOpers) (string, int32, []byte, bool) {
-	return operands.GetFileName(), operands.GetPart(), operands.GetData(), operands.GetEndfile()
+func ParseAddFileOperands(operands *protopb.AddFileOpers) string {
+	return operands.GetFileName()
 }
 
 // Pasea los resultados de una operación de agregar archivo <key>
-func ParseAddFileResults(result *protopb.AddFileRes) []byte {
-	return result.GetKey()
+func ParseAddFileResults(result *protopb.AddFileRes) ([]byte, string) {
+	return result.GetKey(), result.GetUrl()
 }
