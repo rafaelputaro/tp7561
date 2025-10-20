@@ -21,11 +21,6 @@ func GenerateStorePath(config Config, fileName string) string {
 	return config.StoreFolder + "/" + fileName
 }
 
-// Retorna el path completo de un archivo recuperado <directory restore>/<fileName>
-func GenerateRestorePath(config Config, fileName string) string {
-	return config.RestoreFolder + "/" + fileName
-}
-
 // Retorna el path completo de un archivo situado en la carpeta de descargas
 // <directory down>/<filename>
 func GenerateDownloadPath(config Config, fileName string) string {
@@ -71,12 +66,6 @@ func CreateStoreFolders(config Config) {
 	// crear store folder
 	path := GenerateStorePath(config, "")
 	err := os.Mkdir(path, 0755)
-	if err != nil {
-		common.Log.Errorf(MSG_ERROR_CREATING_FOLDER, err)
-	}
-	// crear restore folder dentro de store
-	path = GenerateRestorePath(config, "")
-	err = os.Mkdir(path, 0755)
 	if err != nil {
 		common.Log.Errorf(MSG_ERROR_CREATING_FOLDER, err)
 	}

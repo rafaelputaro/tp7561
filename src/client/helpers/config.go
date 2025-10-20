@@ -14,7 +14,6 @@ const MSG_ERROR_ON_LOAD_NUMBER_OF_CLIENTS = "Error on load number of clients"
 const EMPTY_URL = ""
 const RECOVERED_FOLDER = "recovered"
 const DOWLOAD_SUB_DIRECTORY = "down"
-const RESTORE_SUB_DIRECTORY = "restore"
 
 // Representa la configuración del client
 type Config struct {
@@ -26,7 +25,6 @@ type Config struct {
 	InputDataFolder string
 	StoreFolder     string
 	DownloadFolder  string
-	RestoreFolder   string
 }
 
 // Retorna una nueva instancia de la configuración
@@ -40,7 +38,6 @@ func NewConfig(name string, url string, port string, numberOfClients int, number
 		InputDataFolder: inputDataFolder,
 		StoreFolder:     storeFolder,
 		DownloadFolder:  generateDownloadFolder(storeFolder),
-		RestoreFolder:   generateRestoreFolder(storeFolder),
 	}
 	return config
 }
@@ -74,7 +71,7 @@ func LoadConfig() *Config {
 
 // Hace un log por debug de la configuración
 func (config *Config) LogConfig() {
-	common.Log.Debugf("Name: %v | Url: %v | NumberOfClients: %v | NumberOfPairs: %v | InputDataFolder: %v | StoreFolder: %v | DownloadFolder: %v | RestoreFolder: %v ",
+	common.Log.Debugf("Name: %v | Url: %v | NumberOfClients: %v | NumberOfPairs: %v | InputDataFolder: %v | StoreFolder: %v | DownloadFolder: %v",
 		config.Name,
 		config.Url,
 		config.NumberOfClients,
@@ -82,16 +79,10 @@ func (config *Config) LogConfig() {
 		config.InputDataFolder,
 		config.StoreFolder,
 		config.DownloadFolder,
-		config.RestoreFolder,
 	)
 }
 
 // Genera el directorio donde se guardan las descargas
 func generateDownloadFolder(storeFolder string) string {
 	return storeFolder + "/" + DOWLOAD_SUB_DIRECTORY
-}
-
-// Genera el directorio donde se guardan los archivos restaurados
-func generateRestoreFolder(storeFolder string) string {
-	return storeFolder + "/" + RESTORE_SUB_DIRECTORY
 }
