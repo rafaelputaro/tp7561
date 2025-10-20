@@ -6,6 +6,8 @@ import (
 	"tp/protobuf/protoUtils"
 )
 
+const MSG_GET_FILE_ACCEPTED = "get file accepted: key %v | selfUrl %v | destUrl %v"
+
 // Envío de add a un contacto con reintentos. Retorna <key><error>
 func GetFile(selfUrl string, destUrl string, key []byte) error {
 	// conexión
@@ -26,10 +28,12 @@ func GetFile(selfUrl string, destUrl string, key []byte) error {
 				continue
 			}
 			accepted, _ := protoUtils.ParseGetFileResults(response)
-			common.Log.Debugf("accepted %v", accepted)
+			if accepted {
+				common.Log.Debugf(MSG_GET_FILE_ACCEPTED, key, selfUrl, destUrl)
+			}
 			break
 		}
-
+		return err
 	}
 	// @TODO continuar con esto
 	common.Log.Errorf(MSG_FAIL_ON_SEND_GET_FILE, err)

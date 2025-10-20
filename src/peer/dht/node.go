@@ -29,6 +29,8 @@ const MSG_ERROR_FILE_NOT_FOUND = "the file could not be found: %v"
 const MSG_FILE_FOUND = "the file has been found: %v"
 const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
 const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
+const MSG_SENDING_FILE = "Sending file: %v"
+const MSG_ERROR_SEND_FILE = "Error sendFile: %v | %v"
 const MAX_CHAN_PENDING_CONTACTS = 100
 const PREFIX_ADD_FILE = "up-"
 const PREFIX_DOWNLOAD = "dow-"
@@ -215,9 +217,12 @@ func generateAddFileTag(fileName string) string {
 func (node *Node) GetFile(destUrl string, key []byte) error {
 	errT := node.TaskScheduler.AddTask(func() {
 		fileName, err := node.DoGetFileByKey(key)
+		common.Log.Debugf(MSG_SENDING_FILE, fileName)
 		if err == nil {
 			filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName))
+			return
 		}
+		common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
 	})
 	return errT
 }

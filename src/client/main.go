@@ -18,11 +18,16 @@ func main() {
 	helpers.InitStore(*config)
 	urlPeer := url.GenerateURLPeer(1)
 	common.Log.Errorf("Url Peer: %v ", urlPeer)
+	common.SleepBetweenRetries()
+	common.SleepBetweenRetries()
+	common.SleepBetweenRetries()
+	common.SleepBetweenRetries()
 	key, err := rpc_ops_common.AddFile(urlPeer, "filec-1-1.txt", helpers.GenerateInputFilePath(*config, "filec-1-1.txt"))
+	common.Log.Debugf("filce-1-1.txt %v ", keys.KeyToLogFormatString(keys.GetKey("filec-1-1.txt")))
 	if err != nil {
-		common.Log.Errorf("Error: %v %v", urlPeer, err)
+		common.Log.Errorf("Add File Error: %v %v", urlPeer, err)
 	} else {
-		common.Log.Debugf("Key: %v", keys.KeyToLogFormatString(key))
+		common.Log.Debugf("Add File Key: %v", keys.KeyToLogFormatString(key))
 	}
 	/*
 		key, err = rpc_ops_common.AddFile(urlPeer, "filec-1-1.txt", helpers.GenerateInputFilePath(*config, "filec-1-1.txt"))
@@ -32,17 +37,23 @@ func main() {
 			common.Log.Debugf("Key ReUpload: %v", keys.KeyToLogFormatString(key))
 		}*/
 
-	_, errFt := filetransfer.NewReceiver(
+	_, errRec := filetransfer.NewReceiver(
 		config.Url,
 		func(fileName string) string {
 			return helpers.GenerateDownloadPath(*config, fileName)
 		},
 		func([]byte, string) {},
 	)
+	if errRec != nil {
+		common.Log.Debugf("Cant start receiver %v", errRec)
+	}
 	common.SleepBetweenRetries()
 	common.SleepBetweenRetries()
-	rpc_ops_common.GetFile(config.Url, urlPeer, key)
-	if errFt == nil {
+	errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)
+	if errGet != nil {
+		common.Log.Debugf("Error get file %v", errGet)
+	}
+	if errRec == nil {
 		for {
 			common.Log.Debugf("Listen")
 			common.SleepBetweenRetries()

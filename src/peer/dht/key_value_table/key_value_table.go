@@ -14,6 +14,7 @@ const MSG_ERROR_ON_ADD_VALUE = "error on add key value"
 const MSG_ERROR_ON_UPDATE_VALUE = "error on update value from key value table"
 const EMPTY_VALUE = ""
 const MSG_LOG_KEY_VALUE = "key: %v | value: %v"
+const MSG_KEY_ADD = "add key: %v | value: %v"
 
 // Es una table que contiene pares clave valor y permite almacenar localmente bloques
 // asociados a las claves como archivos donde los valores almacenados son los nombres
@@ -41,7 +42,7 @@ func (table *KeyValueTable) Add(key []byte, fileName string, data []byte) error 
 	keyS := keys.KeyToLogFormatString(key)
 	_, exists := table.Entries[keyS]
 	if exists {
-		return errors.New(MSG_ERROR_ON_ADD_VALUE)
+		return errors.New(MSG_ERROR_ON_ADD_VALUE + ":" + fileName)
 	}
 	// guardar en disco
 	err := file_manager.StoreBlock(fileName, data)
@@ -53,6 +54,7 @@ func (table *KeyValueTable) Add(key []byte, fileName string, data []byte) error 
 	}
 	// almacenar clave en tabla
 	table.Entries[keyS] = fileName
+	common.Log.Debugf(MSG_KEY_ADD, keyS, fileName)
 	return nil
 }
 

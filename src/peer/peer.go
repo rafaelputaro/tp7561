@@ -18,6 +18,8 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+const MSG_SHARE_URL_TO_ADD_FILE = "share url to add file: key: %v | url: %v"
+
 // Contiene la funcionalidad de IPFS y DHT
 type Peer struct {
 	Config     helpers.PeerConfig
@@ -75,28 +77,8 @@ func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) 
 		common.Log.Debugf(fmt.Sprintf("%v: %v", messages.MSG_ERROR_FILE_EXIST, fileName))
 		key = keys.GetKey(fileName)
 	}
+	common.Log.Debugf(MSG_SHARE_URL_TO_ADD_FILE, keys.KeyToLogFormatString(key), url)
 	return protoUtils.CreateAddFileResults(key, url), err
-
-	/*
-		fileName, part, data, endFile := protoUtils.ParseAddFileOperands(fileOpers)
-		var key []byte = keys.GetNullKey()
-		var err error = nil
-		// Si no existe la key en la tabla se procede a guardar las partes
-		if !peer.existKeyOrFileExistInUploadDir(fileName) {
-			restored, errSt := file_manager.StoreUploadFilePart(fileName, part, data, endFile)
-			if restored {
-				// agregar archivo a la red de nodos
-				peer.AddFileFromUploadDir(fileName)
-				key = keys.GetKey(fileName)
-			}
-			err = errSt
-		} else {
-			common.Log.Debugf(fmt.Sprintf("%v: %v", messages.MSG_ERROR_FILE_EXIST, fileName))
-			key = keys.GetKey(fileName)
-		}
-		return protoUtils.CreateAddFileResults(key), err
-
-	*/
 }
 
 func (peer *Peer) DoGetFile(fileName string) error {
@@ -106,7 +88,7 @@ func (peer *Peer) DoGetFile(fileName string) error {
 
 func (peer *Peer) GetFile(ctx context.Context, getFileOpers *protopb.GetFileOpers) (*protopb.GetFileRes, error) {
 	key, url := protoUtils.ParseGetFileOperands(getFileOpers)
-	common.Log.Debugf("Get file: %v | %v", key, url)
+	common.Log.Debugf("Get file: %v | %v", keys.KeyToLogFormatString(key), url)
 	toReturn := protoUtils.CreateGetFileResults(true, true)
 	peer.NodeDHT.GetFile(url, key)
 	return toReturn, nil

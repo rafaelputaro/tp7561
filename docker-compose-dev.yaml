@@ -4,7 +4,7 @@ services:
     container_name: peer-1
     image: peer:latest
     ports:
-      - "50051:50051"
+      - "50052:50051"
       - "8081:8080"
     volumes:
       - /tmp/tp/data/peer-1:/tmp/data
@@ -31,7 +31,7 @@ services:
     container_name: peer-2
     image: peer:latest
     ports:
-      - "50052:50051"
+      - "50053:50051"
       - "8082:8080"
     volumes:
       - /tmp/tp/data/peer-2:/tmp/data
@@ -58,7 +58,7 @@ services:
     container_name: peer-3
     image: peer:latest
     ports:
-      - "50053:50051"
+      - "50054:50051"
       - "8083:8080"
     volumes:
       - /tmp/tp/data/peer-3:/tmp/data
@@ -85,7 +85,7 @@ services:
     container_name: peer-4
     image: peer:latest
     ports:
-      - "50054:50051"
+      - "50055:50051"
       - "8084:8080"
     volumes:
       - /tmp/tp/data/peer-4:/tmp/data
@@ -112,7 +112,7 @@ services:
     container_name: peer-5
     image: peer:latest
     ports:
-      - "50055:50051"
+      - "50056:50051"
       - "8085:8080"
     volumes:
       - /tmp/tp/data/peer-5:/tmp/data
@@ -139,7 +139,7 @@ services:
     container_name: peer-6
     image: peer:latest
     ports:
-      - "50056:50051"
+      - "50057:50051"
       - "8086:8080"
     volumes:
       - /tmp/tp/data/peer-6:/tmp/data
@@ -166,7 +166,7 @@ services:
     container_name: peer-7
     image: peer:latest
     ports:
-      - "50057:50051"
+      - "50058:50051"
       - "8087:8080"
     volumes:
       - /tmp/tp/data/peer-7:/tmp/data
@@ -193,7 +193,7 @@ services:
     container_name: peer-8
     image: peer:latest
     ports:
-      - "50058:50051"
+      - "50059:50051"
       - "8088:8080"
     volumes:
       - /tmp/tp/data/peer-8:/tmp/data
@@ -220,7 +220,7 @@ services:
     container_name: peer-9
     image: peer:latest
     ports:
-      - "50059:50051"
+      - "50060:50051"
       - "8089:8080"
     volumes:
       - /tmp/tp/data/peer-9:/tmp/data
@@ -247,7 +247,7 @@ services:
     container_name: peer-10
     image: peer:latest
     ports:
-      - "50060:50051"
+      - "50061:50051"
       - "8090:8080"
     volumes:
       - /tmp/tp/data/peer-10:/tmp/data
@@ -274,7 +274,7 @@ services:
     container_name: peer-11
     image: peer:latest
     ports:
-      - "50061:50051"
+      - "50062:50051"
       - "8091:8080"
     volumes:
       - /tmp/tp/data/peer-11:/tmp/data
@@ -301,7 +301,7 @@ services:
     container_name: peer-12
     image: peer:latest
     ports:
-      - "50062:50051"
+      - "50063:50051"
       - "8092:8080"
     volumes:
       - /tmp/tp/data/peer-12:/tmp/data
@@ -328,7 +328,7 @@ services:
     container_name: peer-13
     image: peer:latest
     ports:
-      - "50063:50051"
+      - "50064:50051"
       - "8093:8080"
     volumes:
       - /tmp/tp/data/peer-13:/tmp/data
@@ -355,7 +355,7 @@ services:
     container_name: peer-14
     image: peer:latest
     ports:
-      - "50064:50051"
+      - "50065:50051"
       - "8094:8080"
     volumes:
       - /tmp/tp/data/peer-14:/tmp/data
@@ -382,7 +382,7 @@ services:
     container_name: peer-15
     image: peer:latest
     ports:
-      - "50065:50051"
+      - "50066:50051"
       - "8095:8080"
     volumes:
       - /tmp/tp/data/peer-15:/tmp/data
@@ -424,7 +424,7 @@ services:
     networks:
       - tp_net
     depends_on:
-      - peer-15
+      - peer-1
 
 
 networks:

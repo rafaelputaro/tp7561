@@ -2,6 +2,10 @@ import sys
 from jinja2 import Environment, FileSystemLoader 
 import configparser
 
+PEER_PORT_GRPC = 50051
+PEER_PORT_TCP = 8080
+CLIENT_PORT_TCP = 8080
+
 def main():
     config = configparser.ConfigParser()
     config.read("config.ini")
@@ -19,6 +23,9 @@ def main():
         input_data_folder=default_config["INPUT_DATA_FOLDER"],
         store_folder=default_config["STORE_FOLDER"],       
         search_workers=int((default_config["SEARCH_WORKERS"])),
+        peer_port_grpc = PEER_PORT_GRPC,
+        peer_port_tcp = PEER_PORT_TCP,
+        clien_port_tpc = CLIENT_PORT_TCP,
     )
     with open("docker-compose-dev.yaml", "w") as f:
         f.write(output)

@@ -79,3 +79,5 @@ Detener contendores:
 ```
 make-docker-compose-down
 ```
+
+NOTA: make docker-compose-logs | grep -i <exp> | grep -i <exp>

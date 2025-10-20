@@ -15,6 +15,9 @@ import (
 	"tp/peer/helpers/file_manager/utils"
 )
 
+const MSG_ADD_FILE_FROM_INPUT_DIR = "add file from input directory: %v"
+const MSG_ADD_FILE_FROM_UPLOAD_DIR = "add file from upload directory: %v"
+
 type ProcessBlockCallBack func(key []byte, fileName string, data []byte) error
 
 // Leer un archivo por bloques desde el directorio input y enviando los mismos como
@@ -22,6 +25,7 @@ type ProcessBlockCallBack func(key []byte, fileName string, data []byte) error
 // el callback parámetro
 func AddFileFromInputDir(fileName string, processBlock ProcessBlockCallBack) error {
 	filePath := utils.GenerateInputFilePath(fileName)
+	common.Log.Debugf(MSG_ADD_FILE_FROM_INPUT_DIR, fileName)
 	return AddFile(fileName, filePath, processBlock)
 }
 
@@ -30,6 +34,7 @@ func AddFileFromInputDir(fileName string, processBlock ProcessBlockCallBack) err
 // el callback parámetro
 func AddFileFromUploadDir(fileName string, processBlock ProcessBlockCallBack) error {
 	filePath := utils.GenerateIpfsUploadPath(fileName)
+	common.Log.Debugf(MSG_ADD_FILE_FROM_UPLOAD_DIR, fileName)
 	return AddFile(fileName, filePath, processBlock)
 }
 

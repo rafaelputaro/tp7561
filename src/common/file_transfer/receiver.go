@@ -4,11 +4,13 @@ import (
 	"io"
 	"net"
 	"os"
+	"strings"
 	"tp/common"
 	"tp/common/files_common/messages"
 	"tp/common/keys"
 )
 
+// Función a ejectura luego de guardar los datos
 type ReceiveCallback func(key []byte, fileName string)
 
 // Es una entidad que administra la recepción de archivos
@@ -56,7 +58,7 @@ func (receiver *Receiver) handleConnection(conn net.Conn) {
 		common.Log.Errorf(MSG_ERROR_READING_FILE_NAME, err)
 		return
 	}
-	key, keyS, filename := parseKeyAndName(buffer[:n])
+	key, keyS, filename, data := parseKeyNameAndData(buffer[:n])
 	// Crear archivo
 	file, err := os.Create(receiver.generatePath(filename))
 	if err != nil {
@@ -65,6 +67,8 @@ func (receiver *Receiver) handleConnection(conn net.Conn) {
 	}
 	defer file.Close()
 	common.Log.Debugf(MSG_RECEIVING_FILE, filename)
+	// Escribir los bytes sobrantes de lectura nombre
+	file.Write(data)
 	// Recibir datos del archivo
 	io.Copy(file, conn)
 	common.Log.Debugf(MSG_FILE_RECEIVED_SUCCESSFULLY, filename)
@@ -73,10 +77,11 @@ func (receiver *Receiver) handleConnection(conn net.Conn) {
 	receiver.callback(key, filename)
 }
 
-// obtiene la clave y el nombre del archivo <key><filename>
-func parseKeyAndName(data []byte) ([]byte, string, string) {
+// obtiene la clave y el nombre del archivo <key><filename><datos restantes>
+func parseKeyNameAndData(data []byte) ([]byte, string, string, []byte) {
 	dataS := string(data)
-	key := keys.GetKey(dataS)
+	fileName, _, _ := strings.Cut(dataS, "\n")
+	key := keys.GetKey(fileName)
 	keyS := keys.KeyToHexString(key)
-	return key, keyS, dataS
+	return key, keyS, fileName, data[len(fileName)+1:]
 }
