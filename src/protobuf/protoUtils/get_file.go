@@ -15,10 +15,9 @@ func CreateGetFileOperands(key []byte, url string) *protopb.GetFileOpers {
 }
 
 // Retorna el resultado de la operación obtener archivo
-func CreateGetFileResults(accepted bool, pending bool) *protopb.GetFileRes {
+func CreateGetFileResults(accepted bool) *protopb.GetFileRes {
 	return &protopb.GetFileRes{
 		Accepted: proto.Bool(accepted),
-		Pending:  proto.Bool(pending),
 	}
 }
 
@@ -29,6 +28,6 @@ func ParseGetFileOperands(operands *protopb.GetFileOpers) ([]byte, string) {
 }
 
 // Pasea los resultados de una operación de obtener archivo <key>
-func ParseGetFileResults(result *protopb.GetFileRes) (bool, bool) {
-	return result.GetAccepted(), result.GetPending()
+func ParseGetFileResults(result *protopb.GetFileRes) bool {
+	return result.GetAccepted()
 }

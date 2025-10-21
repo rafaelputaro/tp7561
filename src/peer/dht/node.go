@@ -190,7 +190,7 @@ func (node *Node) getContactsForId(id []byte) []contact.Contact {
 
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFileFromInputDir(fileName string) error {
-	tag := generateAddFileTag(fileName)
+	tag := generateAddFileTagFromFileName(fileName)
 	err := node.TaskScheduler.AddTaggedTask(func() {
 		file_manager.AddFileFromInputDir(fileName, node.createSndBlockNeighbors())
 		node.TaskScheduler.RemoveTaggedTask(tag)
@@ -200,7 +200,7 @@ func (node *Node) AddFileFromInputDir(fileName string) error {
 
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFileFromUploadDir(fileName string) error {
-	tag := generateAddFileTag(fileName)
+	tag := generateAddFileTagFromFileName(fileName)
 	err := node.TaskScheduler.AddTaggedTask(func() {
 		file_manager.AddFileFromUploadDir(fileName, node.createSndBlockNeighbors())
 		node.TaskScheduler.RemoveTaggedTask(tag)
@@ -209,14 +209,19 @@ func (node *Node) AddFileFromUploadDir(fileName string) error {
 }
 
 // Genera el tag para una tarea de subida de archivo a la red de nodos
-func generateAddFileTag(fileName string) string {
-	return PREFIX_ADD_FILE + keys.KeyToHexString(keys.GetKey(fileName))
+func generateAddFileTagFromFileName(fileName string) string {
+	return generateAddFileTagFromKey(keys.GetKey(fileName))
 }
 
-// Busca el archivo localmente y en la red de nodos
+// Genera el tag para una tarea de subida de archivo a la red de nodos
+func generateAddFileTagFromKey(key []byte) string {
+	return PREFIX_ADD_FILE + keys.KeyToHexString(key)
+}
+
+// Busca el archivo localmente y en la red de nodos y lo retorna a la url destino
 func (node *Node) GetFile(destUrl string, key []byte) error {
 	errT := node.TaskScheduler.AddTask(func() {
-		fileName, err := node.DoGetFileByKey(key)
+		fileName, err := node.GetFileByKey(key)
 		common.Log.Debugf(MSG_SENDING_FILE, fileName)
 		if err == nil {
 			filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName))
@@ -228,16 +233,16 @@ func (node *Node) GetFile(destUrl string, key []byte) error {
 }
 
 // Busca el archivo localmente y en la red de nodos. Retorna el nombre del archivo encontrado
-func (node *Node) DoGetFileByName(fileName string) (string, error) {
+func (node *Node) GetFileByName(fileName string) (string, error) {
 	// Primer bloque
 	blockName := blocks.GenerateBlockName(fileName, 0)
 	key := keys.GetKey(blockName)
-	return node.DoGetFileByKey(key)
+	return node.GetFileByKey(key)
 }
 
 // Busca el archivo localmente y en la red de nodos. Retorna el nombre del archivo
 // asociado a la clave
-func (node *Node) DoGetFileByKey(key []byte) (string, error) {
+func (node *Node) GetFileByKey(key []byte) (string, error) {
 	// Obtener archivo completo
 	endFile := false
 	rootFileName := ""

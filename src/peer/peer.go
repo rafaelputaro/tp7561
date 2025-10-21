@@ -19,6 +19,7 @@ import (
 )
 
 const MSG_SHARE_URL_TO_ADD_FILE = "share url to add file: key: %v | url: %v"
+const MSG_GET_FILE = "get file: %v | %v"
 
 // Contiene la funcionalidad de IPFS y DHT
 type Peer struct {
@@ -82,16 +83,16 @@ func (peer *Peer) AddFile(ctx context.Context, fileOpers *protopb.AddFileOpers) 
 }
 
 func (peer *Peer) DoGetFile(fileName string) error {
-	_, err := peer.NodeDHT.DoGetFileByName(fileName)
+	_, err := peer.NodeDHT.GetFileByName(fileName)
 	return err
 }
 
+// Programa la tarea de envío del archivo recuperado de la red de nodos.
 func (peer *Peer) GetFile(ctx context.Context, getFileOpers *protopb.GetFileOpers) (*protopb.GetFileRes, error) {
 	key, url := protoUtils.ParseGetFileOperands(getFileOpers)
-	common.Log.Debugf("Get file: %v | %v", keys.KeyToLogFormatString(key), url)
-	toReturn := protoUtils.CreateGetFileResults(true, true)
-	peer.NodeDHT.GetFile(url, key)
-	return toReturn, nil
+	common.Log.Debugf(MSG_GET_FILE, keys.KeyToLogFormatString(key), url)
+	err := peer.NodeDHT.GetFile(url, key)
+	return protoUtils.CreateGetFileResults(err == nil), err
 }
 
 // Retorna verdadero si existe un archivo en la bucketTable o en el directorio upload

@@ -94,5 +94,4 @@ message GetFileOpers {
 // un error y se intenta descargar de nuevo
 message GetFileRes {
     required bool accepted = 1;
-    required bool pending = 2;
 }

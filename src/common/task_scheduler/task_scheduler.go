@@ -3,10 +3,13 @@ package task_scheduler
 import (
 	"errors"
 	"sync"
+	"tp/common"
 )
 
 const MAX_TASK = 1000
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
+const MSG_TAG_EXISTS = "tag exists"
+const MSG_TASK_ADDED = "added task: %v"
 
 // Se encarga de mantener una serie de tareas a ser descargadas de un canal para ser ejecutadas
 type TaskScheduler struct {
@@ -61,7 +64,12 @@ func (scheduler *TaskScheduler) AddTask(task func()) (err error) {
 func (scheduler *TaskScheduler) AddTaggedTask(task func(), tag string) (err error) {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
+	if scheduler.doHasTag(tag) {
+		common.Log.Debugf(MSG_TAG_EXISTS)
+		return errors.New(MSG_TAG_EXISTS)
+	}
 	scheduler.taggedTasks[tag] = true
+	common.Log.Debugf(MSG_TASK_ADDED, tag)
 	return scheduler.AddTask(task)
 }
 
@@ -71,11 +79,16 @@ func (scheduler *TaskScheduler) RemoveTaggedTask(tag string) {
 }
 
 // Retorna verdadero si encuentra el tag
+func (scheduler *TaskScheduler) doHasTag(tag string) bool {
+	_, ok := scheduler.taggedTasks[tag]
+	return ok
+}
+
+// Retorna verdadero si encuentra el tag
 func (scheduler *TaskScheduler) HasTag(tag string) bool {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
-	_, ok := scheduler.taggedTasks[tag]
-	return ok
+	return scheduler.doHasTag(tag)
 }
 
 // Retorna verdadero si no hay tareas pendientes

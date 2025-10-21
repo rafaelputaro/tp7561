@@ -1,22 +1,24 @@
 package rpc_ops_common
 
 import (
+	"fmt"
 	"tp/common"
 	"tp/common/communication"
+	"tp/common/keys"
 	"tp/protobuf/protoUtils"
 )
 
 const MSG_GET_FILE_ACCEPTED = "get file accepted: key %v | selfUrl %v | destUrl %v"
 
-// Envío de add a un contacto con reintentos. Retorna <key><error>
-func GetFile(selfUrl string, destUrl string, key []byte) error {
-	// conexión
+// Envío de add a un contacto con reintentos. Retorna <accepted><error>
+func GetFile(selfUrl string, destUrl string, key []byte) (bool, error) {
+	// conexión con reintentos
 	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(destUrl, communication.LogFatalOnFailConnectGRPC)
 	if err == nil {
 		defer conn.Close()
 		defer cancel()
 		// envío con reintentos
-		for retry := range MAX_RETRIES_ON_ADD_FILE {
+		for retry := range MAX_RETRIES_ON_GET_FILE {
 			// armo los argumentos
 			operands := protoUtils.CreateGetFileOperands(key, selfUrl)
 			// enviar get file message
@@ -27,15 +29,15 @@ func GetFile(selfUrl string, destUrl string, key []byte) error {
 				common.SleepBetweenRetries()
 				continue
 			}
-			accepted, _ := protoUtils.ParseGetFileResults(response)
+			accepted := protoUtils.ParseGetFileResults(response)
 			if accepted {
-				common.Log.Debugf(MSG_GET_FILE_ACCEPTED, key, selfUrl, destUrl)
+				common.Log.Debugf(MSG_GET_FILE_ACCEPTED, keys.KeyToLogFormatString(key), selfUrl, destUrl)
 			}
-			break
+			return accepted, errGf
 		}
-		return err
+		common.Log.Errorf(MSG_FAIL_ON_SEND_GET_FILE, err)
+		return false, fmt.Errorf(MSG_FAIL_ON_SEND_GET_FILE, keys.KeyToLogFormatString(key))
 	}
-	// @TODO continuar con esto
 	common.Log.Errorf(MSG_FAIL_ON_SEND_GET_FILE, err)
-	return err
+	return false, err
 }

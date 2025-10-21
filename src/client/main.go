@@ -49,7 +49,7 @@ func main() {
 	}
 	common.SleepBetweenRetries()
 	common.SleepBetweenRetries()
-	errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)
+	_, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)
 	if errGet != nil {
 		common.Log.Debugf("Error get file %v", errGet)
 	}
