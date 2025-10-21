@@ -8,7 +8,7 @@ import (
 	"sync"
 	"tp/common"
 	"tp/common/contact"
-	filetransfer "tp/common/file_transfer"
+	filetransfer "tp/common/files_common/file_transfer"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/key_value_table"
 	"tp/peer/dht/tiered_contact_storage"

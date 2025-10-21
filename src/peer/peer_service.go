@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 	"tp/common"
-	filetransfer "tp/common/file_transfer"
+	filetransfer "tp/common/files_common/file_transfer"
 	"tp/peer/helpers/file_manager/utils"
 	"tp/protobuf/protopb"
 

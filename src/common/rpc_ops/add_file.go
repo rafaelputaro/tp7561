@@ -3,7 +3,7 @@ package rpc_ops_common
 import (
 	"tp/common"
 	"tp/common/communication"
-	filetransfer "tp/common/file_transfer"
+	filetransfer "tp/common/files_common/file_transfer"
 	"tp/common/keys"
 	"tp/protobuf/protoUtils"
 )

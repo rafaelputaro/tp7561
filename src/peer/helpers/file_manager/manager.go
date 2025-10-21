@@ -1,9 +1,8 @@
 package file_manager
 
 import (
-	"fmt"
-	"os"
 	"tp/common"
+	"tp/common/files_common"
 	"tp/common/files_common/path_exists"
 	"tp/common/keys"
 
@@ -105,19 +104,7 @@ func GetBlock(fileName string) ([]byte, error) {
 
 // Sube los archivos locales a la red de nodos
 func UploadLocalFiles(uploadFile func(fileName string) error) error {
-	// leer archivos del directorio
-	entries, err := os.ReadDir(config_fm.LocalStorageConfig.InputDataFolder)
-	if err != nil {
-		common.Log.Errorf(utils.MSG_ERROR_READING_DIRECTORY, err)
-	}
-	// carga en la red de nodos
-	for _, entry := range entries {
-		fmt.Printf("- %s", entry.Name())
-		if !entry.IsDir() {
-			uploadFile(entry.Name())
-		}
-	}
-	return nil
+	return files_common.OpOverDir(config_fm.LocalStorageConfig.InputDataFolder, uploadFile)
 }
 
 // Retorna verdadero si existe el archivo en directorio upload

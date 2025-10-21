@@ -35,9 +35,9 @@ func SleepOnStart(numberOfParticipants int) {
 	time.Sleep(t)
 }
 
-func SleepShort(numberOfPairs int) {
+func SleepShort(numberOfParticipants int) {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := MIN_SLEEP_SHORT*numberOfPairs/2 + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
+	r := MIN_SLEEP_SHORT*numberOfParticipants/2 + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }
