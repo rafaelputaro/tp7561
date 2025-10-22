@@ -27,12 +27,6 @@ func GenerateDownloadPath(config Config, fileName string) string {
 	return config.DownloadFolder + "/" + fileName
 }
 
-// Retorna el path completo de una parte de un archivo descargado de la red de nodos
-// <directory down>/<filename>.part<blockNumber>
-func GenerateDownloadPartPath(config Config, fileName string, blockNumber int) string {
-	return GenerateDownloadPath(config, fileName+GeneratePartExtension(blockNumber))
-}
-
 // Retorna la extensión de la parte de un archivo
 func GeneratePartExtension(blockNumber int) string {
 	if blockNumber > 0 {
