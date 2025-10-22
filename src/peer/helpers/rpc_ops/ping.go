@@ -24,7 +24,7 @@ func SndPing(config helpers.PeerConfig, contact contact.Contact) error {
 			if err != nil {
 				common.Log.Infof(MSG_PING_ATTEMPT, retry, err)
 				// esperar
-				common.SleepBetweenRetries()
+				common.SleepBetweenRetriesVeryShort()
 				continue
 			}
 			return nil

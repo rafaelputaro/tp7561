@@ -8,7 +8,9 @@ import (
 const MIN_SLEEP_BETWEEN_RETRIES = 5
 const MAX_OFFSET_SLEEP_BETWEEN_RETRIES = 30
 const MIN_SLEEP_BETWEEN_RETRIES_SHORT = 2
+const MIN_SLEEP_BETWEEN_RETRIES_VERY_SHORT = 20
 const MAX_OFFSET_SLEEP_BETWEEN_RETRIES_SHORT = 10
+const MAX_OFFSET_SLEEP_BETWEEN_RETRIES_VERY_SHORT = 10
 const MIN_SLEEP_ON_START = 2
 const MAX_OFFSET_SLEEP_ON_START = 30
 const MIN_SLEEP_SHORT = 1
@@ -25,6 +27,13 @@ func SleepBetweenRetriesShort() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := MIN_SLEEP_BETWEEN_RETRIES_SHORT + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_RETRIES_SHORT)
 	t := time.Duration(r) * time.Second
+	time.Sleep(t)
+}
+
+func SleepBetweenRetriesVeryShort() {
+	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := MIN_SLEEP_BETWEEN_RETRIES_VERY_SHORT + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_RETRIES_VERY_SHORT)
+	t := time.Duration(r) * time.Millisecond
 	time.Sleep(t)
 }
 
