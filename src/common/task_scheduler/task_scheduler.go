@@ -7,14 +7,18 @@ import (
 )
 
 const MAX_TASK = 1000
+const MAX_TASK_RETRIES = 10
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
 const MSG_TAG_EXISTS = "tag exists"
 const MSG_TASK_ADDED = "added task: %v"
 
+// Retorna el tag de la función y si la misma es candidata a ser reintentada
+type TaskFunc func() (string, bool)
+
 // Se encarga de mantener una serie de tareas a ser descargadas de un canal para ser ejecutadas
 type TaskScheduler struct {
 	tasksChan        chan func()
-	taggedTasks      map[string]bool
+	taggedTasks      map[string]int
 	mutexTaggedTasks sync.Mutex
 }
 
@@ -22,7 +26,7 @@ type TaskScheduler struct {
 func NewTaskScheduler() *TaskScheduler {
 	scheduler := TaskScheduler{
 		tasksChan:   make(chan func(), MAX_TASK),
-		taggedTasks: map[string]bool{},
+		taggedTasks: map[string]int{},
 	}
 	go func() {
 		notClosed := true
@@ -68,7 +72,7 @@ func (scheduler *TaskScheduler) AddTaggedTask(task func(), tag string) (err erro
 		common.Log.Debugf(MSG_TAG_EXISTS)
 		return errors.New(MSG_TAG_EXISTS)
 	}
-	scheduler.taggedTasks[tag] = true
+	scheduler.taggedTasks[tag] = MAX_TASK_RETRIES
 	common.Log.Debugf(MSG_TASK_ADDED, tag)
 	return scheduler.AddTask(task)
 }
