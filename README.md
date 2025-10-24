@@ -90,3 +90,5 @@ https://last9.io/blog/docker-monitoring-with-prometheus-a-step-by-step-guide/
 https://youtu.be/WUBjlJzI2a0
 
 La IA me sugirió: Usar una herramienta de visualización de grafos como Grafana con panel de grafos para ver el derrotero de los mensajes en los nodos.
+
+http://localhost:9090/

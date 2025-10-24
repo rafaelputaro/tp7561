@@ -36,6 +36,7 @@ services:
     image: client:latest
     ports:
       - "{{ peer_port_tcp + i + number_of_pairs }}:{{ peer_port_tcp }}"
+      - "9091:9090"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/client-{{ i }}:{{ client_folder }}
@@ -54,6 +55,27 @@ services:
       - peer-1
 {% endfor %}
 
+  prometheus:
+    image: prom/prometheus:v2.40.4
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+{# 
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana:var/lib/grafana
+volumes:
+  grafana
+#}
 networks:
   tp_net:
     ipam:
