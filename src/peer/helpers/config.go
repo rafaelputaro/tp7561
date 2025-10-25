@@ -47,9 +47,6 @@ func NewNodeConfig(name string, urlGRPC string, portGRPC string, urlTCP string, 
 	return config
 }
 
-/*
-
- */
 // Lee las variables de entorno que establecen la configuración del par
 func LoadConfig() *PeerConfig {
 	name := os.Getenv("PEER_NAME")

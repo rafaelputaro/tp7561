@@ -544,7 +544,7 @@ services:
     image: client:latest
     ports:
       - "8101:8080"
-      - "9091:9090"
+      - "9091:9091"
     volumes:
       - /tmp/tp/data/client-1:/tmp/data
       - /tmp/tp/client-1:/tmp/client
@@ -563,13 +563,25 @@ services:
       - peer-1
 
 
+  metrics:
+    image: metrics:latest
+    container_name: metrics
+    ports:
+      - "9091:9091"
+    environment:
+     - METRICS_HOST=metrics
+     - METRICS_PORT=9091
+    depends_on:
+      - prometheus
+
   prometheus:
     image: prom/prometheus:v2.40.4
     container_name: prometheus
     ports:
-      - 9090:9090
+      - "9090:9090"
     volumes:
       - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
 
 networks:
   tp_net:

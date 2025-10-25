@@ -15,10 +15,10 @@ WORKDIR /build/
 # Source code
 RUN mkdir protobuf
 RUN mkdir vendor
-RUN mkdir client
+RUN mkdir metrics
 COPY src/go.mod .
 COPY src/go.sum .
-COPY src/client ./client
+COPY src/metrics ./metrics
 COPY src/common ./common  
 COPY src/protobuf ./protobuf
 COPY src/vendor ./vendor
@@ -27,12 +27,11 @@ COPY src/vendor ./vendor
 # * `GOOS=linux` tells the compiler to generate a binary for Linux
 # * `-o bin/filter` tells go where to store the binary
 #RUN CGO_ENABLED=0 GOOS=linux go build -mod=mod -o bin ./client
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o bin ./client
-EXPOSE 50051
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o bin ./metrics
 EXPOSE 9091
 # Final image --------------------------------------------------------------------------------------
 # busybox is a minimalist image based on Alpine Linux
 FROM busybox:latest
 # Copy the compiled binary from the previous stage 
-COPY --from=builder /build/bin /client
-ENTRYPOINT ["/client"]
+COPY --from=builder /build/bin /metrics
+ENTRYPOINT ["/metrics"]

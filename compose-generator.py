@@ -14,6 +14,9 @@ def main():
     template = env.get_template("docker-compose-dev.yaml.jinja")
     output = template.render(
         number_of_pairs=int(default_config["NUMBER_OF_PAIRS"]),
+        metrics_host=default_config["METRICS_HOST"],
+        metrics_port=default_config["METRICS_PORT"],
+        prometheus_port=default_config["PROMETHEUS_PORT"],
         number_of_clients=int((default_config["NUMBER_OF_CLIENTS"])),
         entries_per_k_bucket=int(default_config["ENTRIES_PER_K_BUCKET"]),
         login_format_for_keys=default_config["LOGIN_FORMAT_FOR_KEYS"],

@@ -9,12 +9,11 @@ import (
 	filetransfer "tp/common/files_common/file_transfer"
 	"tp/common/keys"
 	rpc_ops_common "tp/common/rpc_ops"
-
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 const MESSAGE_START = "Starting client..."
 
+/*
 type metrics struct {
 	addFile prometheus.Gauge
 }
@@ -30,14 +29,15 @@ func NewMetrics(reg prometheus.Registerer) *metrics {
 	reg.MustRegister(m.addFile)
 	return m
 }
+*/
 
 func main() {
-	/*	reg := prometheus.NewRegistry()
-		m := NewMetrics(reg)
-		m.addFile.Set(float64(1))
-		promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
-		http.Handle("/metrics", promHandler)
-	*/
+	//reg := prometheus.NewRegistry()
+	//m := NewMetrics(reg)
+	//m.addFile.Set(float64(1))
+	//promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+	//http.Handle("/metrics", promHandler)
+	//	http.ListenAndServe(":9091", nil)
 
 	// iniciar cliente
 	common.Log.Info(MESSAGE_START)

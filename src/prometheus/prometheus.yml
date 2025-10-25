@@ -8,7 +8,7 @@ alerting:
 rule_files:
 
 scrape_configs:
-  - job_name: 'client'
+  - job_name: 'metrics'
     static_configs:
-      - targets: ['client:9090']
+      - targets: ['metrics:9091']
   
