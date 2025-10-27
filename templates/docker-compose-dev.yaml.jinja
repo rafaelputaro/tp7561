@@ -36,7 +36,6 @@ services:
     image: client:latest
     ports:
       - "{{ peer_port_tcp + i + number_of_pairs }}:{{ peer_port_tcp }}"
-      - "9091:9091"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/client-{{ i }}:{{ client_folder }}

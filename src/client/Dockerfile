@@ -29,7 +29,6 @@ COPY src/vendor ./vendor
 #RUN CGO_ENABLED=0 GOOS=linux go build -mod=mod -o bin ./client
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o bin ./client
 EXPOSE 50051
-EXPOSE 9091
 # Final image --------------------------------------------------------------------------------------
 # busybox is a minimalist image based on Alpine Linux
 FROM busybox:latest

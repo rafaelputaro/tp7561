@@ -544,7 +544,6 @@ services:
     image: client:latest
     ports:
       - "8101:8080"
-      - "9091:9091"
     volumes:
       - /tmp/tp/data/client-1:/tmp/data
       - /tmp/tp/client-1:/tmp/client

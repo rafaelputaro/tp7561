@@ -4,14 +4,13 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 	"tp/common"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-const MSG_SERVER_SIGINT_ARRIVED = "SIGNIT arrived. Stopping Metrics Server"
 const MSG_ERROR_CLOSING_SERVER = "error closing server: %v"
 const MSG_SERVER_ERROR = "server error: %v"
 const MSG_CLOSING_SERVER = "closing server"
@@ -20,9 +19,9 @@ const MSG_SERVER_STARTED = "server started: %v"
 // Aloja un buffer con las métricas del sistema las cuales puede ser recuperadas.
 // Se interactúa con el mismo a través de una API-REST
 type MetricsServer struct {
-	buffer chan []byte
 	config MetricsServerConfig
 	server *http.Server
+	gauge  prometheus.Gauge
 }
 
 func NewMetricsServer(config *MetricsServerConfig) *MetricsServer {
@@ -30,49 +29,37 @@ func NewMetricsServer(config *MetricsServerConfig) *MetricsServer {
 	router := createRouter()
 	// Crear metrics server
 	server := MetricsServer{
-		buffer: make(chan []byte),
 		config: *config,
 		server: &http.Server{
 			Addr:    config.Url,
 			Handler: router,
 		},
+		gauge: prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "metrics",
+			Name:      "metrics",
+			Help:      "Metrics",
+		}),
 	}
-	/*
-		// Iniciar el servidor
-		go func() {
-			common.Log.Infof(MSG_SERVER_STARTED, config.Url)
-			if err := server.server.ListenAndServe(); err != http.ErrServerClosed {
-				log.Fatalf(MSG_SERVER_ERROR, err)
-			}
-		}()
-		// Detener el servidor cuando llega la señal SIGINT
-		handleSigintSignal(&server)
-	*/
 	return &server
 }
 
 func (server *MetricsServer) Serve() {
-	// Iniciar el servidor
-	go func() {
-		common.Log.Infof(MSG_SERVER_STARTED, server.config.Url)
-		if err := server.server.ListenAndServe(); err != http.ErrServerClosed {
-			log.Fatalf(MSG_SERVER_ERROR, err)
-		}
-	}()
-	// Detener el servidor cuando llega la señal SIGINT
-	handleSigintSignal(server)
+	common.Log.Infof(MSG_SERVER_STARTED, server.config.Url)
+	if err := server.server.ListenAndServe(); err != http.ErrServerClosed {
+		log.Fatalf(MSG_SERVER_ERROR, err)
+	}
 }
 
 func createRouter() *http.ServeMux {
+	reg := prometheus.NewRegistry()
 	router := http.NewServeMux()
-	router.HandleFunc("GET /metrics", func(w http.ResponseWriter, r *http.Request) {})
+	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+	router.Handle("/metrics", promHandler)
 	return router
 }
 
 // Cierra el servidor y sus recursos
 func (server *MetricsServer) DisposeMetricsServer() {
-	// Cerrar buffer
-	close(server.buffer)
 	// Cerrar servidor
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -81,17 +68,6 @@ func (server *MetricsServer) DisposeMetricsServer() {
 		return
 	}
 	common.Log.Infof(MSG_CLOSING_SERVER)
-}
-
-// Manejo de señal SIGINT
-func handleSigintSignal(server *MetricsServer) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-c
-		common.Log.Infof(MSG_SERVER_SIGINT_ARRIVED)
-		server.DisposeMetricsServer()
-	}()
 }
 
 /*
