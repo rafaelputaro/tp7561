@@ -8,13 +8,15 @@ import (
 
 // Contiene la configuración de las métricas
 type MetricsConfig struct {
-	Url string
+	Url           string
+	UrlPrometheus string
 }
 
 // Retorna la configuración de las métricas
 func NewMetricsConfig(host string, port string) *MetricsConfig {
 	return &MetricsConfig{
-		Url: url.GenerateURL(host, port),
+		Url:           url.GenerateURL(host, port),
+		UrlPrometheus: generateUrlPrometheus(port),
 	}
 }
 
@@ -29,5 +31,9 @@ func LoadMetricsConfig() *MetricsConfig {
 
 // Hace un log por debug de la configuración
 func (config *MetricsConfig) LogConfig() {
-	common.Log.Debugf("Url: %v", config.Url)
+	common.Log.Debugf("Url: %v | UrlPrometheus: %v", config.Url, config.UrlPrometheus)
+}
+
+func generateUrlPrometheus(port string) string {
+	return ":" + port
 }
