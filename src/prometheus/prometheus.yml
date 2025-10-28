@@ -10,5 +10,6 @@ rule_files:
 scrape_configs:
   - job_name: 'metrics'
     static_configs:
-      - targets: ['metrics:9091']
+    - targets: ["metrics:9092"]
+#- targets: ['pepe:9092', 'client-1:9091']
   

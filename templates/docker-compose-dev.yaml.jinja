@@ -36,6 +36,7 @@ services:
     image: client:latest
     ports:
       - "{{ peer_port_tcp + i + number_of_pairs }}:{{ peer_port_tcp }}"
+      - "{{ metrics_base_port + i }}:{{ metrics_base_port + i }}"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/client-{{ i }}:{{ client_folder }}
@@ -48,22 +49,13 @@ services:
       - STORE_FOLDER={{ client_folder }}{{ store_folder }}
       - NUMBER_OF_PAIRS={{ number_of_pairs }}
       - NUMBER_OF_CLIENTS={{ number_of_clients }}
-    networks:
-      - tp_net
+      - METRICS_HOST=client-{{ i }}
+      - METRICS_PORT={{ metrics_base_port + i }}
     depends_on:
       - peer-1
+    networks:
+      - tp_net
 {% endfor %}
-
-  metrics:
-    image: metrics:latest
-    container_name: metrics
-    ports:
-      - "{{ metrics_port }}:{{ metrics_port }}"
-    environment:
-     - METRICS_HOST={{ metrics_host }}
-     - METRICS_PORT={{ metrics_port }}
-    depends_on:
-      - prometheus
 
   prometheus:
     image: prom/prometheus:v2.40.4
@@ -72,7 +64,21 @@ services:
       - "{{ prometheus_port }}:{{ prometheus_port }}"
     volumes:
       - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - client-1
+    networks:
+      - tp_net
 
+  metrics:
+    image: metrics:latest
+    container_name: metrics
+    ports:
+      - "9092:9092"
+    depends_on:
+      - prometheus
+    networks:
+      - tp_net
+    
 {# 
   grafana:
     image: grafana/grafana:latest

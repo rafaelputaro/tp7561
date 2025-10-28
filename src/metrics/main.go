@@ -1,37 +1,63 @@
 package main
 
 import (
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
-	"tp/common"
+	"encoding/json"
+	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-const MSG_SERVER_SIGINT_ARRIVED = "SIGNIT arrived. Stopping Metrics Server"
-
-func main() {
-	config := LoadMetricsServerConfig()
-	server := NewMetricsServer(config)
-	// Iniciar el servidor
-	wg := new(sync.WaitGroup)
-	wg.Add(1)
-	go func() {
-		server.Serve()
-		wg.Done()
-	}()
-	// Detener el servidor cuando llega la señal SIGINT
-	handleSigintSignal(server)
-	wg.Wait()
+type Device struct {
+	ID       int    `json:"id"`
+	Mac      string `json:"mac"`
+	Firmware string `json:"firmware"`
 }
 
-// Manejo de señal SIGINT
-func handleSigintSignal(server *MetricsServer) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-c
-		common.Log.Infof(MSG_SERVER_SIGINT_ARRIVED)
-		server.DisposeMetricsServer()
-	}()
+type metrics struct {
+	devices prometheus.Gauge
+}
+
+func NewMetrics(reg prometheus.Registerer) *metrics {
+	m := &metrics{
+		devices: prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "metrics",
+			Name:      "connected_devices",
+			Help:      "Number....",
+		}),
+	}
+	reg.MustRegister(m.devices)
+	return m
+}
+
+var dvs []Device
+
+func init() {
+	dvs = []Device{
+		{1, "5F-33-CC-IF-43-82", "2.1.6"},
+		{2, "EF-2B-C4-F5-D6-34", "2-1.6"},
+	}
+}
+
+func main() {
+	reg := prometheus.NewRegistry()
+	m := NewMetrics(reg)
+	m.devices.Set(float64(len(dvs)))
+
+	promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+
+	http.Handle("/metrics", promHandler)
+	http.HandleFunc("/devices", getDevices)
+	http.ListenAndServe(":9092", nil)
+}
+
+func getDevices(w http.ResponseWriter, r *http.Request) {
+	b, err := json.Marshal(dvs)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 }

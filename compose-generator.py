@@ -15,7 +15,7 @@ def main():
     output = template.render(
         number_of_pairs=int(default_config["NUMBER_OF_PAIRS"]),
         metrics_host=default_config["METRICS_HOST"],
-        metrics_port=default_config["METRICS_PORT"],
+        metrics_base_port=int(default_config["METRICS_BASE_PORT"]),
         prometheus_port=default_config["PROMETHEUS_PORT"],
         number_of_clients=int((default_config["NUMBER_OF_CLIENTS"])),
         entries_per_k_bucket=int(default_config["ENTRIES_PER_K_BUCKET"]),

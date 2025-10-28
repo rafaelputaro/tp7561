@@ -17,49 +17,57 @@ func main() {
 	// iniciar cliente
 	common.Log.Info(MESSAGE_START)
 	common.InitLogger()
-	config := helpers.LoadConfig()
-	helpers.InitStore(*config)
+	client := newClient()
+	// servicio de métricas
+	/*
+		metrics := client_metrics.NewMetricsServer(func() int { return client.UploadedFileCount })
+
+		go func() {
+			metrics.Serve()
+		}()
+	*/
 	// esperar a que la mayoría de los pares se inicialicen intercambiando contactos
-	common.SleepOnStart(config.NumberOfPairs)
+	common.SleepOnStart(client.Config.NumberOfPairs)
 	// agregar archivos en peer-1
 	keysAdded := [][]byte{}
 	// to check
 	check := map[string]bool{}
 	urlPeer := url.GenerateURLPeer(1)
-	files_common.OpOverDir(helpers.GenerateInputFilePath(*config, ""),
+	files_common.OpOverDir(helpers.GenerateInputFilePath(client.Config, ""),
 		func(fileName string) error {
-			key, err := rpc_ops_common.AddFile(urlPeer, fileName, helpers.GenerateInputFilePath(*config, fileName))
+			key, err := rpc_ops_common.AddFile(urlPeer, fileName, helpers.GenerateInputFilePath(client.Config, fileName))
 			if err == nil {
 				keyS := keys.KeyToLogFormatString(key)
 				common.Log.Debugf("File added: %v | %v | %v", fileName, keyS, urlPeer)
 				keysAdded = append(keysAdded, key)
 				check[fileName] = false
+				client.UploadedFileCount++
 			}
-			common.SleepShort(config.NumberOfPairs)
+			common.SleepShort(client.Config.NumberOfPairs)
 			return err
 		})
 	// escuchar llegada de archivos
 	filetransfer.NewReceiver(
-		config.Url,
+		client.Config.Url,
 		func(fileName string) string {
-			return helpers.GenerateDownloadPath(*config, fileName)
+			return helpers.GenerateDownloadPath(client.Config, fileName)
 		},
 		func([]byte, string) {},
 	)
-	common.SleepOnStart(config.NumberOfPairs)
-	urlPeer = url.GenerateURLPeer(config.NumberOfPairs - 1)
+	common.SleepOnStart(client.Config.NumberOfPairs)
+	urlPeer = url.GenerateURLPeer(client.Config.NumberOfPairs - 1)
 	// solicitar archivos a el último peer
 	for _, key := range keysAdded {
-		_, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)
+		_, errGet := rpc_ops_common.GetFile(client.Config.Url, urlPeer, key)
 		if errGet != nil {
 			common.Log.Debugf("Error get file %v", errGet)
 		}
-		common.SleepShort(config.NumberOfPairs)
+		common.SleepShort(client.Config.NumberOfPairs)
 	}
 	// chequear si llegaron todos los archivos
 	for range 100 {
 		for file := range check {
-			_, err := os.Stat(helpers.GenerateDownloadPath(*config, file))
+			_, err := os.Stat(helpers.GenerateDownloadPath(client.Config, file))
 			if err == nil {
 				delete(check, file)
 			}
