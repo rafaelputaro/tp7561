@@ -50,7 +50,7 @@ services:
       - NUMBER_OF_PAIRS={{ number_of_pairs }}
       - NUMBER_OF_CLIENTS={{ number_of_clients }}
       - METRICS_HOST=client-{{ i }}
-      - METRICS_PORT={{ metrics_base_port + i }}
+      - METRICS_PORT={{ metrics_base_port + i + number_of_pairs }}
     depends_on:
       - peer-1
     networks:
@@ -79,7 +79,7 @@ services:
     networks:
       - tp_net
     
-{# 
+
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -88,11 +88,14 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-      - grafana:var/lib/grafana
+      - ./src/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana:/var/lib/grafana
+    networks:
+      - tp_net
+ 
 volumes:
-  grafana
-#}
+  grafana:
+
 networks:
   tp_net:
     ipam:

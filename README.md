@@ -96,3 +96,5 @@ https://www.youtube.com/watch?v=sNk9NkgTOLs&t=371s
 La IA me sugirió: Usar una herramienta de visualización de grafos como Grafana con panel de grafos para ver el derrotero de los mensajes en los nodos.
 
 http://localhost:9090/
+
+http://localhost:3000/login

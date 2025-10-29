@@ -10,6 +10,7 @@ deps:
 docker-compose-dev.yaml: 
 	python3 data-generator.py 
 	python3 compose-generator.py
+	python3 prometheus-generator.py
 .PHONY: docker-compose-dev.yaml
 
 docker-image: deps

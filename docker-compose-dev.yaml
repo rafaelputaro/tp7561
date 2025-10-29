@@ -558,7 +558,7 @@ services:
       - NUMBER_OF_PAIRS=20
       - NUMBER_OF_CLIENTS=1
       - METRICS_HOST=client-1
-      - METRICS_PORT=9091
+      - METRICS_PORT=9111
     depends_on:
       - peer-1
     networks:
@@ -587,6 +587,22 @@ services:
     networks:
       - tp_net
     
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./src/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - grafana:/var/lib/grafana
+    networks:
+      - tp_net
+ 
+volumes:
+  grafana:
 
 networks:
   tp_net:

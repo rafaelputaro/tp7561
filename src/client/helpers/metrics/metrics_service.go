@@ -9,11 +9,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-const MSG_ERROR_CLOSING_SERVICE = "error closing service: %v"
-const MSG_SERVICE_ERROR = "service error: %v"
-const MSG_CLOSING_SERVICE = "closing service"
+const MSG_CLOSING_SERVICE = "closing service: %v"
 const MSG_SERVICE_STARTED = "service started: %v"
 
+// Contiene las métricas del módulo cliente
 type Metrics struct {
 	uploadedFileCount prometheus.Counter
 }
@@ -26,21 +25,23 @@ type MetricsService struct {
 	reg     *prometheus.Registry
 }
 
-func NewMetricsServer() *MetricsService {
-	config := common_metrics.LoadMetricsConfig()
+// Retorna un servidor de métricas de cliente listo para ser utilizado
+func NewMetricsServer(namespace string) *MetricsService {
+	config := common_metrics.LoadMetricsConfig(namespace)
 	reg := prometheus.NewRegistry()
 	server := MetricsService{
 		config:  *config,
-		metrics: *NewMetrics(reg),
+		metrics: *newMetrics(config.Namespace, reg),
 		reg:     reg,
 	}
 	return &server
 }
 
-func NewMetrics(reg prometheus.Registerer) *Metrics {
+// Retorna una nueva instancia de métrica de cliente lista para ser utilizada
+func newMetrics(namespace string, reg prometheus.Registerer) *Metrics {
 	m := &Metrics{
 		uploadedFileCount: prometheus.NewCounter(prometheus.CounterOpts{
-			Namespace: "client-1",
+			Namespace: namespace,
 			Name:      "uploaded_file_count",
 			Help:      "Number of file uploaded byt the client",
 		}),
@@ -49,15 +50,16 @@ func NewMetrics(reg prometheus.Registerer) *Metrics {
 	return m
 }
 
+// Se encarga de antender las solicitudes de prometheus
 func (service *MetricsService) Serve() {
-	common.Log.Infof(MSG_SERVICE_STARTED, service.config.Url)
+	common.Log.Infof(MSG_SERVICE_STARTED, service.config.UrlPrometheus)
 	promHandler := promhttp.HandlerFor(service.reg, promhttp.HandlerOpts{})
-
 	http.Handle("/metrics", promHandler)
 	http.ListenAndServe(service.config.UrlPrometheus, nil)
-	common.Log.Infof("End service: %v", service.config.Url)
+	common.Log.Infof(MSG_CLOSING_SERVICE, service.config.UrlPrometheus)
 }
 
+// Incrementa en uno la cantidad de archivos subidos desde este módulo al sistema
 func (service *MetricsService) IncUploadedFileCount() {
 	service.metrics.uploadedFileCount.Inc()
 }
