@@ -20,6 +20,7 @@ import (
 	"tp/peer/helpers/file_manager"
 	"tp/peer/helpers/file_manager/blocks"
 	"tp/peer/helpers/file_manager/utils"
+	peer_metrics "tp/peer/helpers/metrics"
 	"tp/peer/helpers/rpc_ops"
 )
 
@@ -143,6 +144,8 @@ func (node *Node) RcvFindBlock(sourceContact contact.Contact, targetKey []byte) 
 	// Búsqueda de archivo
 	fileName, data, err := node.KeyValueTab.Get(targetKey)
 	if err == nil {
+		// Respaldar métrica
+		peer_metrics.SetLastFileReturnedNumber(fileName)
 		return fileName, data, []contact.Contact{}, nil
 	}
 	contactsToReturn := node.BucketTab.GetContactsForId(targetKey)
@@ -225,6 +228,8 @@ func (node *Node) GetFile(destUrl string, key []byte) error {
 		common.Log.Debugf(MSG_SENDING_FILE, fileName)
 		if err == nil {
 			filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName))
+			// Respaldar métrica
+			peer_metrics.SetLastFileReturnedNumber(fileName)
 			return
 		}
 		common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)

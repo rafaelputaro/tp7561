@@ -17,8 +17,7 @@ type Metrics struct {
 	uploadedFileCount prometheus.Counter
 }
 
-// Aloja un buffer con las métricas del sistema las cuales puede ser recuperadas.
-// Se interactúa con el mismo a través de una API-REST
+// Aloja las métricas del sistema las cuales puede ser recuperadas.
 type MetricsService struct {
 	config  common_metrics.MetricsConfig
 	metrics Metrics
@@ -26,8 +25,8 @@ type MetricsService struct {
 }
 
 // Retorna un servidor de métricas de cliente listo para ser utilizado
-func NewMetricsServer(namespace string) *MetricsService {
-	config := common_metrics.LoadMetricsConfig(namespace)
+func NewMetricsServer() *MetricsService {
+	config := common_metrics.LoadMetricsConfig()
 	reg := prometheus.NewRegistry()
 	server := MetricsService{
 		config:  *config,
@@ -63,38 +62,3 @@ func (service *MetricsService) Serve() {
 func (service *MetricsService) IncUploadedFileCount() {
 	service.metrics.uploadedFileCount.Inc()
 }
-
-/*
-
-scrape_configs:
-  - job_name: 'nodos_mensajes'
-    static_configs:
-      - targets: ['nodo1:9100', 'nodo2:9100', 'nodo3:9100']
-
-
-*/
-
-/*
-connected_nodes{node_id="nodo1", direction="outbound"} 1
-connected_nodes{node_id="nodo2", direction="inbound"} 1
-
-*/
-
-/*
-
-scrape_configs:
-  - job_name: 'nodos'
-    static_configs:
-      - targets: ['nodo1:8080', 'nodo2:8080', 'nodo3:8080']
-
-En Grafana, crea un panel con una consulta PromQL como:
-
-connected_nodes
-
-Usa un gráfico de tipo "Bar gauge" o "Table" para mostrar qué nodos tienen valor 1 (conectados). También puedes usar una consulta como:
-
-up{job="nodos"}
-
-para ver qué nodos son alcanzables por Prometheus (estado up).
-
-*/

@@ -1,6 +1,6 @@
 global:
-  scrape_interval: 5s
-  evaluation_interval: 5s
+  scrape_interval: 1s
+  evaluation_interval: 1s
 
 alerting:
 
@@ -18,8 +18,12 @@ scrape_configs:
     static_configs:
     - targets: ["client-{{ i }}:{{ metrics_base_port + i + number_of_pairs }}"]
 {% endfor %}
-
+{% for i in range(1, number_of_pairs + 1) %}
+  - job_name: "peer-{{ i }}"
+    static_configs:
+    - targets: ["peer-{{ i }}:{{ metrics_base_port + i }}"]
+{% endfor %}
   - job_name: 'experimental'
     static_configs:
-    - targets: ["metrics:9092"]
+    - targets: ["metrics:9392"]
   

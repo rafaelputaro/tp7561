@@ -10,6 +10,7 @@ import (
 	"tp/peer/dht"
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
+	peer_metrics "tp/peer/helpers/metrics"
 	proto_utils_peer "tp/peer/helpers/proto_utils"
 	"tp/peer/helpers/rpc_ops"
 	"tp/protobuf/protoUtils"
@@ -50,6 +51,10 @@ func (peer *Peer) DisposePeer() {
 
 // Inicia el servicio de atención de solicitudes rpc
 func (peer *Peer) Serve() {
+	// Iniciar servicio de métricas
+	go func() {
+		peer_metrics.Serve()
+	}()
 	peer.ComService.Serve()
 }
 

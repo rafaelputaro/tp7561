@@ -23,7 +23,8 @@ func NewMetricsConfig(namespace string, host string, port string) *MetricsConfig
 }
 
 // Lee las variables de entorno que establecen la configuración las métricas
-func LoadMetricsConfig(namespace string) *MetricsConfig {
+func LoadMetricsConfig() *MetricsConfig {
+	namespace := os.Getenv("NAME_SPACE")
 	host := os.Getenv("METRICS_HOST")
 	port := os.Getenv("METRICS_PORT")
 	var config = NewMetricsConfig(namespace, host, port)

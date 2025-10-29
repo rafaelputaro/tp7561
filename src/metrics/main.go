@@ -48,7 +48,7 @@ func main() {
 
 	http.Handle("/metrics", promHandler)
 	http.HandleFunc("/devices", getDevices)
-	http.ListenAndServe(":9092", nil)
+	http.ListenAndServe(":9392", nil)
 }
 
 func getDevices(w http.ResponseWriter, r *http.Request) {

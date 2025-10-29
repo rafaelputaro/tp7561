@@ -21,7 +21,7 @@ func main() {
 	config := helpers.LoadConfig()
 	helpers.InitStore(*config)
 	// servicio de métricas
-	metrics := client_metrics.NewMetricsServer(config.Name)
+	metrics := client_metrics.NewMetricsServer()
 	go func() {
 		metrics.Serve()
 	}()

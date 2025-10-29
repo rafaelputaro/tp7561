@@ -6,6 +6,7 @@ services:
     ports:
       - "{{ peer_port_grpc + i }}:{{ peer_port_grpc }}"
       - "{{ peer_port_tcp + i }}:{{ peer_port_tcp }}"
+      - "{{ metrics_base_port + i }}:{{ metrics_base_port + i }}"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/peer-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/peer-{{ i }}:{{ app_folder }}
@@ -20,6 +21,9 @@ services:
       - STORE_IPFS_FOLDER={{ app_folder }}{{ store_folder }}
       - SEARCH_WORKERS={{ search_workers }}
       - NUMBER_OF_PAIRS={{ number_of_pairs }}
+      - METRICS_HOST=peer-{{ i }}
+      - METRICS_PORT={{ metrics_base_port + i }}
+      - NAME_SPACE=peer-{{ i }} 
     networks:
       - tp_net
 {% if i < number_of_pairs %}
@@ -36,7 +40,7 @@ services:
     image: client:latest
     ports:
       - "{{ peer_port_tcp + i + number_of_pairs }}:{{ peer_port_tcp }}"
-      - "{{ metrics_base_port + i }}:{{ metrics_base_port + i }}"
+      - "{{ metrics_base_port + i + number_of_pairs }}:{{ metrics_base_port + i + number_of_pairs }}"
     volumes:
       - {{ host_folder }}{{ input_data_folder }}/client-{{ i }}:/tmp{{ input_data_folder }}
       - {{ host_folder }}/client-{{ i }}:{{ client_folder }}
@@ -51,6 +55,7 @@ services:
       - NUMBER_OF_CLIENTS={{ number_of_clients }}
       - METRICS_HOST=client-{{ i }}
       - METRICS_PORT={{ metrics_base_port + i + number_of_pairs }}
+      - NAME_SPACE=client-{{ i }}
     depends_on:
       - peer-1
     networks:
@@ -73,7 +78,7 @@ services:
     image: metrics:latest
     container_name: metrics
     ports:
-      - "9092:9092"
+      - "9392:9392"
     depends_on:
       - prometheus
     networks:

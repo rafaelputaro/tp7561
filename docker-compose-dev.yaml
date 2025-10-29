@@ -6,6 +6,7 @@ services:
     ports:
       - "50052:50051"
       - "8081:8080"
+      - "9091:9091"
     volumes:
       - /tmp/tp/data/peer-1:/tmp/data
       - /tmp/tp/peer-1:/tmp/peer
@@ -20,6 +21,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-1
+      - METRICS_PORT=9091
+      - NAME_SPACE=peer-1 
     networks:
       - tp_net
 
@@ -33,6 +37,7 @@ services:
     ports:
       - "50053:50051"
       - "8082:8080"
+      - "9092:9092"
     volumes:
       - /tmp/tp/data/peer-2:/tmp/data
       - /tmp/tp/peer-2:/tmp/peer
@@ -47,6 +52,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-2
+      - METRICS_PORT=9092
+      - NAME_SPACE=peer-2 
     networks:
       - tp_net
 
@@ -60,6 +68,7 @@ services:
     ports:
       - "50054:50051"
       - "8083:8080"
+      - "9093:9093"
     volumes:
       - /tmp/tp/data/peer-3:/tmp/data
       - /tmp/tp/peer-3:/tmp/peer
@@ -74,6 +83,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-3
+      - METRICS_PORT=9093
+      - NAME_SPACE=peer-3 
     networks:
       - tp_net
 
@@ -87,6 +99,7 @@ services:
     ports:
       - "50055:50051"
       - "8084:8080"
+      - "9094:9094"
     volumes:
       - /tmp/tp/data/peer-4:/tmp/data
       - /tmp/tp/peer-4:/tmp/peer
@@ -101,6 +114,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-4
+      - METRICS_PORT=9094
+      - NAME_SPACE=peer-4 
     networks:
       - tp_net
 
@@ -114,6 +130,7 @@ services:
     ports:
       - "50056:50051"
       - "8085:8080"
+      - "9095:9095"
     volumes:
       - /tmp/tp/data/peer-5:/tmp/data
       - /tmp/tp/peer-5:/tmp/peer
@@ -128,6 +145,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-5
+      - METRICS_PORT=9095
+      - NAME_SPACE=peer-5 
     networks:
       - tp_net
 
@@ -141,6 +161,7 @@ services:
     ports:
       - "50057:50051"
       - "8086:8080"
+      - "9096:9096"
     volumes:
       - /tmp/tp/data/peer-6:/tmp/data
       - /tmp/tp/peer-6:/tmp/peer
@@ -155,6 +176,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-6
+      - METRICS_PORT=9096
+      - NAME_SPACE=peer-6 
     networks:
       - tp_net
 
@@ -168,6 +192,7 @@ services:
     ports:
       - "50058:50051"
       - "8087:8080"
+      - "9097:9097"
     volumes:
       - /tmp/tp/data/peer-7:/tmp/data
       - /tmp/tp/peer-7:/tmp/peer
@@ -182,6 +207,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-7
+      - METRICS_PORT=9097
+      - NAME_SPACE=peer-7 
     networks:
       - tp_net
 
@@ -195,6 +223,7 @@ services:
     ports:
       - "50059:50051"
       - "8088:8080"
+      - "9098:9098"
     volumes:
       - /tmp/tp/data/peer-8:/tmp/data
       - /tmp/tp/peer-8:/tmp/peer
@@ -209,6 +238,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-8
+      - METRICS_PORT=9098
+      - NAME_SPACE=peer-8 
     networks:
       - tp_net
 
@@ -222,6 +254,7 @@ services:
     ports:
       - "50060:50051"
       - "8089:8080"
+      - "9099:9099"
     volumes:
       - /tmp/tp/data/peer-9:/tmp/data
       - /tmp/tp/peer-9:/tmp/peer
@@ -236,6 +269,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-9
+      - METRICS_PORT=9099
+      - NAME_SPACE=peer-9 
     networks:
       - tp_net
 
@@ -249,6 +285,7 @@ services:
     ports:
       - "50061:50051"
       - "8090:8080"
+      - "9100:9100"
     volumes:
       - /tmp/tp/data/peer-10:/tmp/data
       - /tmp/tp/peer-10:/tmp/peer
@@ -263,6 +300,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-10
+      - METRICS_PORT=9100
+      - NAME_SPACE=peer-10 
     networks:
       - tp_net
 
@@ -276,6 +316,7 @@ services:
     ports:
       - "50062:50051"
       - "8091:8080"
+      - "9101:9101"
     volumes:
       - /tmp/tp/data/peer-11:/tmp/data
       - /tmp/tp/peer-11:/tmp/peer
@@ -290,6 +331,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-11
+      - METRICS_PORT=9101
+      - NAME_SPACE=peer-11 
     networks:
       - tp_net
 
@@ -303,6 +347,7 @@ services:
     ports:
       - "50063:50051"
       - "8092:8080"
+      - "9102:9102"
     volumes:
       - /tmp/tp/data/peer-12:/tmp/data
       - /tmp/tp/peer-12:/tmp/peer
@@ -317,6 +362,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-12
+      - METRICS_PORT=9102
+      - NAME_SPACE=peer-12 
     networks:
       - tp_net
 
@@ -330,6 +378,7 @@ services:
     ports:
       - "50064:50051"
       - "8093:8080"
+      - "9103:9103"
     volumes:
       - /tmp/tp/data/peer-13:/tmp/data
       - /tmp/tp/peer-13:/tmp/peer
@@ -344,6 +393,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-13
+      - METRICS_PORT=9103
+      - NAME_SPACE=peer-13 
     networks:
       - tp_net
 
@@ -357,6 +409,7 @@ services:
     ports:
       - "50065:50051"
       - "8094:8080"
+      - "9104:9104"
     volumes:
       - /tmp/tp/data/peer-14:/tmp/data
       - /tmp/tp/peer-14:/tmp/peer
@@ -371,6 +424,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-14
+      - METRICS_PORT=9104
+      - NAME_SPACE=peer-14 
     networks:
       - tp_net
 
@@ -384,6 +440,7 @@ services:
     ports:
       - "50066:50051"
       - "8095:8080"
+      - "9105:9105"
     volumes:
       - /tmp/tp/data/peer-15:/tmp/data
       - /tmp/tp/peer-15:/tmp/peer
@@ -398,6 +455,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-15
+      - METRICS_PORT=9105
+      - NAME_SPACE=peer-15 
     networks:
       - tp_net
 
@@ -411,6 +471,7 @@ services:
     ports:
       - "50067:50051"
       - "8096:8080"
+      - "9106:9106"
     volumes:
       - /tmp/tp/data/peer-16:/tmp/data
       - /tmp/tp/peer-16:/tmp/peer
@@ -425,6 +486,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-16
+      - METRICS_PORT=9106
+      - NAME_SPACE=peer-16 
     networks:
       - tp_net
 
@@ -438,6 +502,7 @@ services:
     ports:
       - "50068:50051"
       - "8097:8080"
+      - "9107:9107"
     volumes:
       - /tmp/tp/data/peer-17:/tmp/data
       - /tmp/tp/peer-17:/tmp/peer
@@ -452,6 +517,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-17
+      - METRICS_PORT=9107
+      - NAME_SPACE=peer-17 
     networks:
       - tp_net
 
@@ -465,6 +533,7 @@ services:
     ports:
       - "50069:50051"
       - "8098:8080"
+      - "9108:9108"
     volumes:
       - /tmp/tp/data/peer-18:/tmp/data
       - /tmp/tp/peer-18:/tmp/peer
@@ -479,6 +548,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-18
+      - METRICS_PORT=9108
+      - NAME_SPACE=peer-18 
     networks:
       - tp_net
 
@@ -492,6 +564,7 @@ services:
     ports:
       - "50070:50051"
       - "8099:8080"
+      - "9109:9109"
     volumes:
       - /tmp/tp/data/peer-19:/tmp/data
       - /tmp/tp/peer-19:/tmp/peer
@@ -506,6 +579,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-19
+      - METRICS_PORT=9109
+      - NAME_SPACE=peer-19 
     networks:
       - tp_net
 
@@ -519,6 +595,7 @@ services:
     ports:
       - "50071:50051"
       - "8100:8080"
+      - "9110:9110"
     volumes:
       - /tmp/tp/data/peer-20:/tmp/data
       - /tmp/tp/peer-20:/tmp/peer
@@ -533,6 +610,9 @@ services:
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
       - NUMBER_OF_PAIRS=20
+      - METRICS_HOST=peer-20
+      - METRICS_PORT=9110
+      - NAME_SPACE=peer-20 
     networks:
       - tp_net
 
@@ -544,7 +624,7 @@ services:
     image: client:latest
     ports:
       - "8101:8080"
-      - "9091:9091"
+      - "9111:9111"
     volumes:
       - /tmp/tp/data/client-1:/tmp/data
       - /tmp/tp/client-1:/tmp/client
@@ -559,6 +639,7 @@ services:
       - NUMBER_OF_CLIENTS=1
       - METRICS_HOST=client-1
       - METRICS_PORT=9111
+      - NAME_SPACE=client-1
     depends_on:
       - peer-1
     networks:
@@ -581,7 +662,7 @@ services:
     image: metrics:latest
     container_name: metrics
     ports:
-      - "9092:9092"
+      - "9392:9392"
     depends_on:
       - prometheus
     networks:
