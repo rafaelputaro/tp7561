@@ -2,15 +2,70 @@ package peer_metrics
 
 import (
 	"net/http"
-	"regexp"
-	"strconv"
-	"sync"
 	"tp/common"
 	common_metrics "tp/common/metrics"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
+
+const MSG_CLOSING_SERVICE = "closing service: %v"
+const MSG_SERVICE_STARTED = "service started: %v"
+
+var metricsServiceInstance = NewMetricsServer()
+
+// Aloja las métricas del sistema las cuales puede ser recuperadas por medio de Prometheus.
+type MetricsService struct {
+	config  common_metrics.MetricsConfig
+	metrics Metrics
+	reg     *prometheus.Registry
+}
+
+// Retorna un servidor de métricas de cliente listo para ser utilizado
+func NewMetricsServer() *MetricsService {
+	config := common_metrics.LoadMetricsConfig()
+	reg := prometheus.NewRegistry()
+	server := MetricsService{
+		config:  *config,
+		metrics: *newMetrics(config.Namespace, reg),
+		reg:     reg,
+	}
+	return &server
+}
+
+// Se encarga de antender las solicitudes de prometheus
+func Serve() {
+	common.Log.Infof(MSG_SERVICE_STARTED, metricsServiceInstance.config.UrlPrometheus)
+	promHandler := promhttp.HandlerFor(metricsServiceInstance.reg, promhttp.HandlerOpts{})
+	http.Handle("/metrics", promHandler)
+	http.ListenAndServe(metricsServiceInstance.config.UrlPrometheus, nil)
+	common.Log.Infof(MSG_CLOSING_SERVICE, metricsServiceInstance.config.UrlPrometheus)
+}
+
+// Incrementa en uno la cantidad de archivos subidos desde este módulo al sistema
+func SetLastFileReturnedNumber(fileName string) {
+	metricsServiceInstance.metrics.lastFileReturnedNumberMetric.setLastFileReturnedNumber(fileName)
+}
+
+/*
+
+// Crear un GaugeFunc que se evalúa en cada scrape
+	gauge := prometheus.NewGaugeFunc(
+		prometheus.GaugeOpts{
+			Name: "mi_gauge_personalizado",
+			Help: "Gauge cuyo valor se modifica al momento del scrape",
+		},
+		func() float64 {
+			// Aquí puedes modificar el valor antes de devolverlo
+			// Ejemplo: decrementar en 10 cada vez que se lee
+			externalGaugeValue -= 10
+			return externalGaugeValue
+		},
+	)
+
+*/
+
+/*
 
 const MSG_CLOSING_SERVICE = "closing service: %v"
 const MSG_SERVICE_STARTED = "service started: %v"
@@ -52,6 +107,8 @@ func newMetrics(namespace string, reg prometheus.Registerer) *Metrics {
 		}),
 	}
 	reg.MustRegister(m.lastFileReturnedNumber)
+
+
 	return m
 }
 
@@ -86,3 +143,5 @@ func parseFileNumber(fileName string) int {
 	}
 	return -1
 }
+
+*/
