@@ -74,17 +74,6 @@ services:
     networks:
       - tp_net
 
-  metrics:
-    image: metrics:latest
-    container_name: metrics
-    ports:
-      - "9392:9392"
-    depends_on:
-      - prometheus
-    networks:
-      - tp_net
-    
-
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -93,11 +82,14 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./src/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./src/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml 
+{#      - ./src/grafana/dashboards:/var/lib/grafana/dashboards      #}
+{#      - ./src/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards #}
+{#      - ./src/grafana/provisioning:/etc/grafana/provisioning #}
       - grafana:/var/lib/grafana
     networks:
       - tp_net
- 
+
 volumes:
   grafana:
 

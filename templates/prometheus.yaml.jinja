@@ -23,7 +23,3 @@ scrape_configs:
     static_configs:
     - targets: ["peer-{{ i }}:{{ metrics_base_port + i }}"]
 {% endfor %}
-  - job_name: 'experimental'
-    static_configs:
-    - targets: ["metrics:9392"]
-  
