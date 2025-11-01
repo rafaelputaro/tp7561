@@ -10,6 +10,7 @@ import (
 	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
 	"tp/peer/helpers"
+	peer_metrics "tp/peer/helpers/metrics"
 	"tp/peer/helpers/rpc_ops"
 )
 
@@ -90,6 +91,7 @@ func (table *BucketTable) doAddContact(newContact contact.Contact) error {
 			headContact, _ := queue.TakeHead()
 			if table.isUnresponsiveContact(headContact) {
 				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.ToString(), headContact.ToString()))
+				peer_metrics.RemoveContact(table.Config.Name, headContact)
 				queue.Enqueue(newContact)
 			} else {
 				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.ToString()))
@@ -98,6 +100,7 @@ func (table *BucketTable) doAddContact(newContact contact.Contact) error {
 		} else {
 			if okEnqueue {
 				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_ADDED, newContact.ToString()))
+				peer_metrics.AddContact(table.Config.Name, newContact)
 			}
 		}
 		table.Entries[prefix] = queue

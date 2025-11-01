@@ -2,6 +2,7 @@ package peer_metrics
 
 import (
 	"testing"
+	"tp/common/contact"
 )
 
 func TestParseFileName(t *testing.T) {
@@ -11,6 +12,20 @@ func TestParseFileName(t *testing.T) {
 		found := parseFileNumber(fileName)
 		if found != numbers[index] {
 			t.Errorf("Error found %v must be: %v", found, numbers[index])
+		}
+	}
+}
+
+func TestParseContact(t *testing.T) {
+	contacts := []contact.Contact{
+		*contact.NewContact([]byte{1}, "peer-1:8080"),
+		*contact.NewContact([]byte{2}, "peer-20:9020"),
+	}
+	contactNames := []string{"peer-1", "peer-20"}
+	for index, aContact := range contacts {
+		found := parseContact(aContact)
+		if found != contactNames[index] {
+			t.Errorf("Error found %v must be: %v", found, contactNames[index])
 		}
 	}
 }

@@ -3,7 +3,9 @@ package peer_metrics
 import (
 	"regexp"
 	"strconv"
+	"strings"
 	"tp/common"
+	"tp/common/contact"
 )
 
 // Retorna el segundo número que aparece en el nombre de un archivo
@@ -19,4 +21,13 @@ func parseFileNumber(fileName string) float64 {
 		}
 	}
 	return -1
+}
+
+func parseContact(contact contact.Contact) string {
+	return parseUrlToId(contact.Url)
+}
+
+func parseUrlToId(url string) string {
+	splited := strings.Split(url, ":")
+	return splited[0]
 }

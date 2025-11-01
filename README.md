@@ -93,25 +93,6 @@ https://youtu.be/sNk9NkgTOLs
 
 https://www.youtube.com/watch?v=sNk9NkgTOLs&t=371s
 
-La IA me sugirió: Usar una herramienta de visualización de grafos como Grafana con panel de grafos para ver el derrotero de los mensajes en los nodos.
-
 http://localhost:9090/
 
 http://localhost:3000/login
-
-
-
-services:
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=MiPassSegura2024
-      - GF_USERS_ALLOW_SIGN_UP=false
