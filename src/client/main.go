@@ -55,7 +55,7 @@ func main() {
 		func([]byte, string) {},
 	)
 	common.SleepOnStart(config.NumberOfPairs)
-	urlPeer = url.GenerateURLPeer(config.NumberOfPairs - 1)
+	urlPeer = url.GenerateURLPeer(config.NumberOfPairs / 2)
 	// solicitar archivos a el último peer
 	for _, key := range keysAdded {
 		_, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)

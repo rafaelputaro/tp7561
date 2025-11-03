@@ -17,7 +17,7 @@ type TaskFunc func() (string, bool)
 
 // Se encarga de mantener una serie de tareas a ser descargadas de un canal para ser ejecutadas
 type TaskScheduler struct {
-	tasksChan        chan func()
+	tasksChan        chan TaskFunc
 	taggedTasks      map[string]int
 	mutexTaggedTasks sync.Mutex
 }
@@ -25,7 +25,7 @@ type TaskScheduler struct {
 // Retorna una instancia de Task Scheduler lista para ser utilizada
 func NewTaskScheduler() *TaskScheduler {
 	scheduler := TaskScheduler{
-		tasksChan:   make(chan func(), MAX_TASK),
+		tasksChan:   make(chan TaskFunc, MAX_TASK),
 		taggedTasks: map[string]int{},
 	}
 	go func() {
@@ -47,7 +47,7 @@ func (scheduler *TaskScheduler) DisposeTaskScheduler() {
 }
 
 // Agrega una tarea a ser ejecutada
-func (scheduler *TaskScheduler) AddTask(task func()) (err error) {
+func (scheduler *TaskScheduler) AddTask(task TaskFunc) (err error) {
 	// Recuperación de panic ante canal cerrado
 	defer func() {
 		if recover() != nil {
@@ -65,7 +65,7 @@ func (scheduler *TaskScheduler) AddTask(task func()) (err error) {
 }
 
 // Agrega una tarea a ser ejecutada
-func (scheduler *TaskScheduler) AddTaggedTask(task func(), tag string) (err error) {
+func (scheduler *TaskScheduler) AddTaggedTask(task TaskFunc, tag string) (err error) {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	if scheduler.doHasTag(tag) {

@@ -16,7 +16,7 @@ scrape_configs:
 
   - job_name: "client-1"
     static_configs:
-    - targets: ["client-1:9111"]
+    - targets: ["client-1:9112"]
 
 
   - job_name: "peer-1"
@@ -98,3 +98,7 @@ scrape_configs:
   - job_name: "peer-20"
     static_configs:
     - targets: ["peer-20:9110"]
+
+  - job_name: "peer-21"
+    static_configs:
+    - targets: ["peer-21:9111"]

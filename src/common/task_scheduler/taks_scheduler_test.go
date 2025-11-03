@@ -8,9 +8,10 @@ import (
 
 var common_var = ""
 
-func createTask(msg string) func() {
-	return func() {
+func createTask(msg string) func() (string, bool) {
+	return func() (string, bool) {
 		common_var += msg
+		return msg, true
 	}
 }
 

@@ -8,7 +8,6 @@ import (
 	"sync"
 	"tp/common"
 	"tp/common/contact"
-	filetransfer "tp/common/files_common/file_transfer"
 	"tp/peer/dht/bucket_table"
 	"tp/peer/dht/key_value_table"
 	"tp/peer/dht/tiered_contact_storage"
@@ -19,7 +18,6 @@ import (
 	"tp/peer/helpers"
 	"tp/peer/helpers/file_manager"
 	"tp/peer/helpers/file_manager/blocks"
-	"tp/peer/helpers/file_manager/utils"
 	peer_metrics "tp/peer/helpers/metrics"
 	"tp/peer/helpers/rpc_ops"
 )
@@ -33,8 +31,6 @@ const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
 const MSG_SENDING_FILE = "Sending file: %v"
 const MSG_ERROR_SEND_FILE = "Error sendFile: %v | %v"
 const MAX_CHAN_PENDING_CONTACTS = 100
-const PREFIX_ADD_FILE = "up-"
-const PREFIX_DOWNLOAD = "dow-"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -177,15 +173,6 @@ func (node *Node) doStoreBlock(key []byte, fileName string, data []byte) error {
 	return nil
 }
 
-// Agrega la tarea de envío de SndStore a un lote de contactos
-func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte, contacts []contact.Contact) {
-	for _, contact := range contacts {
-		node.TaskScheduler.AddTask(func() {
-			node.SndStore(node.Config, contact, key, fileName, data)
-		})
-	}
-}
-
 // Retorna los contactos para un id dado
 func (node *Node) getContactsForId(id []byte) []contact.Contact {
 	return node.BucketTab.GetContactsForId(id)
@@ -193,48 +180,17 @@ func (node *Node) getContactsForId(id []byte) []contact.Contact {
 
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFileFromInputDir(fileName string) error {
-	tag := generateAddFileTagFromFileName(fileName)
-	err := node.TaskScheduler.AddTaggedTask(func() {
-		file_manager.AddFileFromInputDir(fileName, node.createSndBlockNeighbors())
-		node.TaskScheduler.RemoveTaggedTask(tag)
-	}, tag)
-	return err
+	return node.scheduleAddFileFromInputDirTask(fileName)
 }
 
 // Agrega un archivo del espacio local al ipfs dado por los nodos de la red de contactos
 func (node *Node) AddFileFromUploadDir(fileName string) error {
-	tag := generateAddFileTagFromFileName(fileName)
-	err := node.TaskScheduler.AddTaggedTask(func() {
-		file_manager.AddFileFromUploadDir(fileName, node.createSndBlockNeighbors())
-		node.TaskScheduler.RemoveTaggedTask(tag)
-	}, tag)
-	return err
-}
-
-// Genera el tag para una tarea de subida de archivo a la red de nodos
-func generateAddFileTagFromFileName(fileName string) string {
-	return generateAddFileTagFromKey(keys.GetKey(fileName))
-}
-
-// Genera el tag para una tarea de subida de archivo a la red de nodos
-func generateAddFileTagFromKey(key []byte) string {
-	return PREFIX_ADD_FILE + keys.KeyToHexString(key)
+	return node.scheduleAddFileFromUploadDirTask(fileName)
 }
 
 // Busca el archivo localmente y en la red de nodos y lo retorna a la url destino
 func (node *Node) GetFile(destUrl string, key []byte) error {
-	errT := node.TaskScheduler.AddTask(func() {
-		fileName, err := node.GetFileByKey(key)
-		common.Log.Debugf(MSG_SENDING_FILE, fileName)
-		if err == nil {
-			filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName))
-			// Respaldar métrica
-			peer_metrics.SetLastFileReturnedNumber(fileName)
-			return
-		}
-		common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
-	})
-	return errT
+	return node.scheduleGetFileTask(destUrl, key)
 }
 
 // Busca el archivo localmente y en la red de nodos. Retorna el nombre del archivo encontrado
@@ -348,36 +304,6 @@ func (node *Node) createSndBlockNeighbors() file_manager.ProcessBlockCallBack {
 			return node.doStoreBlock(key, fileName, data)
 		}
 		return nil
-	}
-}
-
-// Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
-// para evitar posibles retrasos durante la actualización de la bucket table que impliquen
-// enviar pings secundarios a otros contactos
-func (node *Node) scheduleAddContactTask(contact contact.Contact) {
-	node.TaskScheduler.AddTask(func() {
-		node.BucketTab.AddContact(contact)
-	})
-}
-
-// Agrega la tarea de agregar varios contactos a la bucket table. Se recomienda utilizarla
-// para evitar posibles retrasos durante la actualización de la bucket table que impliquen
-// enviar pings secundarios a otros contactos
-func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
-	node.TaskScheduler.AddTask(func() {
-		node.BucketTab.AddContacts(contacts)
-	})
-}
-
-// Agrega la tarea de enviar ping a contactos para ser agregador a la bucket table
-// en caso de encontrarse activos
-func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
-	for _, contact := range contacts {
-		node.TaskScheduler.AddTask(func() {
-			if node.SndPing(node.Config, contact) == nil {
-				node.BucketTab.AddContact(contact)
-			}
-		})
 	}
 }
 
