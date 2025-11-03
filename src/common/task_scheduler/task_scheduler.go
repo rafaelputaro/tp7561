@@ -9,8 +9,9 @@ import (
 const MAX_TASK = 1000
 const MAX_TASK_RETRIES = 10
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
-const MSG_TAG_EXISTS = "tag exists"
+const MSG_TAG_EXISTS = "tag exists: %v"
 const MSG_TASK_ADDED = "added task: %v"
+const MSG_RETRY_TASK = "retry task: tag %v | remaining retries: %v"
 
 // Retorna el tag de la función y si la misma es candidata a ser reintentada
 type TaskFunc func() (string, bool)
@@ -33,12 +34,30 @@ func NewTaskScheduler() *TaskScheduler {
 		for notClosed {
 			task, ok := <-scheduler.tasksChan
 			if ok {
-				task()
+				//task()
+				tag, retry := task()
+				if !retry {
+					scheduler.RemoveTaggedTask(tag)
+				} else {
+					scheduler.checkRetryTask(task, tag)
+				}
 			}
 			notClosed = ok
 		}
 	}()
 	return &scheduler
+}
+
+// Chequea si la tarea debe ser reintentada
+func (scheduler *TaskScheduler) checkRetryTask(task TaskFunc, tag string) {
+	scheduler.mutexTaggedTasks.Lock()
+	defer scheduler.mutexTaggedTasks.Unlock()
+	if scheduler.taggedTasks[tag] > 0 {
+		scheduler.taggedTasks[tag] = scheduler.taggedTasks[tag] - 1
+		scheduler.addTask(task)
+		common.Log.Debugf(MSG_RETRY_TASK, tag, scheduler.taggedTasks[tag])
+	}
+	scheduler.doRemoveTaggedTask(tag)
 }
 
 // Cierra el canal descartando las tareas pendientes
@@ -47,7 +66,7 @@ func (scheduler *TaskScheduler) DisposeTaskScheduler() {
 }
 
 // Agrega una tarea a ser ejecutada
-func (scheduler *TaskScheduler) AddTask(task TaskFunc) (err error) {
+func (scheduler *TaskScheduler) addTask(task TaskFunc) (err error) {
 	// Recuperación de panic ante canal cerrado
 	defer func() {
 		if recover() != nil {
@@ -69,16 +88,23 @@ func (scheduler *TaskScheduler) AddTaggedTask(task TaskFunc, tag string) (err er
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	if scheduler.doHasTag(tag) {
-		common.Log.Debugf(MSG_TAG_EXISTS)
+		common.Log.Debugf(MSG_TAG_EXISTS, tag)
 		return errors.New(MSG_TAG_EXISTS)
 	}
 	scheduler.taggedTasks[tag] = MAX_TASK_RETRIES
 	common.Log.Debugf(MSG_TASK_ADDED, tag)
-	return scheduler.AddTask(task)
+	return scheduler.addTask(task)
 }
 
 // Remueve una etiqueta de la lista de tareas etiquetadas
 func (scheduler *TaskScheduler) RemoveTaggedTask(tag string) {
+	scheduler.mutexTaggedTasks.Lock()
+	defer scheduler.mutexTaggedTasks.Unlock()
+	delete(scheduler.taggedTasks, tag)
+}
+
+// Remueve una etiqueta de la lista de tareas etiquetadas
+func (scheduler *TaskScheduler) doRemoveTaggedTask(tag string) {
 	delete(scheduler.taggedTasks, tag)
 }
 

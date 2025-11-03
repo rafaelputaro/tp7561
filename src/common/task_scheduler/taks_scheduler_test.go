@@ -22,7 +22,7 @@ func TestScheduler(t *testing.T) {
 	for i := range 20 {
 		iS := strconv.Itoa(i)
 		check += iS
-		if err := scheduler.AddTask(createTask(iS)); err != nil {
+		if err := scheduler.addTask(createTask(iS)); err != nil {
 			t.Errorf("Error on add task: %v", err)
 		}
 	}
@@ -33,7 +33,7 @@ func TestScheduler(t *testing.T) {
 		t.Errorf("Not Match: Expected: %v | Found: %v", common_var, check)
 	}
 	scheduler.DisposeTaskScheduler()
-	if scheduler.AddTask(createTask("hola")) == nil {
+	if scheduler.addTask(createTask("hola")) == nil {
 		t.Errorf("Add task on channel closed")
 	}
 }
