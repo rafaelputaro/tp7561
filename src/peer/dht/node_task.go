@@ -16,10 +16,8 @@ import (
 const PREFIX_ADD_CONTACT = "add-contact-"
 const PREFIX_PING_AND_ADD_CONTACT = "ping-add-contact-"
 const PREFIX_ADD_CONTACTS = "add-contacts-"
-const PREFIX_ADD_FILE_FROM_INPUT = "up-input-"
-const PREFIX_ADD_FILE_FROM_UPLOAD = "up-upload-"
-
-// const PREFIX_DOWNLOAD = "dow-"
+const PREFIX_ADD_FILE_FROM_INPUT = "up-from-inputDir-"
+const PREFIX_ADD_FILE_FROM_UPLOAD = "up-from-uploadDir-"
 const PREFIX_GET_FILE = "get-file-"
 const PREFIX_SND_STORE = "snd-store-"
 
@@ -55,11 +53,11 @@ func generateAddFileFromInputTag(fileName string) string {
 
 // Genera el tag para una tarea de subida de archivo a la red de nodos
 func generateSndStoreFromInputTag(fileName string) string {
-	return PREFIX_SND_STORE + keys.KeyToHexString(keys.GetKey(fileName))
+	return generateTimeTag(PREFIX_SND_STORE + keys.KeyToHexString(keys.GetKey(fileName)))
 }
 
-func generateGetFileTag(key []byte) string {
-	return PREFIX_GET_FILE + keys.KeyToHexString(key)
+func generateGetFileTag(destUrl string, key []byte) string {
+	return PREFIX_GET_FILE + destUrl + "-" + keys.KeyToHexString(key)
 }
 
 // Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
@@ -105,7 +103,7 @@ func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 
 // Agrega la tarea de buscar el archivo
 func (node *Node) scheduleGetFileTask(destUrl string, key []byte) error {
-	tag := generateGetFileTag(key)
+	tag := generateGetFileTag(destUrl, key)
 	return node.TaskScheduler.AddTaggedTask(func() (string, bool) {
 		fileName, err := node.GetFileByKey(key)
 		common.Log.Debugf(MSG_SENDING_FILE, fileName)

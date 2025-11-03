@@ -6,7 +6,7 @@ import (
 	"tp/common"
 )
 
-const MAX_TASK = 1000
+const MAX_TASK = 10000
 const MAX_TASK_RETRIES = 10
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
 const MSG_TAG_EXISTS = "tag exists: %v"
