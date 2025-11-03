@@ -31,12 +31,12 @@ func newContacCountMetric(namespace string, reg prometheus.Registerer, id string
 		id:           id,
 		contactCount: count,
 	}
-
 	reg.MustRegister(m.contactCount)
 	m.contactCount.WithLabelValues(id).Add(0)
 	return m
 }
 
+// Incrementa el contador de contactos
 func (metric *ContactCountMetric) incCount() {
 	id := metric.id
 	value := fmt.Sprintf(INC_CONTACT_COUNT_METRIC, id)
@@ -44,6 +44,7 @@ func (metric *ContactCountMetric) incCount() {
 	metric.contactCount.WithLabelValues(id).Inc()
 }
 
+// Decrementa el contador de contactos
 func (metric *ContactCountMetric) descCount() {
 	id := metric.id
 	value := fmt.Sprintf(DEC_CONTACT_COUNT_METRIC, id)

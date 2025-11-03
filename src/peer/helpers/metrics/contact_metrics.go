@@ -10,7 +10,6 @@ import (
 
 const CONTACT_METRICS_NAME = "contact_list"
 const CONTACT_METRICS_HELP = "Peer contacts"
-
 const ADD_CONTACT_METRIC = "add contact | source: %v | target: %v"
 const REMOVE_CONTACT_METRIC = "remove contact | source: %v | target: %v"
 
@@ -50,49 +49,3 @@ func (metric *ContacMetrics) removeContact(sourceName string, target contact.Con
 	common.Log.Debugf(SAVE_METRIC, CONTACT_METRICS_NAME, value)
 	metric.contacsVec.DeleteLabelValues(sourceName, targetName)
 }
-
-/*
-sum by (source, target) ({__name__=~"peer_\\d+_contact_list"})
-sum(increase({__name__=~"peer_\\d+_contact_list"}[5m])) by (source, target)
-
-
-label_join(
-  label_join(
-    {__name__=~"peer_\\d+_contact_list"}, "source", "", "source"
-  ),
-  "target", "", "target"
-)
-
-label_join(
-  label_join(
-    label_join(
-      {__name__=~"peer_\\d+_contact_list"} > 0,
-      "source", "", "peer"
-    ),
-    "target", "", "known_peer"
-  ),
-  "id", "-", "peer", "known_peer"
-)
-
-{
-
-	"nodes": label_replace(up{job=~"peer-.*"} == 1, "id", "$0", "job"),
-	"edges":label_join(
-  label_join(
-    label_join({__name__=~"peer_\\d+_contact_list"} > 0, "source", "", "peer" ), "target", "", "known_peer"),
-	"id", "-", "peer", "known_peer"
-	)
-}
-
-
-sum(increase( {__name__=~"peer_\\d+_contact_list"}[5m])) by (source, target)
-
-*/
-
-/*
-
-label_replace(sum by (source, target) ({__name__=~"peer_\\d+_contact_list"}), 'id', '$1', 'source', '(.*)')
-
-sum by (source, target) ({__name__=~"peer_\\d+_contact_list"})
-
-*/
