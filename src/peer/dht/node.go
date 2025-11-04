@@ -95,13 +95,7 @@ func (node *Node) RcvShCtsRecip(sourceContact contact.Contact, sourceContactList
 // Envía los contactos propios al bootstrap node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
 func (node *Node) SndShCtsToBootstrap() {
-	if !node.IsBootstrapNode() {
-		contactBoostrapNode := contact.NewContact(url.BootstrapNodeID, url.BootstrapNodeUrl)
-		// agregar bootstrap node a contactos
-		if node.SndShCts(*contactBoostrapNode) == nil {
-			node.scheduleAddContactTask(*contactBoostrapNode)
-		}
-	}
+	node.scheduleSndShCtsToBootstrapTask()
 }
 
 // Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
@@ -226,8 +220,8 @@ func (node *Node) GetFileByKey(key []byte) (string, error) {
 			if len(localContacts) == 0 {
 				msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, keys.KeyToLogFormatString(key))
 				common.Log.Errorf(msg)
-				// @TODO poner un sharecontacts acá
-
+				// compartir contactos con boostrap node para siguiente reintento
+				node.scheduleSndShCtsToBootstrapTask()
 				return rootFileName, errors.New(msg)
 			}
 			// creo el storage de contactos y agrego los locales

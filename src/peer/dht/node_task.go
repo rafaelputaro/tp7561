@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 	"tp/common"
+	"tp/common/communication/url"
 	"tp/common/contact"
 	filetransfer "tp/common/files_common/file_transfer"
 	"tp/common/keys"
@@ -21,6 +22,7 @@ const PREFIX_ADD_FILE_FROM_UPLOAD = "up-from-uploadDir-"
 const PREFIX_GET_FILE = "get-file-"
 const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
+const PREFIX_SND_SH_CTS_BOOTSTRAP_NODE = "snd-sh-cts-bn-"
 
 // Retorna un tag basado en el tiempo y el prefijo
 func generateTimeTag(prefix string) string {
@@ -63,6 +65,11 @@ func generateGetFileTag(destUrl string, key []byte) string {
 
 func generateSendFileTag(destUrl string, key []byte) string {
 	return PREFIX_SEND_FILE + destUrl + "-" + keys.KeyToHexString(key)
+}
+
+// Genera el tag para una tarea de compartir contactos con bootstrap node
+func generateSndShCtsToBootstrapTag() string {
+	return generateTimeTag(PREFIX_SND_SH_CTS_BOOTSTRAP_NODE)
 }
 
 // Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
@@ -182,4 +189,21 @@ func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte,
 			return tag, false
 		}, tag)
 	}
+}
+
+// Agrega la tarea de compartir contactos con el boostrap node
+func (node *Node) scheduleSndShCtsToBootstrapTask() {
+	tag := generateSndShCtsToBootstrapTag()
+	node.TaskScheduler.AddTask(func() (string, bool) {
+		if !node.IsBootstrapNode() {
+			contactBoostrapNode := contact.NewContact(url.BootstrapNodeID, url.BootstrapNodeUrl)
+			// agregar bootstrap node a contactos
+			if node.SndShCts(*contactBoostrapNode) == nil {
+				node.scheduleAddContactTask(*contactBoostrapNode)
+				return tag, false
+			}
+			return tag, true
+		}
+		return tag, false
+	}, tag)
 }
