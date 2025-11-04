@@ -96,9 +96,11 @@ func (peer *Peer) DoGetFile(fileName string) error {
 func (peer *Peer) GetFile(ctx context.Context, getFileOpers *protopb.GetFileOpers) (*protopb.GetFileRes, error) {
 	key, url := protoUtils.ParseGetFileOperands(getFileOpers)
 	common.Log.Debugf(MSG_GET_FILE, keys.KeyToLogFormatString(key), url)
-	err := peer.NodeDHT.GetFile(url, key)
-	respCalc := err == nil
-	return protoUtils.CreateGetFileResults(respCalc, !respCalc), err
+	pending, err := peer.NodeDHT.GetFile(url, key)
+	if pending {
+		return protoUtils.CreateGetFileResults(false, pending), nil
+	}
+	return protoUtils.CreateGetFileResults(err != nil, pending), err
 }
 
 // Retorna verdadero si existe un archivo en la bucketTable o en el directorio upload

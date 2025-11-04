@@ -147,10 +147,14 @@ func (node *Node) scheduleSendFile(destUrl string, key []byte, fileName string) 
 	}, tag)
 }
 
-// Retorna verdadero si se encuentra pendiente el envío de un archivo
+// Retorna verdadero si se encuentra pendiente la búsqueda o el envío de un archivo
 func (node *Node) checkSendFilePending(destUrl string, key []byte) bool {
-	tag := generateSendFileTag(destUrl, key)
-	return node.TaskScheduler.HasTag(tag)
+	tagGet := generateGetFileTag(destUrl, key)
+	if node.TaskScheduler.HasTag(tagGet) {
+		return true
+	}
+	tagSnd := generateSendFileTag(destUrl, key)
+	return node.TaskScheduler.HasTag(tagSnd)
 }
 
 // Agrega la tarea se subir un archivo desde la carpeta upload

@@ -24,21 +24,6 @@ func main() {
 		common.SleepOnStart(numberOfPairs)
 		peer.SndShCtsToBootstrap()
 		common.SleepOnStart(numberOfPairs)
-		/*
-			file_manager.UploadLocalFiles(func(fileName string) error {
-				peer.AddFileFromInputDir(fileName)
-				return nil
-			})
-			/*
-				common.SleepShort(numberOfPairs)
-				if peer.NodeDHT.IsBootstrapNode() {
-					for fileNum := 1; fileNum < 15; fileNum++ {
-						if peer.DoGetFile("file-"+strconv.Itoa(fileNum)+"-1.txt") != nil {
-							common.Log.Debugf("No se encontro archivo: %v", fileNum)
-						}
-						common.SleepShort(numberOfPairs)
-					}
-				}*/
 		wg.Done()
 	}()
 	// servir a resto de pares

@@ -13,7 +13,7 @@ const MAX_OFFSET_SLEEP_BETWEEN_RETRIES_SHORT = 10
 const MAX_OFFSET_SLEEP_BETWEEN_RETRIES_VERY_SHORT = 10
 const MIN_SLEEP_ON_START = 2
 const MAX_OFFSET_SLEEP_ON_START = 30
-const MIN_SLEEP_SHORT = 1
+const MIN_SLEEP_SHORT = 5
 const MAX_OFFSET_SLEEP_SHORT = 10
 
 func SleepBetweenRetries() {
@@ -46,7 +46,8 @@ func SleepOnStart(numberOfParticipants int) {
 
 func SleepShort(numberOfParticipants int) {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := MIN_SLEEP_SHORT*numberOfParticipants/2 + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
+	r := MIN_SLEEP_SHORT + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
+	//r := MIN_SLEEP_SHORT*numberOfParticipants/2 + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }

@@ -16,7 +16,7 @@ scrape_configs:
 
   - job_name: "client-1"
     static_configs:
-    - targets: ["client-1:9112"]
+    - targets: ["client-1:9131"]
 
 
   - job_name: "peer-1"
@@ -102,3 +102,79 @@ scrape_configs:
   - job_name: "peer-21"
     static_configs:
     - targets: ["peer-21:9111"]
+
+  - job_name: "peer-22"
+    static_configs:
+    - targets: ["peer-22:9112"]
+
+  - job_name: "peer-23"
+    static_configs:
+    - targets: ["peer-23:9113"]
+
+  - job_name: "peer-24"
+    static_configs:
+    - targets: ["peer-24:9114"]
+
+  - job_name: "peer-25"
+    static_configs:
+    - targets: ["peer-25:9115"]
+
+  - job_name: "peer-26"
+    static_configs:
+    - targets: ["peer-26:9116"]
+
+  - job_name: "peer-27"
+    static_configs:
+    - targets: ["peer-27:9117"]
+
+  - job_name: "peer-28"
+    static_configs:
+    - targets: ["peer-28:9118"]
+
+  - job_name: "peer-29"
+    static_configs:
+    - targets: ["peer-29:9119"]
+
+  - job_name: "peer-30"
+    static_configs:
+    - targets: ["peer-30:9120"]
+
+  - job_name: "peer-31"
+    static_configs:
+    - targets: ["peer-31:9121"]
+
+  - job_name: "peer-32"
+    static_configs:
+    - targets: ["peer-32:9122"]
+
+  - job_name: "peer-33"
+    static_configs:
+    - targets: ["peer-33:9123"]
+
+  - job_name: "peer-34"
+    static_configs:
+    - targets: ["peer-34:9124"]
+
+  - job_name: "peer-35"
+    static_configs:
+    - targets: ["peer-35:9125"]
+
+  - job_name: "peer-36"
+    static_configs:
+    - targets: ["peer-36:9126"]
+
+  - job_name: "peer-37"
+    static_configs:
+    - targets: ["peer-37:9127"]
+
+  - job_name: "peer-38"
+    static_configs:
+    - targets: ["peer-38:9128"]
+
+  - job_name: "peer-39"
+    static_configs:
+    - targets: ["peer-39:9129"]
+
+  - job_name: "peer-40"
+    static_configs:
+    - targets: ["peer-40:9130"]

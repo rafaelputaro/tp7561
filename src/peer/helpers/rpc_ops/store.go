@@ -27,7 +27,7 @@ func SndStore(config helpers.PeerConfig, contact contact.Contact, key []byte, bl
 			if err != nil {
 				common.Log.Infof(MSG_STORE_ATTEMPT, retry, err)
 				// esperar
-				common.SleepBetweenRetries()
+				common.SleepBetweenRetriesVeryShort()
 				continue
 			}
 			return nil

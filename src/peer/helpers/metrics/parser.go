@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"tp/common"
 	"tp/common/contact"
 )
 
@@ -13,7 +12,7 @@ func parseFileNumber(fileName string) float64 {
 	patron := `(\d+)`
 	ren := regexp.MustCompile(patron)
 	found := ren.FindAllString(fileName, -1)
-	common.Log.Debugf("%v", found)
+	//common.Log.Debugf("%v", found)
 	if len(found) > 1 {
 		converted, err := strconv.Atoi(found[1])
 		if err == nil {

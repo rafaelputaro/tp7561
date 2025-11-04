@@ -27,7 +27,7 @@ func main() {
 	}()
 
 	// esperar a que la mayoría de los pares se inicialicen intercambiando contactos
-	common.SleepOnStart(config.NumberOfPairs)
+	common.SleepOnStart(6 * config.NumberOfPairs)
 	// agregar archivos en peer-1
 	keysAdded := [][]byte{}
 	// to check
@@ -70,20 +70,22 @@ func main() {
 			_, err := os.Stat(helpers.GenerateDownloadPath(*config, file))
 			if err == nil {
 				delete(check, file)
-			} else {
-				accepted, pending, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, check[file])
-				if errGet != nil {
-					common.Log.Debugf("Error on get file %v", errGet)
-					continue
-				}
-				if accepted {
-					common.Log.Debugf("Retry to get file %v", file)
-					continue
-				}
-				if pending {
-					common.Log.Debugf("Pending file %v", file)
-				}
 			}
+			/*
+				else {
+					accepted, pending, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, check[file])
+					if errGet != nil {
+						common.Log.Debugf("Error on get file %v", errGet)
+						continue
+					}
+					if accepted {
+						common.Log.Debugf("Retry to get file %v", file)
+						continue
+					}
+					if pending {
+						common.Log.Debugf("Pending file %v", file)
+					}
+				}*/
 		}
 		if len(check) == 0 {
 			common.Log.Infof("Pass")

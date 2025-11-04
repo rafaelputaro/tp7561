@@ -7,7 +7,7 @@ import (
 )
 
 const MAX_TASK = 10000
-const MAX_TASK_RETRIES = 10
+const MAX_TASK_RETRIES = 100
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
 const MSG_TAG_EXISTS = "tag exists: %v"
 const MSG_TASK_ADDED = "added task: %v"
@@ -56,6 +56,7 @@ func (scheduler *TaskScheduler) checkRetryTask(task TaskFunc, tag string) {
 		scheduler.taggedTasks[tag] = scheduler.taggedTasks[tag] - 1
 		scheduler.addTask(task)
 		common.Log.Debugf(MSG_RETRY_TASK, tag, scheduler.taggedTasks[tag])
+		return
 	}
 	scheduler.doRemoveTaggedTask(tag)
 }

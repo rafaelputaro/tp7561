@@ -183,12 +183,13 @@ func (node *Node) AddFileFromUploadDir(fileName string) error {
 }
 
 // Busca el archivo localmente y en la red de nodos y lo retorna a la url destino.
-func (node *Node) GetFile(destUrl string, key []byte) error {
+// Retorna pendiente
+func (node *Node) GetFile(destUrl string, key []byte) (bool, error) {
 	if node.checkSendFilePending(destUrl, key) {
-		msg := fmt.Sprintf(MSG_ERROR_SEND_FILE_PENDING, keys.KeyToHexString(key), destUrl)
-		return errors.New(msg)
+		common.Log.Debugf(MSG_ERROR_SEND_FILE_PENDING, keys.KeyToHexString(key), destUrl)
+		return true, nil
 	}
-	return node.scheduleGetFileTask(destUrl, key)
+	return false, node.scheduleGetFileTask(destUrl, key)
 }
 
 // Busca el archivo localmente y en la red de nodos. Retorna el nombre del archivo encontrado
