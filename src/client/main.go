@@ -31,7 +31,7 @@ func main() {
 	// agregar archivos en peer-1
 	keysAdded := [][]byte{}
 	// to check
-	check := map[string]bool{}
+	check := map[string][]byte{}
 	urlPeer := url.GenerateURLPeer(1)
 	files_common.OpOverDir(helpers.GenerateInputFilePath(*config, ""),
 		func(fileName string) error {
@@ -40,7 +40,7 @@ func main() {
 				keyS := keys.KeyToLogFormatString(key)
 				common.Log.Debugf("File added: %v | %v | %v", fileName, keyS, urlPeer)
 				keysAdded = append(keysAdded, key)
-				check[fileName] = false
+				check[fileName] = key
 				metrics.IncUploadedFileCount()
 			}
 			common.SleepShort(config.NumberOfPairs)
@@ -58,9 +58,9 @@ func main() {
 	urlPeer = url.GenerateURLPeer(config.NumberOfPairs / 2)
 	// solicitar archivos a el último peer
 	for _, key := range keysAdded {
-		_, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)
+		_, _, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, key)
 		if errGet != nil {
-			common.Log.Debugf("Error get file %v", errGet)
+			common.Log.Debugf("Error on get file %v", errGet)
 		}
 		common.SleepShort(config.NumberOfPairs)
 	}
@@ -70,6 +70,19 @@ func main() {
 			_, err := os.Stat(helpers.GenerateDownloadPath(*config, file))
 			if err == nil {
 				delete(check, file)
+			} else {
+				accepted, pending, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, check[file])
+				if errGet != nil {
+					common.Log.Debugf("Error on get file %v", errGet)
+					continue
+				}
+				if accepted {
+					common.Log.Debugf("Retry to get file %v", file)
+					continue
+				}
+				if pending {
+					common.Log.Debugf("Pending file %v", file)
+				}
 			}
 		}
 		if len(check) == 0 {

@@ -37,7 +37,7 @@ func NewTaskScheduler() *TaskScheduler {
 				//task()
 				tag, retry := task()
 				if !retry {
-					scheduler.RemoveTaggedTask(tag)
+					scheduler.RemoveTask(tag)
 				} else {
 					scheduler.checkRetryTask(task, tag)
 				}
@@ -84,7 +84,7 @@ func (scheduler *TaskScheduler) addTask(task TaskFunc) (err error) {
 }
 
 // Agrega una tarea a ser ejecutada
-func (scheduler *TaskScheduler) AddTaggedTask(task TaskFunc, tag string) (err error) {
+func (scheduler *TaskScheduler) AddTask(task TaskFunc, tag string) (err error) {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	if scheduler.doHasTag(tag) {
@@ -97,7 +97,7 @@ func (scheduler *TaskScheduler) AddTaggedTask(task TaskFunc, tag string) (err er
 }
 
 // Remueve una etiqueta de la lista de tareas etiquetadas
-func (scheduler *TaskScheduler) RemoveTaggedTask(tag string) {
+func (scheduler *TaskScheduler) RemoveTask(tag string) {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	delete(scheduler.taggedTasks, tag)

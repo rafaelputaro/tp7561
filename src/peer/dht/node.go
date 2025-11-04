@@ -30,6 +30,7 @@ const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
 const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
 const MSG_SENDING_FILE = "Sending file: %v"
 const MSG_ERROR_SEND_FILE = "Error sendFile: %v | %v"
+const MSG_ERROR_SEND_FILE_PENDING = "Error sendFile pending: key: %v | url: %v"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -187,8 +188,12 @@ func (node *Node) AddFileFromUploadDir(fileName string) error {
 	return node.scheduleAddFileFromUploadDirTask(fileName)
 }
 
-// Busca el archivo localmente y en la red de nodos y lo retorna a la url destino
+// Busca el archivo localmente y en la red de nodos y lo retorna a la url destino.
 func (node *Node) GetFile(destUrl string, key []byte) error {
+	if node.checkSendFilePending(destUrl, key) {
+		msg := fmt.Sprintf(MSG_ERROR_SEND_FILE_PENDING, keys.KeyToHexString(key), destUrl)
+		return errors.New(msg)
+	}
 	return node.scheduleGetFileTask(destUrl, key)
 }
 
@@ -221,6 +226,8 @@ func (node *Node) GetFileByKey(key []byte) (string, error) {
 			if len(localContacts) == 0 {
 				msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_FOUND, keys.KeyToLogFormatString(key))
 				common.Log.Errorf(msg)
+				// @TODO poner un sharecontacts acá
+
 				return rootFileName, errors.New(msg)
 			}
 			// creo el storage de contactos y agrego los locales

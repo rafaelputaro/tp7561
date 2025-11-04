@@ -19,6 +19,7 @@ const PREFIX_ADD_CONTACTS = "add-contacts-"
 const PREFIX_ADD_FILE_FROM_INPUT = "up-from-inputDir-"
 const PREFIX_ADD_FILE_FROM_UPLOAD = "up-from-uploadDir-"
 const PREFIX_GET_FILE = "get-file-"
+const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
 
 // Retorna un tag basado en el tiempo y el prefijo
@@ -60,12 +61,17 @@ func generateGetFileTag(destUrl string, key []byte) string {
 	return PREFIX_GET_FILE + destUrl + "-" + keys.KeyToHexString(key)
 }
 
+func generateSendFileTag(destUrl string, key []byte) string {
+	return PREFIX_SEND_FILE + destUrl + "-" + keys.KeyToHexString(key)
+}
+
 // Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
 // para evitar posibles retrasos durante la actualización de la bucket table que impliquen
 // enviar pings secundarios a otros contactos
 func (node *Node) scheduleAddContactTask(contact contact.Contact) {
 	tag := generateAddContactTag()
-	node.TaskScheduler.AddTaggedTask(func() (string, bool) {
+	node.TaskScheduler.AddTask(func() (string, bool) {
+		// si hay error, la tarea se vuelve a intentar
 		if node.BucketTab.AddContact(contact) != nil {
 			return tag, true
 		}
@@ -78,7 +84,8 @@ func (node *Node) scheduleAddContactTask(contact contact.Contact) {
 // enviar pings secundarios a otros contactos
 func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
 	tag := generateAddContactsTag()
-	node.TaskScheduler.AddTaggedTask(func() (string, bool) {
+	node.TaskScheduler.AddTask(func() (string, bool) {
+		// si hay error, la tarea se vuelve a intentar
 		if node.BucketTab.AddContacts(contacts) != nil {
 			return tag, true
 		}
@@ -91,7 +98,8 @@ func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
 func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 	for _, contact := range contacts {
 		tag := generatePingAndAddContactTag()
-		node.TaskScheduler.AddTaggedTask(func() (string, bool) {
+		node.TaskScheduler.AddTask(func() (string, bool) {
+			// si hay error, la tarea se vuelve a intentar
 			if node.SndPing(node.Config, contact) != nil {
 				return tag, true
 			}
@@ -104,14 +112,12 @@ func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 // Agrega la tarea de buscar el archivo
 func (node *Node) scheduleGetFileTask(destUrl string, key []byte) error {
 	tag := generateGetFileTag(destUrl, key)
-	return node.TaskScheduler.AddTaggedTask(func() (string, bool) {
+	return node.TaskScheduler.AddTask(func() (string, bool) {
 		fileName, err := node.GetFileByKey(key)
 		common.Log.Debugf(MSG_SENDING_FILE, fileName)
 		if err == nil {
-			// @TODO transformar esto en otra tarea:
-			filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName))
-			// Respaldar métrica
-			peer_metrics.SetLastFileReturnedNumber(fileName)
+			// Programar retorno de archivo
+			node.scheduleSendFile(destUrl, key, fileName)
 			return tag, false
 		}
 		common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
@@ -119,11 +125,32 @@ func (node *Node) scheduleGetFileTask(destUrl string, key []byte) error {
 	}, tag)
 }
 
+// Agrega la tarea de envío de un archivo
+func (node *Node) scheduleSendFile(destUrl string, key []byte, fileName string) error {
+	tag := generateSendFileTag(destUrl, key)
+	return node.TaskScheduler.AddTask(func() (string, bool) {
+		common.Log.Debugf(MSG_SENDING_FILE, fileName)
+		if err := filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName)); err != nil {
+			common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
+			return tag, true
+		}
+		// Respaldar métrica
+		peer_metrics.SetLastFileReturnedNumber(fileName)
+		return tag, false
+	}, tag)
+}
+
+// Retorna verdadero si se encuentra pendiente el envío de un archivo
+func (node *Node) checkSendFilePending(destUrl string, key []byte) bool {
+	tag := generateSendFileTag(destUrl, key)
+	return node.TaskScheduler.HasTag(tag)
+}
+
 // Agrega la tarea se subir un archivo desde la carpeta upload
 func (node *Node) scheduleAddFileFromUploadDirTask(fileName string) error {
 	tag := generateAddFileFromUploadTag(fileName)
-	return node.TaskScheduler.AddTaggedTask(func() (string, bool) {
-		// si hay error, la tarea vuelve a intentar
+	return node.TaskScheduler.AddTask(func() (string, bool) {
+		// si hay error, la tarea se vuelve a intentar
 		if file_manager.AddFileFromUploadDir(fileName, node.createSndBlockNeighbors()) != nil {
 			return tag, true
 		}
@@ -134,7 +161,8 @@ func (node *Node) scheduleAddFileFromUploadDirTask(fileName string) error {
 // Agrega tarea de subir un archivo desde el espacio local
 func (node *Node) scheduleAddFileFromInputDirTask(fileName string) error {
 	tag := generateAddFileFromInputTag(fileName)
-	return node.TaskScheduler.AddTaggedTask(func() (string, bool) {
+	return node.TaskScheduler.AddTask(func() (string, bool) {
+		// si hay error, la tarea se vuelve a intentar
 		if file_manager.AddFileFromInputDir(fileName, node.createSndBlockNeighbors()) != nil {
 			return tag, true
 		}
@@ -146,7 +174,8 @@ func (node *Node) scheduleAddFileFromInputDirTask(fileName string) error {
 func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte, contacts []contact.Contact) {
 	for _, contact := range contacts {
 		tag := generateSndStoreFromInputTag(fileName)
-		node.TaskScheduler.AddTaggedTask(func() (string, bool) {
+		node.TaskScheduler.AddTask(func() (string, bool) {
+			// si hay error, la tarea se vuelve a intentar
 			if node.SndStore(node.Config, contact, key, fileName, data) != nil {
 				return tag, true
 			}

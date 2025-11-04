@@ -563,6 +563,7 @@ func (x *GetFileOpers) GetUrl() string {
 type GetFileRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Accepted      *bool                  `protobuf:"varint,1,req,name=accepted" json:"accepted,omitempty"`
+	Pending       *bool                  `protobuf:"varint,2,req,name=pending" json:"pending,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -600,6 +601,13 @@ func (*GetFileRes) Descriptor() ([]byte, []int) {
 func (x *GetFileRes) GetAccepted() bool {
 	if x != nil && x.Accepted != nil {
 		return *x.Accepted
+	}
+	return false
+}
+
+func (x *GetFileRes) GetPending() bool {
+	if x != nil && x.Pending != nil {
+		return *x.Pending
 	}
 	return false
 }
@@ -644,10 +652,11 @@ const file_peer_proto_rawDesc = "" +
 	"\x03url\x18\x02 \x01(\tR\x03url\"2\n" +
 	"\fGetFileOpers\x12\x10\n" +
 	"\x03key\x18\x01 \x02(\fR\x03key\x12\x10\n" +
-	"\x03url\x18\x02 \x02(\tR\x03url\"(\n" +
+	"\x03url\x18\x02 \x02(\tR\x03url\"B\n" +
 	"\n" +
 	"GetFileRes\x12\x1a\n" +
-	"\baccepted\x18\x01 \x02(\bR\baccepted2\xa5\x02\n" +
+	"\baccepted\x18\x01 \x02(\bR\baccepted\x12\x18\n" +
+	"\apending\x18\x02 \x02(\bR\apending2\xa5\x02\n" +
 	"\n" +
 	"Operations\x12-\n" +
 	"\x04Ping\x12\r.PingOperands\x1a\x16.google.protobuf.Empty\x125\n" +

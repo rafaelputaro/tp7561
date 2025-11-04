@@ -10,8 +10,8 @@ import (
 
 const MSG_GET_FILE_ACCEPTED = "get file accepted: key %v | selfUrl %v | destUrl %v"
 
-// Envío de add a un contacto con reintentos. Retorna <accepted><error>
-func GetFile(selfUrl string, destUrl string, key []byte) (bool, error) {
+// Envío de add a un contacto con reintentos. Retorna <accepted><pending><error>
+func GetFile(selfUrl string, destUrl string, key []byte) (bool, bool, error) {
 	// conexión con reintentos
 	conn, client, ctx, cancel, err := communication.ConnectAsClientGRPC(destUrl, communication.LogFatalOnFailConnectGRPC)
 	if err == nil {
@@ -29,15 +29,15 @@ func GetFile(selfUrl string, destUrl string, key []byte) (bool, error) {
 				common.SleepBetweenRetries()
 				continue
 			}
-			accepted := protoUtils.ParseGetFileResults(response)
+			accepted, pending := protoUtils.ParseGetFileResults(response)
 			if accepted {
 				common.Log.Debugf(MSG_GET_FILE_ACCEPTED, keys.KeyToLogFormatString(key), selfUrl, destUrl)
 			}
-			return accepted, errGf
+			return accepted, pending, errGf
 		}
 		common.Log.Errorf(MSG_FAIL_ON_SEND_GET_FILE, err)
-		return false, fmt.Errorf(MSG_FAIL_ON_SEND_GET_FILE, keys.KeyToLogFormatString(key))
+		return false, false, fmt.Errorf(MSG_FAIL_ON_SEND_GET_FILE, keys.KeyToLogFormatString(key))
 	}
 	common.Log.Errorf(MSG_FAIL_ON_SEND_GET_FILE, err)
-	return false, err
+	return false, false, err
 }
