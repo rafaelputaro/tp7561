@@ -22,7 +22,7 @@ const MSG_SERVER_STOPPED = "gRPC server has been stopped"
 const MSG_FAILED_TO_SERVE = "failed to serve: %v"
 const MSG_RETRY_LISTEN = "Listening retry"
 const MAX_RETRY_LISTEN = 10
-const MAX_RETRY_SERVE = 10
+const MAX_RETRY_SERVE = 100
 
 // Implementa la funcionalidad de grpc server para el par
 type PeerService struct {
@@ -61,6 +61,8 @@ func NewPeerService(peer *Peer) *PeerService {
 	if err != nil {
 		common.Log.Fatalf(MSG_FAILED_TO_LISTEN, err)
 	}
+	// Intercambio de contactos con boostrap
+	shareContactsWithBootstrapNode(peer)
 	// Detener el servidor cuando llega la señal SIGINT
 	handleSigintSignal(server)
 	// Servidor inicializado
@@ -70,6 +72,19 @@ func NewPeerService(peer *Peer) *PeerService {
 		ServerGRPC: server,
 		Receiver:   receiver,
 	}
+}
+
+// Intercambio frecuente de contactos con el bootstrapnode
+func shareContactsWithBootstrapNode(peer *Peer) {
+	go func() {
+		for {
+			common.SleepBetweenShareContactsShort()
+			if peer.NodeDHT.BucketTab.GetCountContacts() > peer.Config.NumberOfPairs/2 {
+				common.SleepBetweenShareContactsLarge()
+			}
+			peer.NodeDHT.ScheduleSndShCtsToBootstrapTask()
+		}
+	}()
 }
 
 // Manejo de señal SIGINT

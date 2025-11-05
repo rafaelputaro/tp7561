@@ -3,6 +3,7 @@ package dht
 import (
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
 	"tp/common"
 	"tp/common/communication/url"
@@ -24,24 +25,31 @@ const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
 const PREFIX_SND_SH_CTS_BOOTSTRAP_NODE = "snd-sh-cts-bn-"
 
+var mutexShareContactsTask sync.Mutex
+
 // Retorna un tag basado en el tiempo y el prefijo
-func generateTimeTag(prefix string) string {
+func generateTimeMinutesTag(prefix string) string {
+	return fmt.Sprintf("%v%v", prefix, strconv.FormatInt(int64(time.Now().Minute()), 10))
+}
+
+// Retorna un tag basado en el tiempo y el prefijo
+func generateTimeNanoTag(prefix string) string {
 	return fmt.Sprintf("%v%v", prefix, strconv.FormatInt(time.Now().UnixNano(), 10))
 }
 
 // Generar el tag para una tarea de agregar contacto
 func generateAddContactTag() string {
-	return generateTimeTag(PREFIX_ADD_CONTACT)
+	return generateTimeNanoTag(PREFIX_ADD_CONTACT)
 }
 
 // Genera el tag para una tarea de hacer un ping y luego agregar el contacto
 func generatePingAndAddContactTag() string {
-	return generateTimeTag(PREFIX_PING_AND_ADD_CONTACT)
+	return generateTimeNanoTag(PREFIX_PING_AND_ADD_CONTACT)
 }
 
 // Genera el tag para una tarea de agregar contactos.
 func generateAddContactsTag() string {
-	return generateTimeTag(PREFIX_ADD_CONTACTS)
+	return generateTimeNanoTag(PREFIX_ADD_CONTACTS)
 }
 
 // Genera el tag para una tarea de subida de archivo a la red de nodos desde upload
@@ -56,7 +64,7 @@ func generateAddFileFromInputTag(fileName string) string {
 
 // Genera el tag para una tarea de subida de archivo a la red de nodos
 func generateSndStoreFromInputTag(fileName string) string {
-	return generateTimeTag(PREFIX_SND_STORE + keys.KeyToHexString(keys.GetKey(fileName)))
+	return generateTimeNanoTag(PREFIX_SND_STORE + keys.KeyToHexString(keys.GetKey(fileName)))
 }
 
 func generateGetFileTag(destUrl string, key []byte) string {
@@ -69,7 +77,7 @@ func generateSendFileTag(destUrl string, key []byte) string {
 
 // Genera el tag para una tarea de compartir contactos con bootstrap node
 func generateSndShCtsToBootstrapTag() string {
-	return generateTimeTag(PREFIX_SND_SH_CTS_BOOTSTRAP_NODE)
+	return generateTimeMinutesTag(PREFIX_SND_SH_CTS_BOOTSTRAP_NODE)
 }
 
 // Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
@@ -196,7 +204,9 @@ func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte,
 }
 
 // Agrega la tarea de compartir contactos con el boostrap node
-func (node *Node) scheduleSndShCtsToBootstrapTask() {
+func (node *Node) ScheduleSndShCtsToBootstrapTask() {
+	mutexShareContactsTask.Lock()
+	defer mutexShareContactsTask.Unlock()
 	tag := generateSndShCtsToBootstrapTag()
 	node.TaskScheduler.AddTask(func() (string, bool) {
 		if !node.IsBootstrapNode() {

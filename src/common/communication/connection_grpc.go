@@ -11,8 +11,6 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-//const MSG_SIGNIT_ARRIVED = "SIGNIT arrived. Stopping peer as gRPC Server"
-
 // Se conecta a otro nodo como cliente grpc. En caso de conexión fallido luego de cierta cantidad
 // de reintentos retorna un error
 func ConnectAsClientGRPC(serverUrl string, callbackOnFailConn func(err error)) (*grpc.ClientConn, protopb.OperationsClient, context.Context, context.CancelFunc, error) {
@@ -23,7 +21,7 @@ func ConnectAsClientGRPC(serverUrl string, callbackOnFailConn func(err error)) (
 		if err == nil {
 			break
 		}
-		common.SleepBetweenRetries()
+		common.SleepBetweenRetriesVeryShort()
 	}
 	if err != nil {
 		callbackOnFailConn(err)

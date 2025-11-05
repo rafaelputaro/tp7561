@@ -7,11 +7,12 @@ import (
 )
 
 const MAX_TASK = 10000
-const MAX_TASK_RETRIES = 100
+const MAX_TASK_RETRIES = 200
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
 const MSG_TAG_EXISTS = "tag exists: %v"
 const MSG_TASK_ADDED = "added task: %v"
 const MSG_RETRY_TASK = "retry task: tag %v | remaining retries: %v"
+const MSG_RULE_OUT_TASK = "rule out task: tag %v | remaining retries: %v"
 
 // Retorna el tag de la función y si la misma es candidata a ser reintentada
 type TaskFunc func() (string, bool)
@@ -37,7 +38,7 @@ func NewTaskScheduler() *TaskScheduler {
 				//task()
 				tag, retry := task()
 				if !retry {
-					scheduler.RemoveTask(tag)
+					scheduler.removeTask(tag)
 				} else {
 					scheduler.checkRetryTask(task, tag)
 				}
@@ -58,6 +59,7 @@ func (scheduler *TaskScheduler) checkRetryTask(task TaskFunc, tag string) {
 		common.Log.Debugf(MSG_RETRY_TASK, tag, scheduler.taggedTasks[tag])
 		return
 	}
+	common.Log.Debugf(MSG_RULE_OUT_TASK, tag, scheduler.taggedTasks[tag])
 	scheduler.doRemoveTaggedTask(tag)
 }
 
@@ -85,7 +87,7 @@ func (scheduler *TaskScheduler) addTask(task TaskFunc) (err error) {
 }
 
 // Agrega una tarea a ser ejecutada
-func (scheduler *TaskScheduler) AddTask(task TaskFunc, tag string) (err error) {
+func (scheduler *TaskScheduler) AddTask(task TaskFunc, tag string) error {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	if scheduler.doHasTag(tag) {
@@ -94,11 +96,12 @@ func (scheduler *TaskScheduler) AddTask(task TaskFunc, tag string) (err error) {
 	}
 	scheduler.taggedTasks[tag] = MAX_TASK_RETRIES
 	common.Log.Debugf(MSG_TASK_ADDED, tag)
-	return scheduler.addTask(task)
+	err := scheduler.addTask(task)
+	return err
 }
 
 // Remueve una etiqueta de la lista de tareas etiquetadas
-func (scheduler *TaskScheduler) RemoveTask(tag string) {
+func (scheduler *TaskScheduler) removeTask(tag string) {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	delete(scheduler.taggedTasks, tag)

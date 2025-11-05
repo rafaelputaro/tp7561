@@ -70,9 +70,8 @@ func main() {
 			_, err := os.Stat(helpers.GenerateDownloadPath(*config, file))
 			if err == nil {
 				delete(check, file)
-			}
-			/*
-				else {
+			} else {
+				/*
 					accepted, pending, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, check[file])
 					if errGet != nil {
 						common.Log.Debugf("Error on get file %v", errGet)
@@ -84,8 +83,8 @@ func main() {
 					}
 					if pending {
 						common.Log.Debugf("Pending file %v", file)
-					}
-				}*/
+					}*/
+			}
 		}
 		if len(check) == 0 {
 			common.Log.Infof("Pass")
