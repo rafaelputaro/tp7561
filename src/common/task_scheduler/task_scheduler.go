@@ -21,27 +21,23 @@ type TaskFunc func() (string, bool)
 type TaskScheduler struct {
 	tasksChan        chan TaskFunc
 	taggedTasks      map[string]int
-	mutexTaggedTasks sync.Mutex
+	mutexTaggedTasks *sync.Mutex
 }
 
 // Retorna una instancia de Task Scheduler lista para ser utilizada
 func NewTaskScheduler() *TaskScheduler {
 	scheduler := TaskScheduler{
-		tasksChan:   make(chan TaskFunc, MAX_TASK),
-		taggedTasks: map[string]int{},
+		tasksChan:        make(chan TaskFunc, MAX_TASK),
+		taggedTasks:      map[string]int{},
+		mutexTaggedTasks: &sync.Mutex{},
 	}
 	go func() {
 		notClosed := true
 		for notClosed {
 			task, ok := <-scheduler.tasksChan
 			if ok {
-				//task()
 				tag, retry := task()
-				if !retry {
-					scheduler.removeTask(tag)
-				} else {
-					scheduler.checkRetryTask(task, tag)
-				}
+				scheduler.checkRetryTask(retry, task, tag)
 			}
 			notClosed = ok
 		}
@@ -50,9 +46,13 @@ func NewTaskScheduler() *TaskScheduler {
 }
 
 // Chequea si la tarea debe ser reintentada
-func (scheduler *TaskScheduler) checkRetryTask(task TaskFunc, tag string) {
+func (scheduler *TaskScheduler) checkRetryTask(retry bool, task TaskFunc, tag string) {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
+	if !retry {
+		scheduler.doRemoveTaggedTask(tag)
+		return
+	}
 	if scheduler.taggedTasks[tag] > 0 {
 		scheduler.taggedTasks[tag] = scheduler.taggedTasks[tag] - 1
 		scheduler.addTask(task)
