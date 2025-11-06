@@ -81,6 +81,9 @@ func RestoreFile(fileName string) (string, error) {
 	outputFile := utils.GenerateIpfsRestorePath(fileName)
 	file, err := os.Create(outputFile)
 	if err != nil {
+		if os.IsExist(err) {
+			return outputFile, nil
+		}
 		common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, err)
 		return "", err
 	}

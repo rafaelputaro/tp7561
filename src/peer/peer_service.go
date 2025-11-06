@@ -79,10 +79,11 @@ func shareContactsWithBootstrapNode(peer *Peer) {
 	go func() {
 		for {
 			common.SleepBetweenShareContactsShort()
-			if peer.NodeDHT.BucketTab.GetCountContacts() > peer.Config.NumberOfPairs/2 {
-				common.SleepBetweenShareContactsLarge()
+			if peer.NodeDHT.BucketTab.GetCountContacts() <= 3*peer.Config.NumberOfPairs/4 {
+				peer.NodeDHT.ScheduleSndShCtsToBootstrapTask()
+				continue
 			}
-			peer.NodeDHT.ScheduleSndShCtsToBootstrapTask()
+			common.SleepBetweenShareContactsLarge()
 		}
 	}()
 }

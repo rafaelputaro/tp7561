@@ -135,7 +135,7 @@ func (node *Node) scheduleGetFileTask(destUrl string, key []byte) error {
 			node.scheduleSendFile(destUrl, key, fileName)
 			return tag, false
 		}
-		common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
+		common.Log.Errorf(MSG_ERROR_GET_FILE, keys.KeyToLogFormatString(key), err)
 		return tag, true
 	}, tag)
 }
@@ -146,7 +146,7 @@ func (node *Node) scheduleSendFile(destUrl string, key []byte, fileName string) 
 	return node.TaskScheduler.AddTask(func() (string, bool) {
 		common.Log.Debugf(MSG_SENDING_FILE, fileName)
 		if err := filetransfer.SendFile(destUrl, fileName, utils.GenerateIpfsRestorePath(fileName)); err != nil {
-			common.Log.Debugf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
+			common.Log.Errorf(MSG_ERROR_SEND_FILE, keys.KeyToLogFormatString(key), err)
 			return tag, true
 		}
 		// Respaldar métrica

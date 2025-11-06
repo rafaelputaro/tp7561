@@ -14,6 +14,7 @@ import (
 
 const MSG_ADD_FILE_FROM_INPUT_DIR = "add file from input directory: %v"
 const MSG_ADD_FILE_FROM_UPLOAD_DIR = "add file from upload directory: %v"
+const MSG_BLOCK_EXISTS = "the block has already been recovered previously: %v"
 
 type ProcessBlockCallBack func(key []byte, fileName string, data []byte) error
 
@@ -89,9 +90,16 @@ func StoreBlock(fileName string, data []byte) error {
 // Retorna error si el archivo ya existe o si se presenta algún error de acceso a disco
 // Retorna verdadero si es el bloque final, falso caso contrario
 func StoreBlockOnDownload(fileName string, data []byte) (bool, error) {
-	err := blocks.StoreBlock(utils.GenerateIpfsDownloadPath(fileName), data)
+	path := utils.GenerateIpfsDownloadPath(fileName)
+	err := blocks.StoreBlock(path, data)
 	if err != nil {
-		return false, err
+		if !path_exists.PathExists(path) {
+			common.Log.Errorf(utils.MSG_ERROR_CREATING_FILE, path)
+			return false, err
+		}
+		// Logueo el evento y anulo el error
+		common.Log.Debugf(MSG_BLOCK_EXISTS, path)
+		err = nil
 	}
 	return blocks.IsFinalBlock(data), err
 }

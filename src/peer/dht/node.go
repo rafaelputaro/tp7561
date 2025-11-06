@@ -30,6 +30,7 @@ const MSG_FILE_DOWLOADED = "the file has been fully downloaded: %v"
 const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
 const MSG_SENDING_FILE = "Sending file: %v"
 const MSG_ERROR_SEND_FILE = "Error sendFile: %v | %v"
+const MSG_ERROR_GET_FILE = "Error getFile: %v | %v"
 const MSG_ERROR_SEND_FILE_PENDING = "Error sendFile pending: key: %v | url: %v"
 
 // Representa un nodo de una Distributed Hash Table

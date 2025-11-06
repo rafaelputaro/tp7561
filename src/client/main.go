@@ -27,7 +27,7 @@ func main() {
 	}()
 
 	// esperar a que la mayoría de los pares se inicialicen intercambiando contactos
-	common.SleepOnStart(6 * config.NumberOfPairs)
+	common.SleepOnStart(10 * config.NumberOfPairs)
 	// agregar archivos en peer-1
 	keysAdded := [][]byte{}
 	// to check

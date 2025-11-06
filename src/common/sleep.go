@@ -15,8 +15,10 @@ const MIN_SLEEP_ON_START = 2
 const MAX_OFFSET_SLEEP_ON_START = 30
 const MIN_SLEEP_SHORT = 5
 const MAX_OFFSET_SLEEP_SHORT = 10
-const MIN_SLEEP_BETWEEN_SH_CONTACTS = 100
+const MIN_SLEEP_BETWEEN_SH_CONTACTS = 30
 const MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS = 20
+const MIN_SLEEP_BETWEEN_TASKS = 0
+const MAX_OFFSET_SLEEP_BETWEEN_TASKS = 3
 
 func SleepBetweenRetries() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -28,6 +30,13 @@ func SleepBetweenRetries() {
 func SleepBetweenRetriesShort() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := MIN_SLEEP_BETWEEN_RETRIES_SHORT + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_RETRIES_SHORT)
+	t := time.Duration(r) * time.Second
+	time.Sleep(t)
+}
+
+func SleepBetweenTasks() {
+	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := MIN_SLEEP_BETWEEN_TASKS + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_TASKS)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }

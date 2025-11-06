@@ -65,9 +65,6 @@ func (table *BucketTable) AddContact(newContact contact.Contact) error {
 		common.Log.Debugf(msg)
 		return errors.New(msg)
 	}
-	// tomar lock
-	//table.mutex.Lock()
-	//defer table.mutex.Unlock()
 	// operar
 	return table.doAddContact(newContact)
 }
@@ -112,10 +109,6 @@ func (table *BucketTable) doAddContact(newContact contact.Contact) error {
 
 // Intenta agregar los contactos según la capacidad actual de la tabla
 func (table *BucketTable) AddContacts(newContacts []contact.Contact) error {
-	// tomar lock
-	//table.mutex.Lock()
-	//defer table.mutex.Unlock()
-	// operar
 	common.Log.Debugf(MSG_TRY_TO_ADD_CONTACTS, len(newContacts))
 	for _, contact := range newContacts {
 		err := table.doAddContact(contact)
