@@ -40,7 +40,6 @@ func NewTaskScheduler() *TaskScheduler {
 				scheduler.checkRetryTask(retry, task, tag)
 			}
 			notClosed = ok
-			//common.SleepBetweenTasks()
 		}
 	}()
 	return &scheduler

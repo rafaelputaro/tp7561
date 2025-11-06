@@ -3,7 +3,6 @@ package dht
 import (
 	"fmt"
 	"strconv"
-	"sync"
 	"time"
 	"tp/common"
 	"tp/common/communication/url"
@@ -25,7 +24,7 @@ const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
 const PREFIX_SND_SH_CTS_BOOTSTRAP_NODE = "snd-sh-cts-bn-"
 
-var mutexShareContactsTask sync.Mutex
+//var mutexShareContactsTask sync.Mutex
 
 // Retorna un tag basado en el tiempo y el prefijo
 func generateTimeMinutesTag(prefix string) string {
@@ -205,8 +204,8 @@ func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte,
 
 // Agrega la tarea de compartir contactos con el boostrap node
 func (node *Node) ScheduleSndShCtsToBootstrapTask() {
-	mutexShareContactsTask.Lock()
-	defer mutexShareContactsTask.Unlock()
+	//mutexShareContactsTask.Lock()
+	//defer mutexShareContactsTask.Unlock()
 	tag := generateSndShCtsToBootstrapTag()
 	node.TaskScheduler.AddTask(func() (string, bool) {
 		if !node.IsBootstrapNode() {
