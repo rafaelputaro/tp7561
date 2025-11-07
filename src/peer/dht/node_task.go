@@ -24,13 +24,6 @@ const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
 const PREFIX_SND_SH_CTS_BOOTSTRAP_NODE = "snd-sh-cts-bn-"
 
-//var mutexShareContactsTask sync.Mutex
-
-// Retorna un tag basado en el tiempo y el prefijo
-func generateTimeMinutesTag(prefix string) string {
-	return fmt.Sprintf("%v%v", prefix, strconv.FormatInt(int64(time.Now().Minute()), 10))
-}
-
 // Retorna un tag basado en el tiempo y el prefijo
 func generateTimeNanoTag(prefix string) string {
 	return fmt.Sprintf("%v%v", prefix, strconv.FormatInt(time.Now().UnixNano(), 10))
@@ -76,7 +69,7 @@ func generateSendFileTag(destUrl string, key []byte) string {
 
 // Genera el tag para una tarea de compartir contactos con bootstrap node
 func generateSndShCtsToBootstrapTag() string {
-	return generateTimeMinutesTag(PREFIX_SND_SH_CTS_BOOTSTRAP_NODE)
+	return generateTimeNanoTag(PREFIX_SND_SH_CTS_BOOTSTRAP_NODE)
 }
 
 // Agrega la tarea de agregar un contacto a la bucket table. Se recomienda utilizarla
@@ -204,8 +197,6 @@ func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte,
 
 // Agrega la tarea de compartir contactos con el boostrap node
 func (node *Node) ScheduleSndShCtsToBootstrapTask() {
-	//mutexShareContactsTask.Lock()
-	//defer mutexShareContactsTask.Unlock()
 	tag := generateSndShCtsToBootstrapTag()
 	node.TaskScheduler.AddTask(func() (string, bool) {
 		if !node.IsBootstrapNode() {

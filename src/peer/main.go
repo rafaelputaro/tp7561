@@ -23,7 +23,6 @@ func main() {
 	go func() {
 		common.SleepOnStart(numberOfPairs)
 		peer.SndShCtsToBootstrap()
-		common.SleepOnStart(numberOfPairs)
 		wg.Done()
 	}()
 	// servir a resto de pares

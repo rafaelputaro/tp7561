@@ -105,9 +105,15 @@ func StoreBlockOnDownload(fileName string, data []byte) (bool, error) {
 }
 
 // Obtiene un block completo con su header y datos.
-func GetBlock(fileName string) ([]byte, error) {
+func GetBlockFromStore(fileName string) ([]byte, error) {
 	nBytes, data, err := blocks.ReadBlock(utils.GenerateIpfsStorePath(fileName))
 	return data[:nBytes], err
+}
+
+// Obtiene un block completo con su header y datos. <endFile><data><error>
+func GetBlockFromDown(fileName string) (bool, []byte, error) {
+	nBytes, data, err := blocks.ReadBlock(utils.GenerateIpfsDownloadPath(fileName))
+	return blocks.IsFinalBlock(data), data[:nBytes], err
 }
 
 // Sube los archivos locales a la red de nodos

@@ -78,7 +78,7 @@ func (table *KeyValueTable) Get(key []byte) (string, []byte, error) {
 		return "", nil, err
 	}
 	// leer datos del archivo
-	data, err := file_manager.GetBlock(fileName)
+	data, err := file_manager.GetBlockFromStore(fileName)
 	return fileName, data, err
 }
 

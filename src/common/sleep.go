@@ -15,8 +15,8 @@ const MIN_SLEEP_ON_START = 2
 const MAX_OFFSET_SLEEP_ON_START = 30
 const MIN_SLEEP_SHORT = 5
 const MAX_OFFSET_SLEEP_SHORT = 10
-const MIN_SLEEP_BETWEEN_SH_CONTACTS = 30
-const MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS = 20
+const MIN_SLEEP_BETWEEN_SH_CONTACTS = 40
+const MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS = 30
 
 func SleepBetweenRetries() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -62,7 +62,7 @@ func SleepBetweenShareContactsShort() {
 
 func SleepBetweenShareContactsLarge() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := 3*MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(4*MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
+	r := 20*MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(4*MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }

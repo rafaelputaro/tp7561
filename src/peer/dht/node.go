@@ -32,6 +32,7 @@ const MSG_SENDING_FILE = "Sending file: %v"
 const MSG_ERROR_SEND_FILE = "Error sendFile: %v | %v"
 const MSG_ERROR_GET_FILE = "Error getFile: %v | %v"
 const MSG_ERROR_SEND_FILE_PENDING = "Error sendFile pending: key: %v | url: %v"
+const MSG_FILE_PREVIOUSLY_DOWNLOAD = "the file was previously downloaded: %v"
 
 // Representa un nodo de una Distributed Hash Table
 type Node struct {
@@ -43,6 +44,7 @@ type Node struct {
 	SndPing               rpc_ops.PingOp
 	SndFindBlock          rpc_ops.FindBlockOp
 	TaskScheduler         task_scheduler.TaskScheduler
+	DownloadKeys          map[string]string
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
@@ -61,6 +63,7 @@ func NewNode(
 		SndPing:               sndPing,
 		SndFindBlock:          sndFindBlock,
 		TaskScheduler:         *task_scheduler.NewTaskScheduler(),
+		DownloadKeys:          map[string]string{},
 	}
 	return node
 }
@@ -276,6 +279,30 @@ func (node *Node) GetFileByKey(key []byte) (string, error) {
 // Busca el bloque localmente. Retorna <endFile><nextBlockKey><error>. En caso de no poder
 // enviar el mensaje retorna error
 func (node *Node) findBlockLocally(key []byte) (string, bool, []byte, error) {
+	// buscar en archivos descargados
+	if fileNameFound, end, nextBlockKey, found := node.findBlockOnDownload(key); found {
+		return fileNameFound, end, nextBlockKey, nil
+	}
+	// buscar en la bucket table
+	return node.findBlockOnBucketTable(key)
+}
+
+// Busca el bloque en los archivos descargados. Retorna <endFile><nextBlockKey><found>. En caso de no poder
+// enviar el mensaje retorna error
+func (node *Node) findBlockOnDownload(key []byte) (string, bool, []byte, bool) {
+	if fileNameFound, ok := node.DownloadKeys[keys.KeyToHexString(key)]; ok {
+		endBlock, data, err := file_manager.GetBlockFromDown(fileNameFound)
+		if err == nil {
+			common.Log.Debugf(MSG_FILE_PREVIOUSLY_DOWNLOAD, fileNameFound)
+			return fileNameFound, endBlock, blocks.GetNextBlock(data), true
+		}
+	}
+	return "", false, []byte{}, false
+}
+
+// Busca el bloque en la bucket table. Retorna <endFile><nextBlockKey><error>. En caso de no poder
+// enviar el mensaje retorna error
+func (node *Node) findBlockOnBucketTable(key []byte) (string, bool, []byte, error) {
 	fileNameFound, data, err := node.KeyValueTab.Get(key)
 	// si no se encuentra retorna error
 	if err != nil {
@@ -283,6 +310,7 @@ func (node *Node) findBlockLocally(key []byte) (string, bool, []byte, error) {
 	}
 	// si se encuentra guarda localmente y parsear data
 	endFile, _ := file_manager.StoreBlockOnDownload(fileNameFound, data)
+	node.DownloadKeys[keys.KeyToHexString(key)] = fileNameFound
 	return fileNameFound, endFile, blocks.GetNextBlock(data), nil
 }
 
