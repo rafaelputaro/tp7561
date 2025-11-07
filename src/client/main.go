@@ -71,19 +71,18 @@ func main() {
 			if err == nil {
 				delete(check, file)
 			} else {
-				/*
-					accepted, pending, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, check[file])
-					if errGet != nil {
-						common.Log.Debugf("Error on get file %v", errGet)
-						continue
-					}
-					if accepted {
-						common.Log.Debugf("Retry to get file %v", file)
-						continue
-					}
-					if pending {
-						common.Log.Debugf("Pending file %v", file)
-					}*/
+				accepted, pending, errGet := rpc_ops_common.GetFile(config.Url, urlPeer, check[file])
+				if errGet != nil {
+					common.Log.Debugf("Error on get file %v", errGet)
+					continue
+				}
+				if accepted {
+					common.Log.Debugf("Retry to get file %v", file)
+					continue
+				}
+				if pending {
+					common.Log.Debugf("Pending file %v", file)
+				}
 			}
 		}
 		if len(check) == 0 {

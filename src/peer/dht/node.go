@@ -31,7 +31,7 @@ const MSG_CONTACTS_FOUND_FOR_KEY = "%v contacts found for key %v"
 const MSG_SENDING_FILE = "Sending file: %v"
 const MSG_ERROR_SEND_FILE = "Error sendFile: %v | %v"
 const MSG_ERROR_GET_FILE = "Error getFile: %v | %v"
-const MSG_ERROR_SEND_FILE_PENDING = "Error sendFile pending: key: %v | url: %v"
+const MSG_SEND_FILE_PENDING = "sendFile pending: key: %v | url: %v"
 const MSG_FILE_PREVIOUSLY_DOWNLOAD = "the file was previously downloaded: %v"
 
 // Representa un nodo de una Distributed Hash Table
@@ -190,7 +190,7 @@ func (node *Node) AddFileFromUploadDir(fileName string) error {
 // Retorna pendiente
 func (node *Node) GetFile(destUrl string, key []byte) (bool, error) {
 	if node.checkSendFilePending(destUrl, key) {
-		common.Log.Debugf(MSG_ERROR_SEND_FILE_PENDING, keys.KeyToHexString(key), destUrl)
+		common.Log.Debugf(MSG_SEND_FILE_PENDING, keys.KeyToHexString(key), destUrl)
 		return true, nil
 	}
 	return false, node.scheduleGetFileTask(destUrl, key)
