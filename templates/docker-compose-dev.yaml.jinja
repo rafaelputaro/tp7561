@@ -26,11 +26,17 @@ services:
       - NAME_SPACE=peer-{{ i }} 
     networks:
       - tp_net
+{% if i != 1 %}
+    depends_on:
+      - peer-1 
+{# 
 {% if i < number_of_pairs %}
     depends_on:
+
 {% for i in range(i+1, i + 2) %}
       - peer-{{ i }}
 {%- endfor -%}
+#}
 {% endif %}
 {% endfor %}
 
