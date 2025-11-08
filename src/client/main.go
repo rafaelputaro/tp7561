@@ -25,7 +25,6 @@ func main() {
 	go func() {
 		metrics.Serve()
 	}()
-
 	// esperar a que la mayoría de los pares se inicialicen intercambiando contactos
 	common.SleepOnStart(10 * config.NumberOfPairs)
 	// agregar archivos en peer-1

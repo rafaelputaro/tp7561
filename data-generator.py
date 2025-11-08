@@ -13,6 +13,8 @@ MSG_GENERATING_DATASET_FOR_PEERS = "Generating dataset for peers\n"
 MSG_GENERATING_DATASET_FOR_CLIENTS = "Generating dataset for clients\n"
 MSG_GENERATING_DATASET = "Generating dataset for number %d\n"
 
+file_count = 1
+
 def main():
     # leer configuración
     config = configparser.ConfigParser()
@@ -29,14 +31,14 @@ def main():
     base_folder = host_folder+input_data_folder
     # crear carpeta datos
     os.makedirs(base_folder, exist_ok=True)
-    # generar datos para cada par
-    print(MSG_GENERATING_DATASET_FOR_PEERS)
-    for pair_number in range(1, number_of_pairs+1):
-        generate_data_for_pair(base_folder, pair_number, number_of_files_peers, min_paragraphs, max_paragraphs)
     # generar datos para cada cliente
     print(MSG_GENERATING_DATASET_FOR_CLIENTS)
     for client_number in range(1, number_of_clients+1):
         generate_data_for_client(base_folder, client_number, number_of_files_clients, min_paragraphs, max_paragraphs)
+    # generar datos para cada par
+    print(MSG_GENERATING_DATASET_FOR_PEERS)
+    for pair_number in range(1, number_of_pairs+1):
+        generate_data_for_pair(base_folder, pair_number, number_of_files_peers, min_paragraphs, max_paragraphs)
 
 # generar archivos para un par específico en la carpeta del par dado    
 def generate_data_for_pair(base_folder, pair_number, number_of_files, min_paragraphs, max_paragraphs):
@@ -48,13 +50,15 @@ def generate_data_for_client(base_folder, pair_number, number_of_files, min_para
 
 # generar archivos para una entidad específica en la carpeta de la entidad dada
 def generate_data_for_entity(base_folder, entity_number, base_file_name, base_entity_folder, number_of_files, min_paragraphs, max_paragraphs):
+    global file_count
     folder = f"{base_folder}/{base_entity_folder}{entity_number}"
     if os.path.isdir(folder):
         return
     print(MSG_GENERATING_DATASET%(entity_number))
     os.makedirs(folder, exist_ok=True)
-    for file_num in range(1, number_of_files+1):
-        file_path = f"{folder}/{base_file_name}{entity_number}-{file_num}.{FILE_EXT}"        
+    for file_num in range(1, number_of_files+1):     
+        file_path = f"{folder}/{base_file_name}{entity_number}-{file_count}.{FILE_EXT}"        
+        file_count += 1
         with open(file_path, "w") as out:
             begin = f"[begin, {file_path}]\n"
             end = f"\n[end, {file_path}]"
