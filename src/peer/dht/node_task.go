@@ -59,10 +59,12 @@ func generateSndStoreFromInputTag(fileName string) string {
 	return generateTimeNanoTag(PREFIX_SND_STORE + keys.KeyToHexString(keys.GetKey(fileName)))
 }
 
+// Genera el tag para obtener un archivo desde la red de nodos
 func generateGetFileTag(destUrl string, key []byte) string {
 	return PREFIX_GET_FILE + destUrl + "-" + keys.KeyToHexString(key)
 }
 
+// Genera el tag para el envío de un archivo a un cliente
 func generateSendFileTag(destUrl string, key []byte) string {
 	return PREFIX_SEND_FILE + destUrl + "-" + keys.KeyToHexString(key)
 }

@@ -12,6 +12,8 @@ import (
 const MSG_CLOSING_SERVICE = "closing service: %v"
 const MSG_SERVICE_STARTED = "service started: %v"
 
+var MetricsServiceInstance = NewMetricsServer()
+
 // Contiene las métricas del módulo cliente
 type Metrics struct {
 	uploadedFileCount prometheus.Counter
