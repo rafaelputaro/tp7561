@@ -45,6 +45,7 @@ type Node struct {
 	SndFindBlock          rpc_ops.FindBlockOp
 	TaskScheduler         task_scheduler.TaskScheduler
 	DownloadKeys          map[string]string
+	MutexDownloadKeys     *sync.Mutex
 }
 
 // Retorna una nueva instancia de nodo lista para ser utilizada
@@ -64,6 +65,7 @@ func NewNode(
 		SndFindBlock:          sndFindBlock,
 		TaskScheduler:         *task_scheduler.NewTaskScheduler(),
 		DownloadKeys:          map[string]string{},
+		MutexDownloadKeys:     &sync.Mutex{},
 	}
 	return node
 }
@@ -290,7 +292,10 @@ func (node *Node) findBlockLocally(key []byte) (string, bool, []byte, error) {
 // Busca el bloque en los archivos descargados. Retorna <endFile><nextBlockKey><found>. En caso de no poder
 // enviar el mensaje retorna error
 func (node *Node) findBlockOnDownload(key []byte) (string, bool, []byte, bool) {
-	if fileNameFound, ok := node.DownloadKeys[keys.KeyToHexString(key)]; ok {
+	node.MutexDownloadKeys.Lock()
+	fileNameFound, ok := node.DownloadKeys[keys.KeyToHexString(key)]
+	node.MutexDownloadKeys.Unlock()
+	if ok {
 		endBlock, data, err := file_manager.GetBlockFromDown(fileNameFound)
 		if err == nil {
 			common.Log.Debugf(MSG_FILE_PREVIOUSLY_DOWNLOAD, fileNameFound)

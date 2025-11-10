@@ -53,7 +53,9 @@ func processNextContact(node *Node, key []byte, fileName string, contactStorage 
 	node.scheduleAddContactTask(*contact)
 	if len(fileNameFound) > 0 {
 		endFile, err := file_manager.StoreBlockOnDownload(fileNameFound, data)
+		node.MutexDownloadKeys.Lock()
 		node.DownloadKeys[keys.KeyToHexString(key)] = fileNameFound
+		node.MutexDownloadKeys.Unlock()
 		if err == nil {
 			common.Log.Debugf(MSG_FILE_FOUND, fileNameFound)
 			resChan <- *newProcessNextContactReturn(true, endFile, nextBlockKeyFound, fileNameFound, nil)

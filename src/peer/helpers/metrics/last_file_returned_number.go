@@ -3,6 +3,7 @@ package peer_metrics
 import (
 	"sync"
 	"tp/common"
+	common_metrics "tp/common/metrics"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -42,7 +43,7 @@ func newLastFileReturnedNumberMetric(namespace string, reg prometheus.Registerer
 func (metric *LastFileReturnedNumberMetric) setLastFileReturnedNumber(fileName string) {
 	metric.mutex.Lock()
 	defer metric.mutex.Unlock()
-	parsed := parseFileNumber(fileName)
+	parsed := common_metrics.ParseFileNumber(fileName)
 	common.Log.Debugf(SAVE_METRIC, LAST_FILE_RETURNED_NUMBER_NAME, parsed)
 	metric.lastFileReturnedNumber = parsed
 }

@@ -2,6 +2,7 @@ package client_metrics
 
 import (
 	"net/http"
+	"strconv"
 	"tp/common"
 	common_metrics "tp/common/metrics"
 
@@ -17,6 +18,7 @@ var MetricsServiceInstance = NewMetricsServer()
 // Contiene las métricas del módulo cliente
 type Metrics struct {
 	uploadedFileCount prometheus.Counter
+	downloadTimes     prometheus.GaugeVec
 }
 
 // Aloja las métricas del sistema las cuales puede ser recuperadas.
@@ -46,8 +48,13 @@ func newMetrics(namespace string, reg prometheus.Registerer) *Metrics {
 			Name:      "uploaded_file_count",
 			Help:      "Number of file uploaded byt the client",
 		}),
+		downloadTimes: *prometheus.NewGaugeVec(prometheus.GaugeOpts{
+			Namespace: namespace,
+			Name:      "download_time",
+			Help:      "Dowload time for a specific file",
+		}, []string{"fileNumber"}),
 	}
-	reg.MustRegister(m.uploadedFileCount)
+	reg.MustRegister(m.uploadedFileCount, m.downloadTimes)
 	return m
 }
 
@@ -63,4 +70,10 @@ func (service *MetricsService) Serve() {
 // Incrementa en uno la cantidad de archivos subidos desde este módulo al sistema
 func (service *MetricsService) IncUploadedFileCount() {
 	service.metrics.uploadedFileCount.Inc()
+}
+
+// Inserta un tiempo de descarga en las métricas
+func (service *MetricsService) InsertDowloadTime(fileName string, time float64) {
+	fileNumber := strconv.FormatFloat(common_metrics.ParseFileNumber(fileName), 'f', 0, 64)
+	service.metrics.downloadTimes.WithLabelValues(fileNumber).Set(time)
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"math/rand"
 	"sync"
 	"time"
@@ -19,9 +20,12 @@ import (
 
 const MSG_ERROR_ON_CREATE_RECEIVER = "The file receiver could not be created"
 const MSG_FILE_ADDED = "File added: %v | %v | %v"
+const MSG_FILE_ACCEPTED = "GetFile accepted: %v | %v | %v"
 const MSG_ERROR_FILE_NOT_UPLOADED = "the file has not yet been uploaded: %v"
 const MSG_ERROR_ON_GET_FILE = "error on get file: %v"
 const MSG_GET_FILE_ACCEPTED = "get file accepted: fileName: %v | key: %v"
+
+var InfiniteTime = time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
 
 type UploadData struct {
 	Key         []byte
@@ -31,9 +35,9 @@ type UploadData struct {
 type DownloadData struct {
 	Key          []byte
 	UrlPeerDest  string
-	TimeReq      *time.Time
-	TimeRcv      *time.Time
-	DownloadTime int64 // tiempo que demoro la descarga
+	TimeReq      time.Time
+	Received     bool
+	DownloadTime float64 // tiempo que demoro la descarga
 }
 
 type Client struct {
@@ -52,32 +56,36 @@ func NewClient() (*Client, error) {
 	config := helpers.LoadConfig()
 	// inicializar store
 	helpers.InitStore(*config)
+	// retornar cliente
+	client := Client{
+		Config:          *config,
+		UploadRegister:  map[string]UploadData{},
+		DowloadRegister: map[string]DownloadData{},
+		Keys:            map[string]string{},
+		TaskScheduler:   *task_scheduler.NewTaskScheduler(),
+		Mutex:           &sync.Mutex{},
+	}
 	// receptor de archivos por tcp
 	receiver, err := filetransfer.NewReceiver(
 		config.Url,
 		func(fileName string) string {
 			return helpers.GenerateDownloadPath(*config, fileName)
 		},
-		func([]byte, string) {},
+		func(key []byte, fileName string) {
+			client.RegisterRcvFile(key, fileName)
+		},
 	)
 	if err != nil {
 		common.Log.Errorf(MSG_ERROR_ON_CREATE_RECEIVER)
+	} else {
+		client.Receiver = receiver
 	}
 	// iniciar servicio de métricas
 	metrics := client_metrics.MetricsServiceInstance
 	go func() {
 		metrics.Serve()
 	}()
-	// retornar cliente
-	return &Client{
-		Config:          *config,
-		UploadRegister:  map[string]UploadData{},
-		DowloadRegister: map[string]DownloadData{},
-		Keys:            map[string]string{},
-		Receiver:        receiver,
-		TaskScheduler:   *task_scheduler.NewTaskScheduler(),
-		Mutex:           &sync.Mutex{},
-	}, err
+	return &client, err
 }
 
 // Iniciar el cliente
@@ -150,7 +158,9 @@ func (client *Client) getFile(fileName string) error {
 			common.Log.Debugf(msg)
 			return errors.New(msg)
 		}
-		common.Log.Debugf(MSG_FILE_ADDED, fileName, keys.KeyToHexString(upReg.Key), upReg.UrlPeerDest)
+		common.Log.Debugf(MSG_FILE_ACCEPTED, fileName, keys.KeyToHexString(upReg.Key), upReg.UrlPeerDest)
+		// Registrar request
+		client.registerDownloadRequest(fileName, upReg.Key, urlDest)
 		return nil
 	}
 	msg := fmt.Sprintf(MSG_ERROR_FILE_NOT_UPLOADED, fileName)
@@ -176,4 +186,53 @@ func selectPeer(countPeers int) string {
 	rand.New(rand.NewSource(time.Now().UnixNano()))
 	peerNumber := 2 + rand.Intn(countPeers-1)
 	return url.GenerateURLPeer(peerNumber)
+}
+
+// En caso de que se haya intentado descargar el archivo previamente se mantiene el primer tiempo de descarga.
+// Usar esta función con un lock tomado sobre cliente.
+func (client *Client) registerDownloadRequest(fileName string, key []byte, urlPeerDest string) {
+	// Si existe un registro de descarga se cambia únicamente la url
+	if register, exists := client.DowloadRegister[fileName]; exists {
+		client.DowloadRegister[fileName] = DownloadData{
+			Key:          register.Key,
+			UrlPeerDest:  urlPeerDest,
+			TimeReq:      register.TimeReq,
+			Received:     register.Received,
+			DownloadTime: register.DownloadTime,
+		}
+		return
+	}
+	// Si hay registro de descarga se inicializa
+	client.DowloadRegister[fileName] = DownloadData{
+		Key:          key,
+		UrlPeerDest:  urlPeerDest,
+		TimeReq:      time.Now(),
+		Received:     false,
+		DownloadTime: math.MaxFloat64,
+	}
+}
+
+// Se registra la recepción de un archivo. Internamente se toma mutex sobre client.
+func (client *Client) RegisterRcvFile(key []byte, fileName string) {
+	client.Mutex.Lock()
+	defer client.Mutex.Unlock()
+	// Buscar nombre de archivo
+	register, exists := client.DowloadRegister[fileName]
+	// Si existe el registro se procede a registrar
+	if exists {
+		// Si aún no fue recibido
+		if !register.Received {
+			now := time.Now()
+			delta := now.Sub(register.TimeReq).Seconds()
+			client.DowloadRegister[fileName] = DownloadData{
+				Key:          register.Key,
+				UrlPeerDest:  register.UrlPeerDest,
+				TimeReq:      register.TimeReq,
+				Received:     true,
+				DownloadTime: delta,
+			}
+			// registrar en métricas
+			client_metrics.MetricsServiceInstance.InsertDowloadTime(fileName, delta)
+		}
+	}
 }
