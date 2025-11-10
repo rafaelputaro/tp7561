@@ -17,7 +17,18 @@ const MIN_SLEEP_SHORT = 5
 const MAX_OFFSET_SLEEP_SHORT = 10
 const MIN_SLEEP_BETWEEN_SH_CONTACTS = 40
 const MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS = 30
+const MIN_SLEEP_LARGE = 40
+const MAX_OFFSET_SLEEP_LARGE = 20
 
+// Sleep de alrededor de 40 segundo con un desvío de 20
+func SleepLarge() {
+	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := MIN_SLEEP_LARGE + randSource.Intn(MAX_OFFSET_SLEEP_LARGE)
+	t := time.Duration(r) * time.Second
+	time.Sleep(t)
+}
+
+// @TODO ajustar esto
 func SleepBetweenRetries() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := MIN_SLEEP_BETWEEN_RETRIES + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_RETRIES)
@@ -25,6 +36,7 @@ func SleepBetweenRetries() {
 	time.Sleep(t)
 }
 
+// @TODO ajustar esto
 func SleepBetweenRetriesShort() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := MIN_SLEEP_BETWEEN_RETRIES_SHORT + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_RETRIES_SHORT)

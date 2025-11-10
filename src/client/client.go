@@ -24,6 +24,8 @@ const MSG_FILE_ACCEPTED = "GetFile accepted: %v | %v | %v"
 const MSG_ERROR_FILE_NOT_UPLOADED = "the file has not yet been uploaded: %v"
 const MSG_ERROR_ON_GET_FILE = "error on get file: %v"
 const MSG_GET_FILE_ACCEPTED = "get file accepted: fileName: %v | key: %v"
+const MSG_ALL_FILES_RCV = "All files have been received: %v"
+const MSG_REMAINING_FILES = "Not all files have been received yet: %v/%v"
 
 var InfiniteTime = time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
 
@@ -48,6 +50,7 @@ type Client struct {
 	Receiver        *filetransfer.Receiver
 	TaskScheduler   task_scheduler.TaskScheduler
 	Mutex           *sync.Mutex
+	CountReceived   int
 }
 
 // Retorna un cliente listo para ser utilizado
@@ -64,6 +67,7 @@ func NewClient() (*Client, error) {
 		Keys:            map[string]string{},
 		TaskScheduler:   *task_scheduler.NewTaskScheduler(),
 		Mutex:           &sync.Mutex{},
+		CountReceived:   0,
 	}
 	// receptor de archivos por tcp
 	receiver, err := filetransfer.NewReceiver(
@@ -95,9 +99,9 @@ func (client *Client) Start() {
 	// agregar archivos
 	client.addFiles()
 	client.getFiles()
-	for {
-		common.SleepOnStart(10 * client.Config.NumberOfPairs)
-	}
+	//common.SleepOnStart(10 * client.Config.NumberOfPairs)
+	// chequear si llegaron todos los archivos
+	client.checkAllReceived()
 }
 
 // Se detiene el cliente y sus servicios
@@ -137,9 +141,7 @@ func (client *Client) addFile(fileName string) error {
 // Intenta recuperar los archivos de la red de nodos
 func (client *Client) getFiles() error {
 	for _, fileName := range client.Keys {
-		//
 		client.scheduleGetFileTask(fileName)
-		//client.getFile(fileName)
 		common.SleepShort(client.Config.NumberOfPairs)
 	}
 	return nil
@@ -232,7 +234,28 @@ func (client *Client) RegisterRcvFile(key []byte, fileName string) {
 				DownloadTime: delta,
 			}
 			// registrar en métricas
-			client_metrics.MetricsServiceInstance.InsertDowloadTime(fileName, delta)
+			client_metrics.MetricsServiceInstance.InsertDownloadTime(fileName, delta)
+			client.CountReceived++
 		}
 	}
+}
+
+// Chequea si llegaron todos los archivos
+func (client *Client) checkAllReceived() {
+	wg := new(sync.WaitGroup)
+	wg.Add(1)
+	go func() {
+		for {
+			client.Mutex.Lock()
+			countKeys := len(client.Keys)
+			if client.CountReceived == countKeys {
+				common.Log.Infof(MSG_ALL_FILES_RCV, client.CountReceived)
+			} else {
+				common.Log.Infof(MSG_REMAINING_FILES, client.CountReceived, countKeys)
+			}
+			client.Mutex.Unlock()
+			common.SleepLarge()
+		}
+	}()
+	wg.Wait()
 }

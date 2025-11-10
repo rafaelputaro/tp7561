@@ -73,7 +73,7 @@ func (service *MetricsService) IncUploadedFileCount() {
 }
 
 // Inserta un tiempo de descarga en las métricas
-func (service *MetricsService) InsertDowloadTime(fileName string, time float64) {
+func (service *MetricsService) InsertDownloadTime(fileName string, time float64) {
 	fileNumber := strconv.FormatFloat(common_metrics.ParseFileNumber(fileName), 'f', 0, 64)
 	service.metrics.downloadTimes.WithLabelValues(fileNumber).Set(time)
 }

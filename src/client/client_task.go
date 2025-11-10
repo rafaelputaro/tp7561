@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
-	"time"
 	"tp/common"
 	"tp/common/keys"
 )
@@ -11,11 +8,12 @@ import (
 const PREFIX_ADD_FILE = "add-file-"
 const PREFIX_GET_FILE = "get-file-"
 
+/*
 // Retorna un tag basado en el tiempo y el prefijo
 func generateTimeNanoTag(prefix string) string {
 	return fmt.Sprintf("%v%v", prefix, strconv.FormatInt(time.Now().UnixNano(), 10))
 }
-
+*/
 // Genera el tag para una tarea de subida de archivo a la red de nodos
 func generateAddFileTag(fileName string) string {
 	return PREFIX_ADD_FILE + keys.KeyToHexString(keys.GetKey(fileName))
