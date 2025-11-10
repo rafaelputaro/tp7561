@@ -40,6 +40,7 @@ type DownloadData struct {
 	TimeReq      time.Time
 	Received     bool
 	DownloadTime float64 // tiempo que demoro la descarga
+	MetricSaved  bool
 }
 
 type Client struct {
@@ -201,6 +202,7 @@ func (client *Client) registerDownloadRequest(fileName string, key []byte, urlPe
 			TimeReq:      register.TimeReq,
 			Received:     register.Received,
 			DownloadTime: register.DownloadTime,
+			MetricSaved:  register.MetricSaved,
 		}
 		return
 	}
@@ -211,6 +213,7 @@ func (client *Client) registerDownloadRequest(fileName string, key []byte, urlPe
 		TimeReq:      time.Now(),
 		Received:     false,
 		DownloadTime: math.MaxFloat64,
+		MetricSaved:  false,
 	}
 }
 
