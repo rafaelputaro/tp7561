@@ -1314,8 +1314,27 @@ services:
       - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - client-1
+      - cadvisor
     networks:
       - tp_net
+
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:latest
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - 8079:8080
+    privileged: true
+    devices:
+      - /dev/kmsg
+    restart: unless-stopped
+    networks:
+      - tp_net    
 
   grafana:
     image: grafana/grafana:latest
