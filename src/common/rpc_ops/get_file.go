@@ -26,7 +26,7 @@ func GetFile(selfUrl string, destUrl string, key []byte) (bool, bool, error) {
 			if errGf != nil {
 				common.Log.Infof(MSG_GET_FILE_ATTEMPT, key, retry, errGf)
 				// esperar
-				common.SleepBetweenRetries()
+				common.SleepBetweenRetriesGetFile()
 				continue
 			}
 			accepted, pending := protoUtils.ParseGetFileResults(response)

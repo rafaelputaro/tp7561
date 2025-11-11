@@ -30,7 +30,7 @@ func SndShareContactsRecip(config helpers.PeerConfig, destContact contact.Contac
 			if err != nil {
 				common.Log.Infof(MSG_SHARE_CONTACTS_ATTEMPT, retry, err)
 				// esperar
-				common.SleepBetweenRetries()
+				common.SleepBetweenRetriesShareContactsRecip()
 				continue
 			}
 			return protoUtils.ParseShareContactsReciprocallyResults(response), nil

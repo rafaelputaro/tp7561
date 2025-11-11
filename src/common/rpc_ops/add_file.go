@@ -25,7 +25,7 @@ func AddFile(url string, fileName string, path string) ([]byte, error) {
 			if errAf != nil {
 				common.Log.Infof(MSG_ADD_FILE_ATTEMPT, fileName, retry, errAf)
 				// esperar
-				common.SleepBetweenRetries()
+				common.SleepBetweenRetriesAddFile()
 				continue
 			}
 			key, urlDest = protoUtils.ParseAddFileResults(response)
