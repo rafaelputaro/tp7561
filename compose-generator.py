@@ -14,6 +14,7 @@ def main():
     template = env.get_template("docker-compose-dev.yaml.jinja")
     output = template.render(
         number_of_pairs=int(default_config["NUMBER_OF_PAIRS"]),
+        size_of_peer_groups=int(default_config["SIZE_OF_PEER_GROUPS"]),
         metrics_host=default_config["METRICS_HOST"],
         metrics_base_port=int(default_config["METRICS_BASE_PORT"]),
         prometheus_port=default_config["PROMETHEUS_PORT"],

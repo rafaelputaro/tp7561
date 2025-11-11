@@ -24,19 +24,17 @@ services:
       - METRICS_HOST=peer-{{ i }}
       - METRICS_PORT={{ metrics_base_port + i }}
       - NAME_SPACE=peer-{{ i }} 
+{% set remainder = i % size_of_peer_groups  %}
+{% if i <= size_of_peer_groups or remainder == 0 or i == 1 %}
+      - BOOTSTRAP_NODE=peer-1
+{% else %}
+      - BOOTSTRAP_NODE=peer-{{ i - remainder }}
+{% endif %}
     networks:
       - tp_net
 {% if i != 1 %}
     depends_on:
       - peer-1 
-{# 
-{% if i < number_of_pairs %}
-    depends_on:
-
-{% for i in range(i+1, i + 2) %}
-      - peer-{{ i }}
-{%- endfor -%}
-#}
 {% endif %}
 {% endfor %}
 
@@ -108,9 +106,6 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - ./src/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml 
-{#      - ./src/grafana/dashboards:/var/lib/grafana/dashboards      #}
-{#      - ./src/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards #}
-{#      - ./src/grafana/provisioning:/etc/grafana/provisioning #}
       - grafana:/var/lib/grafana
     networks:
       - tp_net

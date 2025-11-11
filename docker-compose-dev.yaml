@@ -24,6 +24,10 @@ services:
       - METRICS_HOST=peer-1
       - METRICS_PORT=9091
       - NAME_SPACE=peer-1 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
@@ -52,12 +56,15 @@ services:
       - METRICS_HOST=peer-2
       - METRICS_PORT=9092
       - NAME_SPACE=peer-2 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-3:
@@ -84,12 +91,15 @@ services:
       - METRICS_HOST=peer-3
       - METRICS_PORT=9093
       - NAME_SPACE=peer-3 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-4:
@@ -116,12 +126,15 @@ services:
       - METRICS_HOST=peer-4
       - METRICS_PORT=9094
       - NAME_SPACE=peer-4 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-5:
@@ -148,12 +161,15 @@ services:
       - METRICS_HOST=peer-5
       - METRICS_PORT=9095
       - NAME_SPACE=peer-5 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-6:
@@ -180,12 +196,15 @@ services:
       - METRICS_HOST=peer-6
       - METRICS_PORT=9096
       - NAME_SPACE=peer-6 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-7:
@@ -212,12 +231,15 @@ services:
       - METRICS_HOST=peer-7
       - METRICS_PORT=9097
       - NAME_SPACE=peer-7 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-8:
@@ -244,12 +266,15 @@ services:
       - METRICS_HOST=peer-8
       - METRICS_PORT=9098
       - NAME_SPACE=peer-8 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-9:
@@ -276,12 +301,15 @@ services:
       - METRICS_HOST=peer-9
       - METRICS_PORT=9099
       - NAME_SPACE=peer-9 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-10:
@@ -308,12 +336,15 @@ services:
       - METRICS_HOST=peer-10
       - METRICS_PORT=9100
       - NAME_SPACE=peer-10 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-11:
@@ -340,12 +371,15 @@ services:
       - METRICS_HOST=peer-11
       - METRICS_PORT=9101
       - NAME_SPACE=peer-11 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-12:
@@ -372,12 +406,15 @@ services:
       - METRICS_HOST=peer-12
       - METRICS_PORT=9102
       - NAME_SPACE=peer-12 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-13:
@@ -404,12 +441,15 @@ services:
       - METRICS_HOST=peer-13
       - METRICS_PORT=9103
       - NAME_SPACE=peer-13 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-14:
@@ -436,12 +476,15 @@ services:
       - METRICS_HOST=peer-14
       - METRICS_PORT=9104
       - NAME_SPACE=peer-14 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-15:
@@ -468,12 +511,15 @@ services:
       - METRICS_HOST=peer-15
       - METRICS_PORT=9105
       - NAME_SPACE=peer-15 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-16:
@@ -500,12 +546,15 @@ services:
       - METRICS_HOST=peer-16
       - METRICS_PORT=9106
       - NAME_SPACE=peer-16 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-17:
@@ -532,12 +581,15 @@ services:
       - METRICS_HOST=peer-17
       - METRICS_PORT=9107
       - NAME_SPACE=peer-17 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-18:
@@ -564,12 +616,15 @@ services:
       - METRICS_HOST=peer-18
       - METRICS_PORT=9108
       - NAME_SPACE=peer-18 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-19:
@@ -596,12 +651,15 @@ services:
       - METRICS_HOST=peer-19
       - METRICS_PORT=9109
       - NAME_SPACE=peer-19 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-20:
@@ -628,12 +686,15 @@ services:
       - METRICS_HOST=peer-20
       - METRICS_PORT=9110
       - NAME_SPACE=peer-20 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-21:
@@ -660,12 +721,15 @@ services:
       - METRICS_HOST=peer-21
       - METRICS_PORT=9111
       - NAME_SPACE=peer-21 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-22:
@@ -692,12 +756,15 @@ services:
       - METRICS_HOST=peer-22
       - METRICS_PORT=9112
       - NAME_SPACE=peer-22 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-23:
@@ -724,12 +791,15 @@ services:
       - METRICS_HOST=peer-23
       - METRICS_PORT=9113
       - NAME_SPACE=peer-23 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-24:
@@ -756,12 +826,15 @@ services:
       - METRICS_HOST=peer-24
       - METRICS_PORT=9114
       - NAME_SPACE=peer-24 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-25:
@@ -788,12 +861,15 @@ services:
       - METRICS_HOST=peer-25
       - METRICS_PORT=9115
       - NAME_SPACE=peer-25 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-26:
@@ -820,12 +896,15 @@ services:
       - METRICS_HOST=peer-26
       - METRICS_PORT=9116
       - NAME_SPACE=peer-26 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-27:
@@ -852,12 +931,15 @@ services:
       - METRICS_HOST=peer-27
       - METRICS_PORT=9117
       - NAME_SPACE=peer-27 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-28:
@@ -884,12 +966,15 @@ services:
       - METRICS_HOST=peer-28
       - METRICS_PORT=9118
       - NAME_SPACE=peer-28 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-29:
@@ -916,12 +1001,15 @@ services:
       - METRICS_HOST=peer-29
       - METRICS_PORT=9119
       - NAME_SPACE=peer-29 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-30:
@@ -948,12 +1036,15 @@ services:
       - METRICS_HOST=peer-30
       - METRICS_PORT=9120
       - NAME_SPACE=peer-30 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-31:
@@ -980,12 +1071,15 @@ services:
       - METRICS_HOST=peer-31
       - METRICS_PORT=9121
       - NAME_SPACE=peer-31 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-32:
@@ -1012,12 +1106,15 @@ services:
       - METRICS_HOST=peer-32
       - METRICS_PORT=9122
       - NAME_SPACE=peer-32 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-33:
@@ -1044,12 +1141,15 @@ services:
       - METRICS_HOST=peer-33
       - METRICS_PORT=9123
       - NAME_SPACE=peer-33 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-34:
@@ -1076,12 +1176,15 @@ services:
       - METRICS_HOST=peer-34
       - METRICS_PORT=9124
       - NAME_SPACE=peer-34 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-35:
@@ -1108,12 +1211,15 @@ services:
       - METRICS_HOST=peer-35
       - METRICS_PORT=9125
       - NAME_SPACE=peer-35 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-36:
@@ -1140,12 +1246,15 @@ services:
       - METRICS_HOST=peer-36
       - METRICS_PORT=9126
       - NAME_SPACE=peer-36 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-37:
@@ -1172,12 +1281,15 @@ services:
       - METRICS_HOST=peer-37
       - METRICS_PORT=9127
       - NAME_SPACE=peer-37 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-38:
@@ -1204,12 +1316,15 @@ services:
       - METRICS_HOST=peer-38
       - METRICS_PORT=9128
       - NAME_SPACE=peer-38 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-39:
@@ -1236,12 +1351,15 @@ services:
       - METRICS_HOST=peer-39
       - METRICS_PORT=9129
       - NAME_SPACE=peer-39 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
   peer-40:
@@ -1268,12 +1386,15 @@ services:
       - METRICS_HOST=peer-40
       - METRICS_PORT=9130
       - NAME_SPACE=peer-40 
+
+
+      - BOOTSTRAP_NODE=peer-1
+
     networks:
       - tp_net
 
     depends_on:
       - peer-1 
-
 
 
 
@@ -1345,9 +1466,6 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - ./src/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml 
-
-
-
       - grafana:/var/lib/grafana
     networks:
       - tp_net

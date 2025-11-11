@@ -1,10 +1,22 @@
 package url
 
-import "tp/common/keys"
+import (
+	"os"
+	"tp/common/keys"
+)
 
-const BOOTSTRAP_NODE_NAME = "peer-1"
+const BOOTSTRAP_NODE_DEFAULT = "peer-1"
 const BOOTSTRAP_NODE_PORT = "50051"
-const BOOTSTRAP_NODE_HOST = "peer-1"
 
-var BootstrapNodeUrl = GenerateURL(BOOTSTRAP_NODE_HOST, BOOTSTRAP_NODE_PORT)
-var BootstrapNodeID = keys.GetKey(BOOTSTRAP_NODE_NAME)
+var bootstrapNode = getBootrapNode()
+var BootstrapNodeUrl = GenerateURL(bootstrapNode, BOOTSTRAP_NODE_PORT)
+var BootstrapNodeID = keys.GetKey(bootstrapNode)
+
+func getBootrapNode() string {
+	bootstrapNodeEnv := os.Getenv("BOOTSTRAP_NODE")
+	if bootstrapNodeEnv == "" {
+		return BOOTSTRAP_NODE_DEFAULT
+	} else {
+		return bootstrapNodeEnv
+	}
+}
