@@ -96,3 +96,9 @@ https://www.youtube.com/watch?v=sNk9NkgTOLs&t=371s
 http://localhost:9090/
 
 http://localhost:3000/login
+
+
+https://www.youtube.com/watch?v=PCJwJpbln6Q&t=668s
+
+
+http://localhost:8079/
