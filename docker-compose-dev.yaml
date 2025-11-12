@@ -27,6 +27,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -59,6 +60,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -94,6 +96,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -129,6 +132,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -164,6 +168,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -199,6 +204,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -234,6 +240,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -269,6 +276,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -304,6 +312,7 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -340,6 +349,9 @@ services:
 
       - BOOTSTRAP_NODE=peer-1
 
+      - IS_BOOTSTRAP_NODE_SEC=true
+
+
     networks:
       - tp_net
 
@@ -373,7 +385,8 @@ services:
       - NAME_SPACE=peer-11 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -408,7 +421,8 @@ services:
       - NAME_SPACE=peer-12 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -443,7 +457,8 @@ services:
       - NAME_SPACE=peer-13 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -478,7 +493,8 @@ services:
       - NAME_SPACE=peer-14 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -513,7 +529,8 @@ services:
       - NAME_SPACE=peer-15 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -548,7 +565,8 @@ services:
       - NAME_SPACE=peer-16 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -583,7 +601,8 @@ services:
       - NAME_SPACE=peer-17 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -618,7 +637,8 @@ services:
       - NAME_SPACE=peer-18 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -653,7 +673,8 @@ services:
       - NAME_SPACE=peer-19 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-10
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -690,6 +711,9 @@ services:
 
       - BOOTSTRAP_NODE=peer-1
 
+      - IS_BOOTSTRAP_NODE_SEC=true
+
+
     networks:
       - tp_net
 
@@ -723,7 +747,8 @@ services:
       - NAME_SPACE=peer-21 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -758,7 +783,8 @@ services:
       - NAME_SPACE=peer-22 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -793,7 +819,8 @@ services:
       - NAME_SPACE=peer-23 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -828,7 +855,8 @@ services:
       - NAME_SPACE=peer-24 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -863,7 +891,8 @@ services:
       - NAME_SPACE=peer-25 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -898,7 +927,8 @@ services:
       - NAME_SPACE=peer-26 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -933,7 +963,8 @@ services:
       - NAME_SPACE=peer-27 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -968,7 +999,8 @@ services:
       - NAME_SPACE=peer-28 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1003,7 +1035,8 @@ services:
       - NAME_SPACE=peer-29 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-20
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1040,6 +1073,9 @@ services:
 
       - BOOTSTRAP_NODE=peer-1
 
+      - IS_BOOTSTRAP_NODE_SEC=true
+
+
     networks:
       - tp_net
 
@@ -1073,7 +1109,8 @@ services:
       - NAME_SPACE=peer-31 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1108,7 +1145,8 @@ services:
       - NAME_SPACE=peer-32 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1143,7 +1181,8 @@ services:
       - NAME_SPACE=peer-33 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1178,7 +1217,8 @@ services:
       - NAME_SPACE=peer-34 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1213,7 +1253,8 @@ services:
       - NAME_SPACE=peer-35 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1248,7 +1289,8 @@ services:
       - NAME_SPACE=peer-36 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1283,7 +1325,8 @@ services:
       - NAME_SPACE=peer-37 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1318,7 +1361,8 @@ services:
       - NAME_SPACE=peer-38 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1353,7 +1397,8 @@ services:
       - NAME_SPACE=peer-39 
 
 
-      - BOOTSTRAP_NODE=peer-1
+      - BOOTSTRAP_NODE=peer-30
+      - IS_BOOTSTRAP_NODE_SEC=false
 
     networks:
       - tp_net
@@ -1389,6 +1434,9 @@ services:
 
 
       - BOOTSTRAP_NODE=peer-1
+
+      - IS_BOOTSTRAP_NODE_SEC=false
+
 
     networks:
       - tp_net

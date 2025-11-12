@@ -25,10 +25,19 @@ services:
       - METRICS_PORT={{ metrics_base_port + i }}
       - NAME_SPACE=peer-{{ i }} 
 {% set remainder = i % size_of_peer_groups  %}
-{% if i <= size_of_peer_groups or remainder == 0 or i == 1 %}
+{% if i < size_of_peer_groups %}
       - BOOTSTRAP_NODE=peer-1
+      - IS_BOOTSTRAP_NODE_SEC=false
+{% elif remainder == 0 %}
+      - BOOTSTRAP_NODE=peer-1
+{% if i == number_of_pairs %}
+      - IS_BOOTSTRAP_NODE_SEC=false
+{% else %}
+      - IS_BOOTSTRAP_NODE_SEC=true
+{% endif %}
 {% else %}
       - BOOTSTRAP_NODE=peer-{{ i - remainder }}
+      - IS_BOOTSTRAP_NODE_SEC=false
 {% endif %}
     networks:
       - tp_net

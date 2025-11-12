@@ -96,7 +96,7 @@ func NewClient() (*Client, error) {
 // Iniciar el cliente
 func (client *Client) Start() {
 	// esperar a que la mayoría de los pares se inicialicen intercambiando contactos
-	common.SleepOnStart(10 * client.Config.NumberOfPairs)
+	common.SleepOnStart(14 * client.Config.NumberOfPairs)
 	// agregar archivos
 	client.addFiles()
 	client.getFiles()

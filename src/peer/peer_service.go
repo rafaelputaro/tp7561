@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 	"tp/common"
+	"tp/common/communication/url"
 	filetransfer "tp/common/files_common/file_transfer"
 	"tp/peer/helpers/file_manager/utils"
 	"tp/protobuf/protopb"
@@ -81,6 +82,11 @@ func shareContactsWithBootstrapNode(peer *Peer) {
 		count := 0
 		for {
 			common.SleepBetweenShareContactsShort()
+			// Si es un bootstrap node secundario comparte siempre
+			if url.IsBootstrapNodeSec {
+				peer.NodeDHT.ScheduleSndShCtsToBootstrapTask()
+				continue
+			}
 			if count > MAX_INIT_SH_CTS_COUNT {
 				common.SleepBetweenShareContactsLarge()
 			} else {

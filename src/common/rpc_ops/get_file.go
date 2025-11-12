@@ -24,7 +24,7 @@ func GetFile(selfUrl string, destUrl string, key []byte) (bool, bool, error) {
 			// enviar get file message
 			response, errGf := client.GetFile(ctx, operands)
 			if errGf != nil {
-				common.Log.Infof(MSG_GET_FILE_ATTEMPT, key, retry, errGf)
+				common.Log.Infof(MSG_GET_FILE_ATTEMPT, keys.KeyToHexString(key), retry, errGf)
 				// esperar
 				common.SleepBetweenRetriesGetFile()
 				continue

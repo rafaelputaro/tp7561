@@ -29,8 +29,8 @@ const MAX_OFFSET_SLEEP_ON_START = 30
 const MIN_SLEEP_SHORT = 5
 const MAX_OFFSET_SLEEP_SHORT = 10
 
-const MIN_SLEEP_BETWEEN_SH_CONTACTS = 40
-const MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS = 30
+const MIN_SLEEP_BETWEEN_SH_CONTACTS = 50 //40
+const MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS = 10
 
 const MIN_SLEEP_LARGE = 40
 const MAX_OFFSET_SLEEP_LARGE = 20
@@ -105,6 +105,7 @@ func SleepShort(numberOfParticipants int) {
 	time.Sleep(t)
 }
 
+// Sleep de 50 segundos con un desvío de 10 ms
 func SleepBetweenShareContactsShort() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
@@ -112,9 +113,10 @@ func SleepBetweenShareContactsShort() {
 	time.Sleep(t)
 }
 
+// Sleep de 13 minutos con un desvío de 20 segundos
 func SleepBetweenShareContactsLarge() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := 20*MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(4*MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
+	r := 16*MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(2*MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }
