@@ -88,7 +88,6 @@ func (table *BucketTable) doAddContact(newContact contact.Contact) error {
 			headContact, _ := queue.TakeHead()
 			if table.isUnresponsiveContact(headContact) {
 				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_REPLACE_HEAD, newContact.ToString(), headContact.ToString()))
-				peer_metrics.RemoveContact(table.Config.Name, headContact)
 				queue.Enqueue(newContact)
 			} else {
 				common.Log.Debugf(fmt.Sprintf(MSG_CONTACT_DISCARD, newContact.ToString()))

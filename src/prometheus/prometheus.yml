@@ -1,6 +1,6 @@
 global:
-  scrape_interval: 5s
-  evaluation_interval: 5s
+  scrape_interval: 10s
+  evaluation_interval: 10s
 
 alerting:
 
@@ -8,7 +8,7 @@ rule_files:
 
 scrape_configs:
   - job_name: 'cadvisor'
-    scrape_interval: 5s
+    scrape_interval: 10s
     static_configs:
       - targets: ['cadvisor:8080']
   - job_name: 'prometheus'
@@ -21,22 +21,6 @@ scrape_configs:
   - job_name: "client-1"
     static_configs:
     - targets: ["client-1:9131"]
-
-  - job_name: "client-2"
-    static_configs:
-    - targets: ["client-2:9132"]
-
-  - job_name: "client-3"
-    static_configs:
-    - targets: ["client-3:9133"]
-
-  - job_name: "client-4"
-    static_configs:
-    - targets: ["client-4:9134"]
-
-  - job_name: "client-5"
-    static_configs:
-    - targets: ["client-5:9135"]
 
 
   - job_name: "peer-1"

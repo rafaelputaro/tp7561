@@ -2,13 +2,14 @@ package contacts_queue
 
 import (
 	"errors"
+	"fmt"
 	"tp/common"
 	"tp/common/contact"
 	"tp/common/keys"
 )
 
 const MSG_ERROR_EMPTY_QUEUE = "error queue empty"
-const MSG_ERROR_FULL_QUEUE = "error queue is full"
+const MSG_ERROR_FULL_QUEUE = "error queue is full: %v"
 const MSG_CONTACT_ALREADY_ADDED = "The contact has already been added previously: %v"
 
 // Representa una cola de contactos tipo FIFO que no permite id's repetidos
@@ -34,7 +35,9 @@ func NewQueue(capacity int) *ContactQueue {
 func (queue *ContactQueue) Enqueue(entry contact.Contact) (bool, error) {
 	if !queue.HasId(entry.ID) {
 		if queue.Full() {
-			return false, errors.New(MSG_ERROR_FULL_QUEUE)
+			msg := fmt.Sprintf(MSG_ERROR_FULL_QUEUE, len(queue.Entries))
+			common.Log.Debugf(msg)
+			return false, errors.New(msg)
 		}
 		queue.Entries = append(queue.Entries, entry)
 		queue.IdsInTheQueue[keys.KeyToString(entry.ID)] = true

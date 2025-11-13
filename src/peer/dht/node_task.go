@@ -23,7 +23,7 @@ const PREFIX_GET_FILE = "get-file-"
 const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
 const PREFIX_SND_SH_CTS_BOOTSTRAP_NODE = "snd-sh-cts-bn-"
-const MAX_TIME_ADD_CONTACT_TASK = 10000 // 10 Segundos
+const MAX_TIME_ADD_CONTACT_TASK = 7500 // 7.5 Segundos
 
 // Retorna un tag basado en el tiempo y el prefijo
 func generateTimeNanoTag(prefix string) string {
