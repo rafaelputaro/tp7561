@@ -8,11 +8,11 @@ import (
 
 var common_var = ""
 
-func createTask(msg string) func() (string, bool) {
-	return func() (string, bool) {
+func createTask(msg string) TaskData {
+	return *newTaskDataWithoutExpiration(func() (string, bool) {
 		common_var += msg
 		return msg, true
-	}
+	})
 }
 
 func TestScheduler(t *testing.T) {
@@ -22,7 +22,7 @@ func TestScheduler(t *testing.T) {
 	for i := range 20 {
 		iS := strconv.Itoa(i)
 		check += iS
-		if err := scheduler.addTask(createTask(iS)); err != nil {
+		if err := scheduler.doAddTask(createTask(iS)); err != nil {
 			t.Errorf("Error on add task: %v", err)
 		}
 	}
@@ -33,7 +33,7 @@ func TestScheduler(t *testing.T) {
 		t.Errorf("Not Match: Expected: %v | Found: %v", common_var, check)
 	}
 	scheduler.DisposeTaskScheduler()
-	if scheduler.addTask(createTask("hola")) == nil {
+	if scheduler.doAddTask(createTask("hola")) == nil {
 		t.Errorf("Add task on channel closed")
 	}
 }

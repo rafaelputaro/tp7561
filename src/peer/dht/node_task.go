@@ -23,6 +23,7 @@ const PREFIX_GET_FILE = "get-file-"
 const PREFIX_SEND_FILE = "send-file-"
 const PREFIX_SND_STORE = "snd-store-"
 const PREFIX_SND_SH_CTS_BOOTSTRAP_NODE = "snd-sh-cts-bn-"
+const MAX_TIME_ADD_CONTACT_TASK = 10000 // 10 Segundos
 
 // Retorna un tag basado en el tiempo y el prefijo
 func generateTimeNanoTag(prefix string) string {
@@ -79,13 +80,13 @@ func generateSndShCtsToBootstrapTag() string {
 // enviar pings secundarios a otros contactos
 func (node *Node) scheduleAddContactTask(contact contact.Contact) {
 	tag := generateAddContactTag()
-	node.TaskScheduler.AddTask(func() (string, bool) {
+	node.TaskScheduler.AddTaskWithExpirationTime(func() (string, bool) {
 		// si hay error, la tarea se vuelve a intentar
 		if node.BucketTab.AddContact(contact) != nil {
 			return tag, true
 		}
 		return "", false
-	}, tag)
+	}, MAX_TIME_ADD_CONTACT_TASK, tag)
 }
 
 // Agrega la tarea de agregar varios contactos a la bucket table. Se recomienda utilizarla
@@ -93,13 +94,13 @@ func (node *Node) scheduleAddContactTask(contact contact.Contact) {
 // enviar pings secundarios a otros contactos
 func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
 	tag := generateAddContactsTag()
-	node.TaskScheduler.AddTask(func() (string, bool) {
+	node.TaskScheduler.AddTaskWithExpirationTime(func() (string, bool) {
 		// si hay error, la tarea se vuelve a intentar
 		if node.BucketTab.AddContacts(contacts) != nil {
 			return tag, true
 		}
 		return tag, false
-	}, tag)
+	}, MAX_TIME_ADD_CONTACT_TASK, tag)
 }
 
 // Agrega la tarea de enviar ping a contactos para ser agregador a la bucket table
@@ -107,14 +108,14 @@ func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
 func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 	for _, contact := range contacts {
 		tag := generatePingAndAddContactTag()
-		node.TaskScheduler.AddTask(func() (string, bool) {
+		node.TaskScheduler.AddTaskWithExpirationTime(func() (string, bool) {
 			// si hay error, la tarea se vuelve a intentar
 			if node.SndPing(node.Config, contact) != nil {
 				return tag, true
 			}
 			node.scheduleAddContactTask(contact)
 			return tag, false
-		}, tag)
+		}, MAX_TIME_ADD_CONTACT_TASK, tag)
 	}
 }
 

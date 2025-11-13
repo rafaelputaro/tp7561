@@ -22,6 +22,22 @@ scrape_configs:
     static_configs:
     - targets: ["client-1:9131"]
 
+  - job_name: "client-2"
+    static_configs:
+    - targets: ["client-2:9132"]
+
+  - job_name: "client-3"
+    static_configs:
+    - targets: ["client-3:9133"]
+
+  - job_name: "client-4"
+    static_configs:
+    - targets: ["client-4:9134"]
+
+  - job_name: "client-5"
+    static_configs:
+    - targets: ["client-5:9135"]
+
 
   - job_name: "peer-1"
     static_configs:

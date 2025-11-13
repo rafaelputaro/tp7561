@@ -83,7 +83,9 @@ services:
     volumes:
       - ./src/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
-      - client-1
+{% for i in range(1, number_of_clients + 1) %}
+      - client-{{ i }}
+{% endfor %}
       - cadvisor
     networks:
       - tp_net
