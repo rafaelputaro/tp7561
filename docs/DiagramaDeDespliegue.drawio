@@ -1,0 +1,39 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.5 Chrome/138.0.7204.251 Electron/37.6.1 Safari/537.36" version="28.2.5">
+  <diagram name="Página-1" id="XdsWBBzTJEW43Zh-2W6Z">
+    <mxGraphModel dx="788" dy="550" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-lc1O5nVEHT-S2fz78be-1" value="Peer" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="165" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="-lc1O5nVEHT-S2fz78be-3" value="peer" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="71" y="70" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="-lc1O5nVEHT-S2fz78be-4" value="Client" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="271" y="30" width="170" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="-lc1O5nVEHT-S2fz78be-5" value="client" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="306" y="70" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="-lc1O5nVEHT-S2fz78be-6" value="gRPC/TCP" style="html=1;verticalAlign=bottom;startArrow=open;startFill=0;endArrow=open;startSize=8;curved=0;rounded=0;exitX=0.529;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;dashed=1;endFill=0;" edge="1" parent="1" source="-lc1O5nVEHT-S2fz78be-1">
+          <mxGeometry width="60" relative="1" as="geometry">
+            <mxPoint x="251" y="94.5" as="sourcePoint" />
+            <mxPoint x="271" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-lc1O5nVEHT-S2fz78be-7" value="gRPC" style="html=1;verticalAlign=bottom;startArrow=open;startFill=0;endArrow=open;startSize=8;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;dashed=1;endFill=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0;exitDx=0;exitDy=35;exitPerimeter=0;" edge="1" parent="1" source="-lc1O5nVEHT-S2fz78be-3" target="-lc1O5nVEHT-S2fz78be-3">
+          <mxGeometry width="60" relative="1" as="geometry">
+            <mxPoint x="11" y="130" as="sourcePoint" />
+            <mxPoint x="146" y="201" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="51" y="105" />
+              <mxPoint x="51" y="150" />
+              <mxPoint x="153" y="150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

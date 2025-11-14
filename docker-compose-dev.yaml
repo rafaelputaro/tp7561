@@ -1464,10 +1464,62 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_FOLDER=/tmp/client/store
       - NUMBER_OF_PAIRS=40
-      - NUMBER_OF_CLIENTS=1
+      - NUMBER_OF_CLIENTS=3
       - METRICS_HOST=client-1
       - METRICS_PORT=9131
       - NAME_SPACE=client-1
+    depends_on:
+      - peer-1
+    networks:
+      - tp_net
+
+  client-2:
+    container_name: client-2
+    image: client:latest
+    ports:
+      - "8122:8080"
+      - "9132:9132"
+    volumes:
+      - /tmp/tp/data/client-2:/tmp/data
+      - /tmp/tp/client-2:/tmp/client
+    environment:
+      - CLIENT_NAME=client-2
+      - CLIENT_HOST=client-2
+      - CLIENT_PORT=8080
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_FOLDER=/tmp/client/store
+      - NUMBER_OF_PAIRS=40
+      - NUMBER_OF_CLIENTS=3
+      - METRICS_HOST=client-2
+      - METRICS_PORT=9132
+      - NAME_SPACE=client-2
+    depends_on:
+      - peer-1
+    networks:
+      - tp_net
+
+  client-3:
+    container_name: client-3
+    image: client:latest
+    ports:
+      - "8123:8080"
+      - "9133:9133"
+    volumes:
+      - /tmp/tp/data/client-3:/tmp/data
+      - /tmp/tp/client-3:/tmp/client
+    environment:
+      - CLIENT_NAME=client-3
+      - CLIENT_HOST=client-3
+      - CLIENT_PORT=8080
+      - LOGIN_FORMAT_FOR_KEYS=hex
+      - INPUT_DATA_FOLDER=/tmp/data
+      - STORE_FOLDER=/tmp/client/store
+      - NUMBER_OF_PAIRS=40
+      - NUMBER_OF_CLIENTS=3
+      - METRICS_HOST=client-3
+      - METRICS_PORT=9133
+      - NAME_SPACE=client-3
     depends_on:
       - peer-1
     networks:
@@ -1484,6 +1536,10 @@ services:
     depends_on:
 
       - client-1
+
+      - client-2
+
+      - client-3
 
       - cadvisor
     networks:
