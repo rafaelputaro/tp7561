@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.5 Chrome/138.0.7204.251 Electron/37.6.1 Safari/537.36" version="28.2.5">
   <diagram name="Página-1" id="XdsWBBzTJEW43Zh-2W6Z">
-    <mxGraphModel dx="788" dy="550" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="652" dy="455" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,7 +8,7 @@
           <mxGeometry x="30" y="30" width="165" height="130" as="geometry" />
         </mxCell>
         <mxCell id="-lc1O5nVEHT-S2fz78be-3" value="peer" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="71" y="70" width="110" height="50" as="geometry" />
+          <mxGeometry x="65" y="70" width="110" height="50" as="geometry" />
         </mxCell>
         <mxCell id="-lc1O5nVEHT-S2fz78be-4" value="Client" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="271" y="30" width="170" height="130" as="geometry" />
@@ -22,16 +22,19 @@
             <mxPoint x="271" y="100" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-lc1O5nVEHT-S2fz78be-7" value="gRPC" style="html=1;verticalAlign=bottom;startArrow=open;startFill=0;endArrow=open;startSize=8;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;dashed=1;endFill=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0;exitDx=0;exitDy=35;exitPerimeter=0;" edge="1" parent="1" source="-lc1O5nVEHT-S2fz78be-3" target="-lc1O5nVEHT-S2fz78be-3">
+        <mxCell id="-lc1O5nVEHT-S2fz78be-7" value="gRPC" style="html=1;verticalAlign=bottom;startArrow=open;startFill=0;endArrow=open;startSize=8;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;dashed=1;endFill=0;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0;exitDx=0;exitDy=35;exitPerimeter=0;" edge="1" parent="1" source="-lc1O5nVEHT-S2fz78be-3" target="-lc1O5nVEHT-S2fz78be-3">
           <mxGeometry width="60" relative="1" as="geometry">
             <mxPoint x="11" y="130" as="sourcePoint" />
             <mxPoint x="146" y="201" as="targetPoint" />
             <Array as="points">
               <mxPoint x="51" y="105" />
               <mxPoint x="51" y="150" />
-              <mxPoint x="153" y="150" />
+              <mxPoint x="120" y="150" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="-lc1O5nVEHT-S2fz78be-8" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;font-family: Arial; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Diagrama de despligue: &lt;span style=&quot;font-weight: normal;&quot;&gt;Se puede observar como los&amp;nbsp;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;font style=&quot;font-weight: normal;&quot; face=&quot;Arial&quot;&gt;pares interactúan entre sí mediante gRPC y con los clientes&amp;nbsp;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;font style=&quot;font-weight: normal;&quot; face=&quot;Arial&quot;&gt;a través de gRPC y TCP.&lt;/font&gt;&lt;/div&gt;" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" vertex="1" parent="1">
+          <mxGeometry x="42" y="166" width="368" height="50" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
