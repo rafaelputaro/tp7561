@@ -100,7 +100,6 @@ func (client *Client) Start() {
 	// agregar archivos
 	client.addFiles()
 	client.getFiles()
-	//common.SleepOnStart(10 * client.Config.NumberOfPairs)
 	// chequear si llegaron todos los archivos
 	client.checkAllReceived()
 }
