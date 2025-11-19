@@ -9,10 +9,10 @@ import (
 var common_var = ""
 
 func createTask(msg string) TaskData {
-	return *newTaskDataWithoutExpiration(func() (string, bool) {
+	return *newTaskDataWithoutExpirationTime(func() (string, bool) {
 		common_var += msg
 		return msg, true
-	})
+	}, false)
 }
 
 func TestScheduler(t *testing.T) {

@@ -7,13 +7,14 @@ import (
 	"tp/common"
 )
 
-const MAX_TASK = 10000
+const MAX_TASK = 20000
 const MAX_TASK_RETRIES = 200
 const MSG_TASK_SCHEDULER_BUSY_OR_CLOSED = "no more tasks can be accepted"
 const MSG_TAG_EXISTS = "tag exists: %v"
 const MSG_TASK_ADDED = "added task: %v"
 const MSG_RETRY_TASK = "retry task: tag %v | remaining retries: %v"
 const MSG_RULE_OUT_TASK = "rule out task: tag %v | remaining retries: %v"
+const MSG_RULE_OUT_TASK_TIME_EXPIRATION = "rule out task due to time expiration: tag %v | remaining retries: %v"
 
 // Retorna el tag de la función y si la misma es candidata a ser reintentada
 type TaskFunc func() (string, bool)
@@ -21,6 +22,7 @@ type TaskFunc func() (string, bool)
 type TaskData struct {
 	taskFunc   TaskFunc
 	expiration *time.Time
+	mandatory  bool
 }
 
 // Se encarga de mantener una serie de tareas a ser descargadas de un canal para ser ejecutadas
@@ -30,10 +32,11 @@ type TaskScheduler struct {
 	mutexTaggedTasks *sync.Mutex
 }
 
-func newTaskDataWithoutExpiration(task TaskFunc) *TaskData {
+func newTaskDataWithoutExpirationTime(task TaskFunc, mandatory bool) *TaskData {
 	return &TaskData{
 		taskFunc:   task,
 		expiration: nil,
+		mandatory:  mandatory,
 	}
 }
 
@@ -44,6 +47,7 @@ func newTaskDataWithExpirationTime(task TaskFunc, deltaTime float32) *TaskData {
 	return &TaskData{
 		taskFunc:   task,
 		expiration: &expiration,
+		mandatory:  false,
 	}
 }
 
@@ -77,11 +81,17 @@ func (scheduler *TaskScheduler) checkRetryTask(retry bool, taskData TaskData, ta
 		scheduler.doRemoveTask(tag)
 		return
 	}
+	// chequear si es una tarea obligatoria
+	if taskData.mandatory {
+		scheduler.doAddTask(taskData)
+		common.Log.Debugf(MSG_RETRY_TASK, tag, scheduler.taggedTasks[tag])
+		return
+	}
 	// chequear vencimiento por tiempo
 	if taskData.expiration != nil {
 		now := time.Now()
 		if taskData.expiration.Before(now) {
-			common.Log.Debugf(MSG_RULE_OUT_TASK, tag, scheduler.taggedTasks[tag])
+			common.Log.Debugf(MSG_RULE_OUT_TASK_TIME_EXPIRATION, tag, scheduler.taggedTasks[tag])
 			scheduler.doRemoveTask(tag)
 			return
 		}
@@ -121,7 +131,7 @@ func (scheduler *TaskScheduler) doAddTask(taskData TaskData) (err error) {
 }
 
 // Agrega una tarea a ser ejecutada
-func (scheduler *TaskScheduler) AddTask(task TaskFunc, tag string) error {
+func (scheduler *TaskScheduler) AddTask(task TaskFunc, mandatory bool, tag string) error {
 	scheduler.mutexTaggedTasks.Lock()
 	defer scheduler.mutexTaggedTasks.Unlock()
 	if scheduler.doHasTag(tag) {
@@ -130,7 +140,7 @@ func (scheduler *TaskScheduler) AddTask(task TaskFunc, tag string) error {
 	}
 	scheduler.taggedTasks[tag] = MAX_TASK_RETRIES
 	common.Log.Debugf(MSG_TASK_ADDED, tag)
-	err := scheduler.doAddTask(*newTaskDataWithoutExpiration(task))
+	err := scheduler.doAddTask(*newTaskDataWithoutExpirationTime(task, mandatory))
 	return err
 }
 

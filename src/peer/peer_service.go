@@ -24,7 +24,7 @@ const MSG_FAILED_TO_SERVE = "failed to serve: %v"
 const MSG_RETRY_LISTEN = "Listening retry"
 const MAX_RETRY_LISTEN = 10
 const MAX_RETRY_SERVE = 100
-const MAX_INIT_SH_CTS_COUNT = 3
+const MAX_INIT_SH_CTS_COUNT = 11
 
 // Implementa la funcionalidad de grpc server para el par
 type PeerService struct {
@@ -80,20 +80,18 @@ func NewPeerService(peer *Peer) *PeerService {
 func shareContactsWithBootstrapNode(peer *Peer) {
 	go func() {
 		count := 0
-		for {
+		for count < MAX_INIT_SH_CTS_COUNT {
+			count++
 			common.SleepBetweenShareContactsShort()
 			// Si es un bootstrap node secundario comparte siempre
 			if url.IsBootstrapNodeSec {
 				peer.NodeDHT.ScheduleSndShCtsToBootstrapTask()
 				continue
 			}
-			if count > MAX_INIT_SH_CTS_COUNT {
-				common.SleepBetweenShareContactsLarge()
-			} else {
-				count++
-			}
-			if peer.NodeDHT.BucketTab.GetCountContacts() <= 3*peer.Config.NumberOfPairs/4 {
+			if peer.NodeDHT.BucketTab.GetCountContacts() <= 80*peer.Config.NumberOfPairs/100 {
 				peer.NodeDHT.ScheduleSndShCtsToBootstrapTask()
+			} else {
+				common.SleepBetweenShareContactsLarge()
 			}
 		}
 	}()

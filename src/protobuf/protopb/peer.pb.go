@@ -77,13 +77,14 @@ func (x *PingOperands) GetSourceUrl() string {
 
 // Contiene los datos del contacto fuente y los contactos recomendados para el par destino
 type ShCtsRecipOpers struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SourceId      []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
-	SourceUrl     *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
-	ContactsIds   [][]byte               `protobuf:"bytes,3,rep,name=contactsIds" json:"contactsIds,omitempty"`
-	ContactsUrls  []string               `protobuf:"bytes,4,rep,name=contactsUrls" json:"contactsUrls,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	SourceId           []byte                 `protobuf:"bytes,1,req,name=sourceId" json:"sourceId,omitempty"`
+	SourceUrl          *string                `protobuf:"bytes,2,req,name=sourceUrl" json:"sourceUrl,omitempty"`
+	ContactsIds        [][]byte               `protobuf:"bytes,3,rep,name=contactsIds" json:"contactsIds,omitempty"`
+	ContactsUrls       []string               `protobuf:"bytes,4,rep,name=contactsUrls" json:"contactsUrls,omitempty"`
+	IsBootstrapNodeSec *bool                  `protobuf:"varint,5,req,name=isBootstrapNodeSec" json:"isBootstrapNodeSec,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *ShCtsRecipOpers) Reset() {
@@ -142,6 +143,13 @@ func (x *ShCtsRecipOpers) GetContactsUrls() []string {
 		return x.ContactsUrls
 	}
 	return nil
+}
+
+func (x *ShCtsRecipOpers) GetIsBootstrapNodeSec() bool {
+	if x != nil && x.IsBootstrapNodeSec != nil {
+		return *x.IsBootstrapNodeSec
+	}
+	return false
 }
 
 // Contiene los contactos recomendados por el nodo destino
@@ -620,12 +628,13 @@ const file_peer_proto_rawDesc = "" +
 	"peer.proto\x1a\x1bgoogle/protobuf/empty.proto\"H\n" +
 	"\fPingOperands\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
-	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\"\x91\x01\n" +
+	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\"\xc1\x01\n" +
 	"\x0fShCtsRecipOpers\x12\x1a\n" +
 	"\bsourceId\x18\x01 \x02(\fR\bsourceId\x12\x1c\n" +
 	"\tsourceUrl\x18\x02 \x02(\tR\tsourceUrl\x12 \n" +
 	"\vcontactsIds\x18\x03 \x03(\fR\vcontactsIds\x12\"\n" +
-	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\"U\n" +
+	"\fcontactsUrls\x18\x04 \x03(\tR\fcontactsUrls\x12.\n" +
+	"\x12isBootstrapNodeSec\x18\x05 \x02(\bR\x12isBootstrapNodeSec\"U\n" +
 	"\rShCtsRecipRes\x12 \n" +
 	"\vcontactsIds\x18\x01 \x03(\fR\vcontactsIds\x12\"\n" +
 	"\fcontactsUrls\x18\x02 \x03(\tR\fcontactsUrls\"\x8f\x01\n" +

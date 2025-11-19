@@ -3,6 +3,7 @@ package rpc_ops
 import (
 	"tp/common"
 	"tp/common/communication"
+	"tp/common/communication/url"
 	"tp/common/contact"
 	"tp/peer/helpers"
 	"tp/protobuf/protoUtils"
@@ -22,7 +23,7 @@ func SndShareContactsRecip(config helpers.PeerConfig, destContact contact.Contac
 		// share contact con retry
 		for retry := range MAX_RETRIES_ON_SHARE_CONTACTS_RECIP {
 			// armo los argumentos
-			shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts)
+			shContacOp := protoUtils.CreateShareContactsReciprocallyOperands(destContact, contacts, url.IsBootstrapNodeSec)
 			// compartir contacto
 			var response *protopb.ShCtsRecipRes
 			// compartir contacto

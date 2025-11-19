@@ -1,6 +1,7 @@
 package common
 
 import (
+	"math"
 	"math/rand"
 	"time"
 )
@@ -91,6 +92,13 @@ func SleepBetweenRetriesVeryShort() {
 	time.Sleep(t)
 }
 
+func SleepOnStartClient(numberOfParticipants int) {
+	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := int(0.7*math.Pow(float64(numberOfParticipants), 2)) - 22*numberOfParticipants + randSource.Intn(MAX_OFFSET_SLEEP_ON_START)
+	t := time.Duration(r) * time.Second
+	time.Sleep(t)
+}
+
 func SleepOnStart(numberOfParticipants int) {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
 	r := MIN_SLEEP_ON_START*numberOfParticipants/4 + randSource.Intn(MAX_OFFSET_SLEEP_ON_START)
@@ -100,7 +108,7 @@ func SleepOnStart(numberOfParticipants int) {
 
 func SleepShort(numberOfParticipants int) {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := MIN_SLEEP_SHORT + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
+	r := MIN_SLEEP_SHORT + numberOfParticipants/2 + randSource.Intn(MAX_OFFSET_SLEEP_SHORT)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }
@@ -113,10 +121,10 @@ func SleepBetweenShareContactsShort() {
 	time.Sleep(t)
 }
 
-// Sleep de 13 minutos con un desvío de 20 segundos
+// Sleep de 4 minutos con un desvío de 20 segundos
 func SleepBetweenShareContactsLarge() {
 	randSource := rand.New(rand.NewSource(time.Now().UnixNano()))
-	r := 16*MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(2*MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
+	r := 5*MIN_SLEEP_BETWEEN_SH_CONTACTS + randSource.Intn(2*MAX_OFFSET_SLEEP_BETWEEN_SH_CONTACTS)
 	t := time.Duration(r) * time.Second
 	time.Sleep(t)
 }

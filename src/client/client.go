@@ -13,6 +13,7 @@ import (
 	"tp/common/communication/url"
 	"tp/common/files_common"
 	filetransfer "tp/common/files_common/file_transfer"
+	"tp/common/files_common/path_exists"
 	"tp/common/keys"
 	rpc_ops_common "tp/common/rpc_ops"
 	"tp/common/task_scheduler"
@@ -96,7 +97,7 @@ func NewClient() (*Client, error) {
 // Iniciar el cliente
 func (client *Client) Start() {
 	// esperar a que la mayoría de los pares se inicialicen intercambiando contactos
-	common.SleepOnStart(14 * client.Config.NumberOfPairs)
+	common.SleepOnStartClient(client.Config.NumberOfPairs)
 	// agregar archivos
 	client.addFiles()
 	client.getFiles()
@@ -115,7 +116,15 @@ func (client *Client) addFiles() error {
 		func(fileName string) error {
 			keyS := keys.KeyToHexString(keys.GetKey(fileName))
 			client.Keys[keyS] = fileName
-			return client.scheduleAddFileTask(fileName)
+			for {
+				if client.addFile(fileName) == nil {
+					break
+				}
+				common.SleepBetweenRetriesVeryShort()
+			}
+			common.SleepShort(client.Config.NumberOfPairs)
+			return nil
+			//return client.scheduleAddFileTask(fileName)
 		})
 }
 
@@ -254,10 +263,21 @@ func (client *Client) checkAllReceived() {
 				common.Log.Infof(MSG_ALL_FILES_RCV, client.CountReceived)
 			} else {
 				common.Log.Infof(MSG_REMAINING_FILES, client.CountReceived, countKeys)
+				client.checkRetryGetFile()
 			}
 			client.Mutex.Unlock()
-			common.SleepLarge()
+			common.SleepBetweenRetriesGetFile()
 		}
 	}()
 	wg.Wait()
+}
+
+// Chequea que archivos deben necesitan un reintento de descarga
+func (client *Client) checkRetryGetFile() {
+	for _, fileName := range client.Keys {
+		path := helpers.GenerateDownloadPath(client.Config, fileName)
+		if !path_exists.PathExists(path) {
+			client.checkMustRetryGetFile(fileName)
+		}
+	}
 }

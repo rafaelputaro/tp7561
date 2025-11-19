@@ -20,15 +20,15 @@ scrape_configs:
 
   - job_name: "client-1"
     static_configs:
-    - targets: ["client-1:9151"]
+    - targets: ["client-1:9141"]
 
   - job_name: "client-2"
     static_configs:
-    - targets: ["client-2:9152"]
+    - targets: ["client-2:9142"]
 
   - job_name: "client-3"
     static_configs:
-    - targets: ["client-3:9153"]
+    - targets: ["client-3:9143"]
 
 
   - job_name: "peer-1"
@@ -230,43 +230,3 @@ scrape_configs:
   - job_name: "peer-50"
     static_configs:
     - targets: ["peer-50:9140"]
-
-  - job_name: "peer-51"
-    static_configs:
-    - targets: ["peer-51:9141"]
-
-  - job_name: "peer-52"
-    static_configs:
-    - targets: ["peer-52:9142"]
-
-  - job_name: "peer-53"
-    static_configs:
-    - targets: ["peer-53:9143"]
-
-  - job_name: "peer-54"
-    static_configs:
-    - targets: ["peer-54:9144"]
-
-  - job_name: "peer-55"
-    static_configs:
-    - targets: ["peer-55:9145"]
-
-  - job_name: "peer-56"
-    static_configs:
-    - targets: ["peer-56:9146"]
-
-  - job_name: "peer-57"
-    static_configs:
-    - targets: ["peer-57:9147"]
-
-  - job_name: "peer-58"
-    static_configs:
-    - targets: ["peer-58:9148"]
-
-  - job_name: "peer-59"
-    static_configs:
-    - targets: ["peer-59:9149"]
-
-  - job_name: "peer-60"
-    static_configs:
-    - targets: ["peer-60:9150"]

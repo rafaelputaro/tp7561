@@ -7,13 +7,8 @@ import (
 
 const PREFIX_ADD_FILE = "add-file-"
 const PREFIX_GET_FILE = "get-file-"
+const MSG_RETRY_GET_FILE = "Retry to get file: %v"
 
-/*
-// Retorna un tag basado en el tiempo y el prefijo
-func generateTimeNanoTag(prefix string) string {
-	return fmt.Sprintf("%v%v", prefix, strconv.FormatInt(time.Now().UnixNano(), 10))
-}
-*/
 // Genera el tag para una tarea de subida de archivo a la red de nodos
 func generateAddFileTag(fileName string) string {
 	return PREFIX_ADD_FILE + keys.KeyToHexString(keys.GetKey(fileName))
@@ -35,7 +30,7 @@ func (client *Client) scheduleAddFileTask(fileName string) error {
 		}
 		common.SleepShort(client.Config.NumberOfPairs)
 		return tag, false
-	}, tag)
+	}, true, tag)
 }
 
 // Agrega la tarea de buscar el archivo
@@ -48,5 +43,20 @@ func (client *Client) scheduleGetFileTask(fileName string) error {
 		}
 		common.SleepShort(client.Config.NumberOfPairs)
 		return tag, false
-	}, tag)
+	}, false, tag)
+}
+
+// Volver a intentar obtener el archivo
+func (client *Client) checkMustRetryGetFile(fileName string) {
+	tag := generateGetFileTag(fileName)
+	if !client.TaskScheduler.HasTag(tag) {
+		common.Log.Debugf(MSG_RETRY_GET_FILE, fileName)
+		client.scheduleGetFileTask(fileName)
+	}
+}
+
+// Si el archivo ha sido agregado retorna true
+func (client *Client) checkFileHasBeenAdded(fileName string) bool {
+	tag := generateAddFileTag(fileName)
+	return !client.TaskScheduler.HasTag(tag)
 }

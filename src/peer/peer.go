@@ -124,9 +124,9 @@ func (peer *Peer) Ping(ctx context.Context, sourceContact *protopb.PingOperands)
 // retorna los contactos útiles para el contacto fuente
 func (peer *Peer) ShCtsReciprocally(ctx context.Context, sourceOperands *protopb.ShCtsRecipOpers) (*protopb.ShCtsRecipRes, error) {
 	// parsear parámetros
-	sourceContact, sourceContactList := protoUtils.ParseShareContactsReciprocallyOperands(sourceOperands)
+	sourceContact, sourceContactList, isBootstrapNodeSec := protoUtils.ParseShareContactsReciprocallyOperands(sourceOperands)
 	// agregar recomendados por la fuente y obtener recomendados
-	selfContacts := peer.NodeDHT.RcvShCtsRecip(sourceContact, sourceContactList)
+	selfContacts := peer.NodeDHT.RcvShCtsRecip(sourceContact, sourceContactList, isBootstrapNodeSec)
 	// agregar contactos que compartió la fuente
 	return protoUtils.CreateShareContactsReciprocallyResults(selfContacts), nil
 }

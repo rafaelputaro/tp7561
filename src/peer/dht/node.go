@@ -80,6 +80,11 @@ func (node *Node) IsBootstrapNode() bool {
 	return bytes.Equal(node.Config.Id, url.BootstrapNodeID)
 }
 
+// Retorna verdadero si el target es el bootstrap node
+func IsBootstrapNodeId(id []byte) bool {
+	return bytes.Equal(id, url.BootstrapNodeID)
+}
+
 // Representa la recepción de un ping el cuál consiste en intentar agregar el contacto a la tabla de
 // contactos
 func (node *Node) RcvPing(sourceContact contact.Contact) bool {
@@ -88,11 +93,11 @@ func (node *Node) RcvPing(sourceContact contact.Contact) bool {
 
 // Obtiene los contactos locales recomendados para la fuente, agrega los contactos compartidos por la fuente y
 // retorna los contactos recomendados para la fuente
-func (node *Node) RcvShCtsRecip(sourceContact contact.Contact, sourceContactList []contact.Contact) []contact.Contact {
+func (node *Node) RcvShCtsRecip(sourceContact contact.Contact, sourceContactList []contact.Contact, isTargetBootstrapNodeSec bool) []contact.Contact {
 	// agregar contacto origen
 	node.scheduleAddContactTask(sourceContact)
 	// obtener contactos recomendados
-	newContacts := node.BucketTab.GetRecommendedContactsForId(sourceContact.ID)
+	newContacts := node.BucketTab.GetRecommendedContactsForIdOnShCts(sourceContact.ID, node.IsBootstrapNode(), isTargetBootstrapNodeSec, IsBootstrapNodeId(sourceContact.ID))
 	// agregar contactos que compartió la fuente
 	node.scheduleAddContactsTask(sourceContactList)
 	return newContacts
@@ -106,14 +111,14 @@ func (node *Node) SndShCtsToBootstrap() {
 
 // Envía los contactos propios al contacto node esperando que el mismo retorne los contactos recomendados
 // para la clave del presente nodo
-func (node *Node) SndShCts(destContact contact.Contact) error {
+func (node *Node) SndShCts(destContact contact.Contact, isDestBootstrapNodeSec bool) error {
 	// ¿Esta vivo el nodo?
 	err := node.SndPing(node.Config, destContact)
 	if err != nil {
 		return err
 	}
 	// obtener contactos recomendados
-	selfContacts := node.BucketTab.GetRecommendedContactsForId(destContact.ID)
+	selfContacts := node.BucketTab.GetRecommendedContactsForIdOnShCts(destContact.ID, node.IsBootstrapNode(), isDestBootstrapNodeSec, IsBootstrapNodeId(destContact.ID))
 	// enviar contactos a contacto desitno
 	destRcvContacts, err := node.SndShareContactsRecip(node.Config, destContact, selfContacts)
 	if err != nil {

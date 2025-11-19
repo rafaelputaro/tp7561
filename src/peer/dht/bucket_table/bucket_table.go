@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sync"
 	"tp/common"
+	"tp/common/communication/url"
 	"tp/common/contact"
 	"tp/common/keys"
 	"tp/peer/dht/bucket_table/contacts_queue"
@@ -126,9 +127,22 @@ func (table *BucketTable) isUnresponsiveContact(contact contact.Contact) bool {
 
 // Selecciona de la tabla de contactos propias una serie de contactos recomendados para que
 // el nodo con el id parámetro pueda armar su tabla de contactos
+func (table *BucketTable) GetRecommendedContactsForIdOnShCts(id []byte, localIsBootstrapNode bool, tagetIsBootstrapNodeSec bool, targetIsBootstrapNode bool) []contact.Contact {
+	// Si el objetivo es un bootstrapNodeSec y soy el boostrapNode,
+	// o el objetivo es boostrapNode y local es bootstrapNodeSec
+	// se retornan todos los contactos
+	if (tagetIsBootstrapNodeSec && localIsBootstrapNode) || (url.IsBootstrapNodeSec && targetIsBootstrapNode) {
+		return table.GetContacs()
+	}
+	// Caso contrario se hace una selección de contactos
+	return table.GetRecommendedContactsForId(id)
+}
+
+// Selecciona de la tabla de contactos propias una serie de contactos recomendados para que
+// el nodo con el id parámetro pueda armar su tabla de contactos
 func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contact.Contact {
-	prefixes := keys.GenerateKeysFromOtherTrees(id)
 	toReturn := []contact.Contact{}
+	prefixes := keys.GenerateKeysFromOtherTrees(id)
 	idsMap := map[string]bool{}
 	for i := range prefixes {
 		contactsPref := table.GetContactsForId(prefixes[i])
@@ -139,6 +153,19 @@ func (table *BucketTable) GetRecommendedContactsForId(id []byte) []contact.Conta
 			}
 			idsMap[idStr] = true
 			toReturn = append(toReturn, contact)
+		}
+	}
+	return toReturn
+}
+
+// Retorna todos los contactos de la tabla
+func (table *BucketTable) GetContacs() []contact.Contact {
+	table.mutex.Lock()
+	defer table.mutex.Unlock()
+	toReturn := []contact.Contact{}
+	for _, prefix := range table.Prefixes {
+		if contacts, ok := table.Entries[prefix]; ok {
+			toReturn = append(toReturn, contacts.GetContacs()...)
 		}
 	}
 	return toReturn

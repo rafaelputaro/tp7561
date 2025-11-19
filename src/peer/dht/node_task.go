@@ -31,13 +31,13 @@ func generateTimeNanoTag(prefix string) string {
 }
 
 // Generar el tag para una tarea de agregar contacto
-func generateAddContactTag() string {
-	return generateTimeNanoTag(PREFIX_ADD_CONTACT)
+func generateAddContactTag(contactUrl string) string {
+	return fmt.Sprintf("%v%v", PREFIX_ADD_CONTACT, contactUrl)
 }
 
 // Genera el tag para una tarea de hacer un ping y luego agregar el contacto
-func generatePingAndAddContactTag() string {
-	return generateTimeNanoTag(PREFIX_PING_AND_ADD_CONTACT)
+func generatePingAndAddContactTag(contactUrl string) string {
+	return fmt.Sprintf("%v%v", PREFIX_PING_AND_ADD_CONTACT, contactUrl)
 }
 
 // Genera el tag para una tarea de agregar contactos.
@@ -79,7 +79,7 @@ func generateSndShCtsToBootstrapTag() string {
 // para evitar posibles retrasos durante la actualización de la bucket table que impliquen
 // enviar pings secundarios a otros contactos
 func (node *Node) scheduleAddContactTask(contact contact.Contact) {
-	tag := generateAddContactTag()
+	tag := generateAddContactTag(contact.Url)
 	node.TaskScheduler.AddTaskWithExpirationTime(func() (string, bool) {
 		// si hay error, la tarea se vuelve a intentar
 		if node.BucketTab.AddContact(contact) != nil {
@@ -107,7 +107,7 @@ func (node *Node) scheduleAddContactsTask(contacts []contact.Contact) {
 // en caso de encontrarse activos
 func (node *Node) schedulePingAndAddContactsTask(contacts []contact.Contact) {
 	for _, contact := range contacts {
-		tag := generatePingAndAddContactTag()
+		tag := generatePingAndAddContactTag(contact.Url)
 		node.TaskScheduler.AddTaskWithExpirationTime(func() (string, bool) {
 			// si hay error, la tarea se vuelve a intentar
 			if node.SndPing(node.Config, contact) != nil {
@@ -132,7 +132,7 @@ func (node *Node) scheduleGetFileTask(destUrl string, key []byte) error {
 		}
 		common.Log.Errorf(MSG_ERROR_GET_FILE, keys.KeyToLogFormatString(key), err)
 		return tag, true
-	}, tag)
+	}, false, tag)
 }
 
 // Agrega la tarea de envío de un archivo
@@ -147,7 +147,7 @@ func (node *Node) scheduleSendFile(destUrl string, key []byte, fileName string) 
 		// Respaldar métrica
 		peer_metrics.SetLastFileReturnedNumber(fileName)
 		return tag, false
-	}, tag)
+	}, false, tag)
 }
 
 // Retorna verdadero si se encuentra pendiente la búsqueda o el envío de un archivo
@@ -169,7 +169,7 @@ func (node *Node) scheduleAddFileFromUploadDirTask(fileName string) error {
 			return tag, true
 		}
 		return tag, false
-	}, tag)
+	}, true, tag)
 }
 
 // Agrega tarea de subir un archivo desde el espacio local
@@ -181,7 +181,7 @@ func (node *Node) scheduleAddFileFromInputDirTask(fileName string) error {
 			return tag, true
 		}
 		return tag, false
-	}, tag)
+	}, true, tag)
 }
 
 // Agrega la tarea de envío de SndStore a un lote de contactos
@@ -194,7 +194,7 @@ func (node *Node) scheduleSndStoreTask(key []byte, fileName string, data []byte,
 				return tag, true
 			}
 			return tag, false
-		}, tag)
+		}, true, tag)
 	}
 }
 
@@ -205,12 +205,12 @@ func (node *Node) ScheduleSndShCtsToBootstrapTask() {
 		if !node.IsBootstrapNode() {
 			contactBoostrapNode := contact.NewContact(url.BootstrapNodeID, url.BootstrapNodeUrl)
 			// agregar bootstrap node a contactos
-			if node.SndShCts(*contactBoostrapNode) == nil {
+			if node.SndShCts(*contactBoostrapNode, url.IsBootstrapNodeSec) == nil {
 				node.scheduleAddContactTask(*contactBoostrapNode)
 				return tag, false
 			}
 			return tag, true
 		}
 		return tag, false
-	}, tag)
+	}, false, tag)
 }

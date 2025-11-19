@@ -38,6 +38,7 @@ message ShCtsRecipOpers {
     required string sourceUrl = 2;
     repeated bytes contactsIds = 3;
     repeated string contactsUrls = 4;
+    required bool isBootstrapNodeSec = 5;
 }
 
 // Contiene los contactos recomendados por el nodo destino
