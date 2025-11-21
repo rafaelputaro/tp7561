@@ -28,8 +28,6 @@ const MSG_GET_FILE_ACCEPTED = "get file accepted: fileName: %v | key: %v"
 const MSG_ALL_FILES_RCV = "All files have been received: %v"
 const MSG_REMAINING_FILES = "Not all files have been received yet: %v/%v"
 
-var InfiniteTime = time.Date(9999, 12, 31, 23, 59, 59, 0, time.UTC)
-
 type UploadData struct {
 	Key         []byte
 	UrlPeerDest string

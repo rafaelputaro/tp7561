@@ -20,7 +20,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-1
       - METRICS_PORT=9091
       - NAME_SPACE=peer-1 
@@ -53,7 +53,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-2
       - METRICS_PORT=9092
       - NAME_SPACE=peer-2 
@@ -89,7 +89,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-3
       - METRICS_PORT=9093
       - NAME_SPACE=peer-3 
@@ -125,7 +125,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-4
       - METRICS_PORT=9094
       - NAME_SPACE=peer-4 
@@ -161,7 +161,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-5
       - METRICS_PORT=9095
       - NAME_SPACE=peer-5 
@@ -197,7 +197,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-6
       - METRICS_PORT=9096
       - NAME_SPACE=peer-6 
@@ -233,7 +233,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-7
       - METRICS_PORT=9097
       - NAME_SPACE=peer-7 
@@ -269,7 +269,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-8
       - METRICS_PORT=9098
       - NAME_SPACE=peer-8 
@@ -305,7 +305,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-9
       - METRICS_PORT=9099
       - NAME_SPACE=peer-9 
@@ -341,7 +341,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-10
       - METRICS_PORT=9100
       - NAME_SPACE=peer-10 
@@ -379,7 +379,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-11
       - METRICS_PORT=9101
       - NAME_SPACE=peer-11 
@@ -415,7 +415,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-12
       - METRICS_PORT=9102
       - NAME_SPACE=peer-12 
@@ -451,7 +451,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-13
       - METRICS_PORT=9103
       - NAME_SPACE=peer-13 
@@ -487,7 +487,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-14
       - METRICS_PORT=9104
       - NAME_SPACE=peer-14 
@@ -523,7 +523,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-15
       - METRICS_PORT=9105
       - NAME_SPACE=peer-15 
@@ -559,7 +559,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-16
       - METRICS_PORT=9106
       - NAME_SPACE=peer-16 
@@ -595,7 +595,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-17
       - METRICS_PORT=9107
       - NAME_SPACE=peer-17 
@@ -631,7 +631,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-18
       - METRICS_PORT=9108
       - NAME_SPACE=peer-18 
@@ -667,7 +667,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-19
       - METRICS_PORT=9109
       - NAME_SPACE=peer-19 
@@ -703,7 +703,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-20
       - METRICS_PORT=9110
       - NAME_SPACE=peer-20 
@@ -741,7 +741,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-21
       - METRICS_PORT=9111
       - NAME_SPACE=peer-21 
@@ -777,7 +777,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-22
       - METRICS_PORT=9112
       - NAME_SPACE=peer-22 
@@ -813,7 +813,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-23
       - METRICS_PORT=9113
       - NAME_SPACE=peer-23 
@@ -849,7 +849,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-24
       - METRICS_PORT=9114
       - NAME_SPACE=peer-24 
@@ -885,7 +885,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-25
       - METRICS_PORT=9115
       - NAME_SPACE=peer-25 
@@ -921,7 +921,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-26
       - METRICS_PORT=9116
       - NAME_SPACE=peer-26 
@@ -957,7 +957,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-27
       - METRICS_PORT=9117
       - NAME_SPACE=peer-27 
@@ -993,7 +993,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-28
       - METRICS_PORT=9118
       - NAME_SPACE=peer-28 
@@ -1029,7 +1029,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-29
       - METRICS_PORT=9119
       - NAME_SPACE=peer-29 
@@ -1065,7 +1065,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-30
       - METRICS_PORT=9120
       - NAME_SPACE=peer-30 
@@ -1103,7 +1103,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-31
       - METRICS_PORT=9121
       - NAME_SPACE=peer-31 
@@ -1139,7 +1139,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-32
       - METRICS_PORT=9122
       - NAME_SPACE=peer-32 
@@ -1175,7 +1175,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-33
       - METRICS_PORT=9123
       - NAME_SPACE=peer-33 
@@ -1211,7 +1211,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-34
       - METRICS_PORT=9124
       - NAME_SPACE=peer-34 
@@ -1247,7 +1247,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-35
       - METRICS_PORT=9125
       - NAME_SPACE=peer-35 
@@ -1283,7 +1283,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-36
       - METRICS_PORT=9126
       - NAME_SPACE=peer-36 
@@ -1319,7 +1319,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-37
       - METRICS_PORT=9127
       - NAME_SPACE=peer-37 
@@ -1355,7 +1355,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-38
       - METRICS_PORT=9128
       - NAME_SPACE=peer-38 
@@ -1391,7 +1391,7 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-39
       - METRICS_PORT=9129
       - NAME_SPACE=peer-39 
@@ -1427,372 +1427,10 @@ services:
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_IPFS_FOLDER=/tmp/peer/store
       - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - METRICS_HOST=peer-40
       - METRICS_PORT=9130
       - NAME_SPACE=peer-40 
-
-
-      - BOOTSTRAP_NODE=peer-1
-
-      - IS_BOOTSTRAP_NODE_SEC=true
-
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-41:
-    container_name: peer-41
-    image: peer:latest
-    ports:
-      - "50092:50051"
-      - "8121:8080"
-      - "9131:9131"
-    volumes:
-      - /tmp/tp/data/peer-41:/tmp/data
-      - /tmp/tp/peer-41:/tmp/peer
-    environment:
-      - PEER_NAME=peer-41
-      - PEER_HOST=peer-41
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-41
-      - METRICS_PORT=9131
-      - NAME_SPACE=peer-41 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-42:
-    container_name: peer-42
-    image: peer:latest
-    ports:
-      - "50093:50051"
-      - "8122:8080"
-      - "9132:9132"
-    volumes:
-      - /tmp/tp/data/peer-42:/tmp/data
-      - /tmp/tp/peer-42:/tmp/peer
-    environment:
-      - PEER_NAME=peer-42
-      - PEER_HOST=peer-42
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-42
-      - METRICS_PORT=9132
-      - NAME_SPACE=peer-42 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-43:
-    container_name: peer-43
-    image: peer:latest
-    ports:
-      - "50094:50051"
-      - "8123:8080"
-      - "9133:9133"
-    volumes:
-      - /tmp/tp/data/peer-43:/tmp/data
-      - /tmp/tp/peer-43:/tmp/peer
-    environment:
-      - PEER_NAME=peer-43
-      - PEER_HOST=peer-43
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-43
-      - METRICS_PORT=9133
-      - NAME_SPACE=peer-43 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-44:
-    container_name: peer-44
-    image: peer:latest
-    ports:
-      - "50095:50051"
-      - "8124:8080"
-      - "9134:9134"
-    volumes:
-      - /tmp/tp/data/peer-44:/tmp/data
-      - /tmp/tp/peer-44:/tmp/peer
-    environment:
-      - PEER_NAME=peer-44
-      - PEER_HOST=peer-44
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-44
-      - METRICS_PORT=9134
-      - NAME_SPACE=peer-44 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-45:
-    container_name: peer-45
-    image: peer:latest
-    ports:
-      - "50096:50051"
-      - "8125:8080"
-      - "9135:9135"
-    volumes:
-      - /tmp/tp/data/peer-45:/tmp/data
-      - /tmp/tp/peer-45:/tmp/peer
-    environment:
-      - PEER_NAME=peer-45
-      - PEER_HOST=peer-45
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-45
-      - METRICS_PORT=9135
-      - NAME_SPACE=peer-45 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-46:
-    container_name: peer-46
-    image: peer:latest
-    ports:
-      - "50097:50051"
-      - "8126:8080"
-      - "9136:9136"
-    volumes:
-      - /tmp/tp/data/peer-46:/tmp/data
-      - /tmp/tp/peer-46:/tmp/peer
-    environment:
-      - PEER_NAME=peer-46
-      - PEER_HOST=peer-46
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-46
-      - METRICS_PORT=9136
-      - NAME_SPACE=peer-46 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-47:
-    container_name: peer-47
-    image: peer:latest
-    ports:
-      - "50098:50051"
-      - "8127:8080"
-      - "9137:9137"
-    volumes:
-      - /tmp/tp/data/peer-47:/tmp/data
-      - /tmp/tp/peer-47:/tmp/peer
-    environment:
-      - PEER_NAME=peer-47
-      - PEER_HOST=peer-47
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-47
-      - METRICS_PORT=9137
-      - NAME_SPACE=peer-47 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-48:
-    container_name: peer-48
-    image: peer:latest
-    ports:
-      - "50099:50051"
-      - "8128:8080"
-      - "9138:9138"
-    volumes:
-      - /tmp/tp/data/peer-48:/tmp/data
-      - /tmp/tp/peer-48:/tmp/peer
-    environment:
-      - PEER_NAME=peer-48
-      - PEER_HOST=peer-48
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-48
-      - METRICS_PORT=9138
-      - NAME_SPACE=peer-48 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-49:
-    container_name: peer-49
-    image: peer:latest
-    ports:
-      - "50100:50051"
-      - "8129:8080"
-      - "9139:9139"
-    volumes:
-      - /tmp/tp/data/peer-49:/tmp/data
-      - /tmp/tp/peer-49:/tmp/peer
-    environment:
-      - PEER_NAME=peer-49
-      - PEER_HOST=peer-49
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-49
-      - METRICS_PORT=9139
-      - NAME_SPACE=peer-49 
-
-
-      - BOOTSTRAP_NODE=peer-40
-      - IS_BOOTSTRAP_NODE_SEC=false
-
-    networks:
-      - tp_net
-
-    depends_on:
-      - peer-1 
-
-
-  peer-50:
-    container_name: peer-50
-    image: peer:latest
-    ports:
-      - "50101:50051"
-      - "8130:8080"
-      - "9140:9140"
-    volumes:
-      - /tmp/tp/data/peer-50:/tmp/data
-      - /tmp/tp/peer-50:/tmp/peer
-    environment:
-      - PEER_NAME=peer-50
-      - PEER_HOST=peer-50
-      - PEER_PORT_GRPC=50051
-      - PEER_PORT_TCP=8080
-      - ENTRIES_PER_K_BUCKET=20
-      - LOGIN_FORMAT_FOR_KEYS=hex
-      - INPUT_DATA_FOLDER=/tmp/data
-      - STORE_IPFS_FOLDER=/tmp/peer/store
-      - SEARCH_WORKERS=20
-      - NUMBER_OF_PAIRS=50
-      - METRICS_HOST=peer-50
-      - METRICS_PORT=9140
-      - NAME_SPACE=peer-50 
 
 
       - BOOTSTRAP_NODE=peer-1
@@ -1813,8 +1451,8 @@ services:
     container_name: client-1
     image: client:latest
     ports:
-      - "8131:8080"
-      - "9141:9141"
+      - "8121:8080"
+      - "9131:9131"
     volumes:
       - /tmp/tp/data/client-1:/tmp/data
       - /tmp/tp/client-1:/tmp/client
@@ -1825,10 +1463,10 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_FOLDER=/tmp/client/store
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - NUMBER_OF_CLIENTS=3
       - METRICS_HOST=client-1
-      - METRICS_PORT=9141
+      - METRICS_PORT=9131
       - NAME_SPACE=client-1
     depends_on:
       - peer-1
@@ -1839,8 +1477,8 @@ services:
     container_name: client-2
     image: client:latest
     ports:
-      - "8132:8080"
-      - "9142:9142"
+      - "8122:8080"
+      - "9132:9132"
     volumes:
       - /tmp/tp/data/client-2:/tmp/data
       - /tmp/tp/client-2:/tmp/client
@@ -1851,10 +1489,10 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_FOLDER=/tmp/client/store
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - NUMBER_OF_CLIENTS=3
       - METRICS_HOST=client-2
-      - METRICS_PORT=9142
+      - METRICS_PORT=9132
       - NAME_SPACE=client-2
     depends_on:
       - peer-1
@@ -1865,8 +1503,8 @@ services:
     container_name: client-3
     image: client:latest
     ports:
-      - "8133:8080"
-      - "9143:9143"
+      - "8123:8080"
+      - "9133:9133"
     volumes:
       - /tmp/tp/data/client-3:/tmp/data
       - /tmp/tp/client-3:/tmp/client
@@ -1877,10 +1515,10 @@ services:
       - LOGIN_FORMAT_FOR_KEYS=hex
       - INPUT_DATA_FOLDER=/tmp/data
       - STORE_FOLDER=/tmp/client/store
-      - NUMBER_OF_PAIRS=50
+      - NUMBER_OF_PAIRS=40
       - NUMBER_OF_CLIENTS=3
       - METRICS_HOST=client-3
-      - METRICS_PORT=9143
+      - METRICS_PORT=9133
       - NAME_SPACE=client-3
     depends_on:
       - peer-1

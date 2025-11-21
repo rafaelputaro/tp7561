@@ -32,6 +32,7 @@ type TaskScheduler struct {
 	mutexTaggedTasks *sync.Mutex
 }
 
+// Retorna una nueva instancia de tarea sin tiempo de expiración
 func newTaskDataWithoutExpirationTime(task TaskFunc, mandatory bool) *TaskData {
 	return &TaskData{
 		taskFunc:   task,
@@ -40,7 +41,8 @@ func newTaskDataWithoutExpirationTime(task TaskFunc, mandatory bool) *TaskData {
 	}
 }
 
-// Deltatime en milisegundos
+// Retorna una nueva tarea con tiempo de expiración siendo el parámetro "deltatime" en
+// milisegundos la validez de la misma.
 func newTaskDataWithExpirationTime(task TaskFunc, deltaTime float32) *TaskData {
 	now := time.Now()
 	expiration := now.Add(time.Millisecond * time.Duration(deltaTime))
@@ -157,14 +159,6 @@ func (scheduler *TaskScheduler) AddTaskWithExpirationTime(task TaskFunc, deltaTi
 	err := scheduler.doAddTask(*newTaskDataWithExpirationTime(task, deltaTime))
 	return err
 }
-
-/*
-// Remueve una etiqueta de la lista de tareas etiquetadas
-func (scheduler *TaskScheduler) removeTask(tag string) {
-	scheduler.mutexTaggedTasks.Lock()
-	defer scheduler.mutexTaggedTasks.Unlock()
-	delete(scheduler.taggedTasks, tag)
-}*/
 
 // Remueve una etiqueta de la lista de tareas etiquetadas
 func (scheduler *TaskScheduler) doRemoveTask(tag string) {

@@ -21,22 +21,3 @@ func TestFolderConfig(t *testing.T) {
 	t.Logf("Download Part: %v", GenerateIpfsDownloadPartPath("file1", 1))
 	t.Logf("Restore: %v", GenerateIpfsRestorePath("file1"))
 }
-
-/*
-func TestGoFunc(t *testing.T) {
-	max := 10
-	wg := new(sync.WaitGroup)
-	for n := range max {
-		wg.Add(1)
-		go func() {
-			for range 10 {
-				println("Echo ", n)
-				t := time.Duration(1) * time.Second
-				time.Sleep(t)
-			}
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-}
-*/
