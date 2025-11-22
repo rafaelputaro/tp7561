@@ -1,8 +1,7 @@
 # tp7561
 
-<iframe src="https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf" width="100%" height="500"></iframe>   
+[Informe Completo](https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf)
 
-Link: https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf
 
 ## Introducción DHS
 @TODO desarrollar el tema de DHS
