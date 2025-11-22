@@ -1,5 +1,7 @@
 # tp7561
 
+[embed] https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf [/embed]
+
 ## Introducción DHS
 @TODO desarrollar el tema de DHS
 
