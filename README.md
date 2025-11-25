@@ -1,54 +1,43 @@
-# tp7561
+# TALLER DE PROGRAMACION III (7561)
 
-[Informe Completo](https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf)
+## InterPlanetary File System (IPFS)
 
+* Alumno: Putaro Rafael Alejandro - 84236
 
-## Introducción DHS
-@TODO desarrollar el tema de DHS
+[Enlace Al Informe Completo En PDF](https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf)
 
-### Kademlia - a Distributed Hash Table implementation | Paper Dissection and Deep-dive
+## Introducción:
 
-[![](https://markdown-videos-api.jorgenkh.no/youtube/_kCHOpINA5g)](https://www.youtube.com/watch?v=_kCHOpINA5g)
+![IPFS](./docs/ipfs.jpeg)
 
-@TODO explicar Kademlia en base al vídeo y el siguiente: https://xlattice.sourceforge.net/components/protocol/kademlia/specs.html
+El crecimiento exponencial del tráfico de datos y la necesidad de sistemas más eficientes, resilientes y descentralizados han impulsado el desarrollo de nuevas arquitecturas para el almacenamiento y distribución de información. Frente a los modelos centralizados tradicionales, que presentan cuellos de botella, dependencia de servidores únicos y vulnerabilidades ante fallos o censura, surgen alternativas basadas en redes punto a punto (P2P). En este contexto, IPFS (InterPlanetary File System) se posiciona como un protocolo innovador que permite almacenar y compartir datos de forma distribuida, utilizando identificadores de contenido (CIDs) en lugar de ubicaciones de servidores.
 
+Uno de los pilares fundamentales del funcionamiento de IPFS es su sistema de enrutamiento de contenido, que depende de una DHT (Distributed Hash Table) basada en el protocolo Kademlia. Este protocolo permite localizar nodos que almacenan datos específicos de manera eficiente, escalable y robusta ante la dinámica constante de entrada y salida de nodos en la red. Kademlia utiliza una métrica de distancia XOR para organizar los nodos y optimizar las búsquedas, minimizando el número de saltos necesarios para encontrar un recurso.
 
-## Introducción IPFS
-
-[![](https://markdown-videos-api.jorgenkh.no/youtube/-ZC1-M3biyo)](https://youtu.be/-ZC1-M3biyo)
-
-@TODO explicar IPFS en base al vídeo y a los siguientes links: https://www.conquerblocks.com/post/ipfs
-
-https://about.ipfs.io/
+El objetivo de este trabajo práctico es analizar y comprender cómo Kademlia facilita la operación de IPFS, explorando su implementación, ventajas y desafíos en redes descentralizadas. A través de una aproximación teórico-práctica, se busca demostrar la eficacia del protocolo en la resolución de rutas de contenido y su contribución a la descentralización efectiva de la web.
 
 
-## Implementación del sistema
+## Implementación práctica:
 
-Se tiene un modulo Peer el cual presentará al exterior las funciones grpc para el manejo de la DHT y las operaciones sobre los archivos del IPFS. 
-Los valores a almacenar en la DHT van a ser los nombres de los archivos dados como strings.
-Las claves se encriptan mediante SHA256.
+Para observar el comportamiento del protocolo IPFS en funcionamiento se optó por una implementación limitada a unas pocas decenas de nodos con un número de clientes concurrentes reducido los operan sobre dicha red subiendo y descargando un conjunto de archivos.
+Dicha implementación está dada por una serie de contenedores de Docker, desarrollados fundamentalmente en Golang, los cuales son análogos de pares en una red IPFS que interactúan entre sí mediante llamadas a procedimiento remoto (en este caso gRPC).
+Por otro lado los clientes concurrentes que consumen los servicios de los nodos (o pares) de esta red IPFS interactúan con los mismos alternando entre llamados gRPC y la utilización de socket’s TCP. Estos clientes también están dados por contenedores Docker desarrollados en Golang.
 
-![Diagrama De Clases Peer](./docs/DiagramaDeClasesPeer.png)
+![IPFS](./docs/DiagramaDeDespliegue.png)
 
+Para la recolección de métricas se utilizó tanto Prometheus como cAdvisor, mientras que para su visualización se ha optado por Grafana.
 
-Idea sobre la estructura de los archivos:
+El sistema consiste principalmente en un paquete “peer” que contiene la implementación del IPFS y un paquete de “client” que consume los servicios de la red de nodos. Ambos paquetes se apoyan en el módulo “common” el cuál contiene módulos dedicados a la comunicación, la gestión de archivos, inicialización de métricas, la implementación de contactos (datos de cada nodo como la url y su identificación), gestión de claves, un planificador de tareas y las operaciones gRPC necesarias tanto para subir como para descargar archivos.
+Adicionalmente se tiene un paquete “protobuf” que define los servicios gRPC, los resultados, operandos e implementa una serie de funciones que facilitan el uso de este protocolo en la presente implementación.
 
-{
-    <contenido_bloque>,
-    <id_siguiente_bloque>
-}
+![IPFS](./docs/DiagramaDePaquetes.png)
 
+Para más información visitar el informe completo: [Enlace Al Informe Completo En PDF](https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf)
 
-## Notas para ejecución:
+## Instrucción para la ejecución del sistema:
 
-Se dispone del archivo config.ini el cuál permite configurar la cantidad de pares a ejecutar entre otras cosas:
+Se dispone del archivo "config.ini" el cuál permite configurar la cantidad de pares y clientes a ejecutar entre otras cosas.
 
-```
-[DEFAULT]
-# --------------- PAIRS ---------------
-NUMBER_OF_PAIRS = 2
-ENTRIES_PER_K_BUCKET = 20
-```
 Iniciar o crear en entorno virtual:
 ```
 python3 -m venv myenv
@@ -78,30 +67,26 @@ Ver log:
 ```
 make-docker-compose-logs
 ```
-Detener contendores:
+Detener contenedores:
 ```
 make-docker-compose-down
 ```
 
-NOTA: make docker-compose-logs | grep -i <exp> | grep -i <exp>
+Para visualizar el log del cliente:
+```
+ make docker-compose-logs | grep -i client
+```
 
-
-Guía Prometheus:
-
-https://last9.io/blog/docker-monitoring-with-prometheus-a-step-by-step-guide/
-
-https://youtu.be/WUBjlJzI2a0
-
-https://youtu.be/sNk9NkgTOLs
-
-https://www.youtube.com/watch?v=sNk9NkgTOLs&t=371s
+Para ingresar al administrador de Prometheus:
 
 http://localhost:9090/
 
+Para ingresar al administrador de Grafana:
+
 http://localhost:3000/login
 
-
-https://www.youtube.com/watch?v=PCJwJpbln6Q&t=668s
-
+Para ingresar al administrador de cAdvisor:
 
 http://localhost:8079/
+
+Para visualizar las métricas citadas en el informe se deben cargar en Grafana los dashboards que se encuentran en la carpeta src/grafana/dashboards
