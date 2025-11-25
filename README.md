@@ -34,7 +34,7 @@ Adicionalmente se tiene un paquete “protobuf” que define los servicios gRPC,
 
 Para más información visitar el informe completo: [Enlace Al Informe Completo En PDF](https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf)
 
-## Instrucción para la ejecución del sistema:
+## Instrucciones para la ejecución del sistema:
 
 Se dispone del archivo "config.ini" el cuál permite configurar la cantidad de pares y clientes a ejecutar entre otras cosas.
 
@@ -61,15 +61,15 @@ pip install Jinja2
 ```
 Ejecutar:
 ```
-make-docker-compose-up
+make docker-compose-up
 ```
 Ver log:
 ```
-make-docker-compose-logs
+make docker-compose-logs
 ```
 Detener contenedores:
 ```
-make-docker-compose-down
+make docker-compose-down
 ```
 
 Para visualizar el log del cliente:
@@ -77,15 +77,15 @@ Para visualizar el log del cliente:
  make docker-compose-logs | grep -i client
 ```
 
-Para ingresar al administrador de Prometheus:
+Para ingresar al administrador de Prometheus visitar:
 
 http://localhost:9090/
 
-Para ingresar al administrador de Grafana:
+Para ingresar al administrador de Grafana visitar:
 
 http://localhost:3000/login
 
-Para ingresar al administrador de cAdvisor:
+Para ingresar al administrador de cAdvisor visitar:
 
 http://localhost:8079/
 
