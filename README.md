@@ -6,6 +6,10 @@
 
 [Enlace Al Informe Completo En PDF](https://github.com/rafaelputaro/tp7561/blob/main/docs/TALLER%20DE%20PROGRAMACION%20III%20(7561).pdf)
 
+
+* Vídeo con presentación:
+[Enlace Google Drive](https://drive.google.com/file/d/1qBX5Y44ZVDJPkQzBqi73Oq1nJbVTHKDO/view?usp=drive_link)
+
 ## Introducción:
 
 ![IPFS](./docs/ipfs.jpeg)
